@@ -1,0 +1,6 @@
+layout:
+    actions: []
+    imports:
+        -
+            id: oro_cookie_banner
+            root: wrapper

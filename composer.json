@@ -1,0 +1,33 @@
+{
+    "name": "oro/cookie-consent",
+    "description": "Oro Commerce Cookie Consent",
+    "homepage": "https://github.com/laboro/OroCookieConsentBundle.git",
+    "license": "OSL-3.0",
+    "keywords": ["Oro", "Commerce", "Cookie", "Consent"],
+    "authors": [
+        {
+            "name": "Oro, Inc",
+            "homepage": "http://www.oroinc.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {"Oro\\Bundle\\CookieConsentBundle\\": "src/Oro/Bundle/CookieConsentBundle"},
+        "exclude-from-classmap": ["/Tests/"]
+    },
+    "require": {
+        "oro/commerce": "4.2.*"
+    },
+    "repositories": {
+        "oro": {
+            "type": "composer",
+            "url": "https://packagist.orocrm.com"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "branch-alias": {
+            "dev-master": "4.2-dev"
+        }
+    }
+}

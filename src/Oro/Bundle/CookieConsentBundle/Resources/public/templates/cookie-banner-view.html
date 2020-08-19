@@ -1,0 +1,18 @@
+<div class="cookie-banner-view">
+    <div class="cookie-banner-view__inner">
+        <div class="cookie-banner-view__text">
+            <%= bannerText %>
+        </div>
+        <div class="cookie-banner-view__buttons">
+            <button data-role="button" data-action="accept" class="btn btn--info cookie-banner-view__accept"><%- bannerButtonLabel %></button>
+            <% if (!_.isEmpty(landingPageHref) && !_.isEmpty(landingPageLabel)) { %>
+                <a href="<%= landingPageHref %>" class="btn btn--info cookie-banner-view__landing-page">
+                    <%= landingPageLabel %>
+                </a>
+            <% } %>
+        </div>
+    </div>
+    <button data-role="button" data-action="close" class="cookie-banner-view__close">
+        <span class="fa fa-close"></span>
+    </button>
+</div>

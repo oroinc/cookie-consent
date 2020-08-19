@@ -1,0 +1,21 @@
+oro:
+    cookie_consent:
+        system_configuration:
+            groups:
+                cookies_banner_section.title: 'Cookies Banner'
+            fields:
+                show_banner:
+                    label: 'Show Banner'
+                    tooltip: 'Defines if Customer User should see Cookies Banner'
+                localized_banner_text:
+                    label: 'Cookies Banner Text'
+                localized_landing_page_id:
+                    label: 'Landing Page'
+    customer:
+        customervisitor.cookies_accepted:
+            label: 'Cookies Accepted'
+            description: 'The sign that customer visitor has accepted website cookies.'
+
+        customeruser.cookies_accepted:
+            label: 'Cookies Accepted'
+            description: 'The sign that customer user has accepted website cookies.'

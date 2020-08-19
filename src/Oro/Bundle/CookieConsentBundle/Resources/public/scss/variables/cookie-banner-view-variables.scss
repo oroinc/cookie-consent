@@ -1,0 +1,45 @@
+/* @theme: blank; */
+
+$cookie-banner-view-position: fixed !default;
+$cookie-banner-view-background-color: #fff !default;
+$cookie-banner-view-border-top: 1px solid #ebebeb !default;
+$cookie-banner-view-bottom: 0 !default;
+$cookie-banner-view-left: 0 !default;
+$cookie-banner-view-right: 0 !default;
+$cookie-banner-view-inner-offset: 20px 8px !default;
+$cookie-banner-view-z-index: 100002 !default;
+
+$cookie-banner-view__inner-max-width: 1400px !default;
+$cookie-banner-view__inner-offset: auto !default;
+$cookie-banner-view__inner-display: block !default;
+$cookie-banner-view__inner-align-items: center !default;
+
+$cookie-banner-view__text-offset: auto !default;
+$cookie-banner-view__text-text-align: center !default;
+
+$cookie-banner-view__buttons-offset: 20px auto !default;
+$cookie-banner-view__buttons-text-align: center !default;
+
+$cookie-banner-view__buttons-btn-info-margin-bottom: 7px !default;
+
+$cookie-banner-view__close-position: absolute !default;
+$cookie-banner-view__close-right: 0 !default;
+$cookie-banner-view__close-top: 8px !default;
+$cookie-banner-view__close-background: none !default;
+$cookie-banner-view__close-border: none !default;
+$cookie-banner-view__close-color: #000 !default;
+$cookie-banner-view__close-opacity: 0.3 !default;
+$cookie-banner-view__close-font-size: 16px !default;
+$cookie-banner-view__close-height: 20px !default;
+$cookie-banner-view__close-width: 30px !default;
+$cookie-banner-view__close-text-align: center !default;
+$cookie-banner-view__close-cursor: pointer !default;
+
+$cookie-banner-view__close-hover-opacity: 0.6 !default;
+
+// Mobile
+$cookie-banner-view-mobile__inner-width: 100% !default;
+$cookie-banner-view-mobile__inner-flex-wrap: wrap !default;
+$cookie-banner-view-mobile__inner-justify-content: flex-end !default;
+$cookie-banner-view-mobile__inner-offset-right: 0 !default;
+$cookie-banner-view-mobile__inner-offset-bottom: 20px !default;

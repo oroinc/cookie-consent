@@ -1,0 +1,3 @@
+dynamic-imports:
+    orocookieconsent:
+        - orocookieconsent/js/views/cookie-banner-view

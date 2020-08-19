@@ -1,0 +1,9 @@
+{% block __oro_cookie_banner__banner_content_widget %}
+    <div data-page-component-view="{{ {
+        view: 'orocookieconsent/js/views/cookie-banner-view',
+        bannerText: bannerText,
+        landingPageHref: landingPageHref,
+        landingPageLabel: landingPageLabel,
+        cookiesAcceptedRoute: cookiesAcceptedRoute,
+    }|json_encode }}"></div>
+{% endblock %}

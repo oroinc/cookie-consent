@@ -1,0 +1,50 @@
+services:
+    oro_cookie_consent.helper.frontend_representative_user_helper:
+        class: 'Oro\Bundle\CookieConsentBundle\Helper\FrontendRepresentativeUserHelper'
+        public: true
+        arguments:
+            - '@security.token_storage'
+            - '@oro_customer.customer_visitor_manager'
+
+    oro_cookie_consent.helper.cookies_accepted_property_helper:
+        class: 'Oro\Bundle\CookieConsentBundle\Helper\CookiesAcceptedPropertyHelper'
+        public: true
+
+    oro_cookie_consent.form.type.config_landing_page_select:
+        class: 'Oro\Bundle\CookieConsentBundle\Form\Type\ConfigLandingPageSelectType'
+        arguments: ['@oro_entity.doctrine_helper']
+        tags:
+            - { name: form.type }
+
+    oro_cookie_consent.event_listener.customer_user_registration_and_login:
+        class: 'Oro\Bundle\CookieConsentBundle\EventListener\CustomerUserRegistrationAndLoginListener'
+        arguments:
+            - '@oro_cookie_consent.helper.frontend_representative_user_helper'
+            - '@oro_cookie_consent.helper.cookies_accepted_property_helper'
+            - '@oro_entity.doctrine_helper'
+        tags:
+            - { name: kernel.event_subscriber }
+
+    oro_cookie_consent.transformer.page_id_to_dto_transformer:
+        class: 'Oro\Bundle\CookieConsentBundle\Transformer\PageIdToDTOTransformer'
+        public: false
+        arguments:
+            - '@oro_entity.doctrine_helper'
+            - '@oro_locale.helper.localization'
+
+    oro_cookie_consent.helper.localized_value_extractor:
+        class: 'Oro\Bundle\CookieConsentBundle\Helper\LocalizedValueExtractor'
+        public: false
+
+    oro_cookie_consent.layout.data_provider.cookies_banner_provider:
+        class: 'Oro\Bundle\CookieConsentBundle\Layout\DataProvider\CookiesBannerProvider'
+        arguments:
+            - '@oro_cookie_consent.helper.frontend_representative_user_helper'
+            - '@oro_cookie_consent.helper.cookies_accepted_property_helper'
+            - '@oro_cookie_consent.transformer.page_id_to_dto_transformer'
+            - '@oro_cookie_consent.helper.localized_value_extractor'
+            - '@oro_config.manager'
+            - '@oro_locale.helper.localization'
+            - "@oro_ui.html_tag_helper"
+        tags:
+            - { name: layout.data_provider, alias: cookies_banner_provider }

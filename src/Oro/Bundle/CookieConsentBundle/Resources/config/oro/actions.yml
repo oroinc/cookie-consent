@@ -1,0 +1,24 @@
+action_groups:
+    oro_cookie_consent_set_accepted_cookies:
+        parameters:
+            flush:
+                type: bool
+                default: true
+        actions:
+            - '@call_service_method':
+                service: 'oro_cookie_consent.helper.frontend_representative_user_helper'
+                method: 'getRepresentativeUser'
+                attribute: $.frontendRepresentativeUser
+            - '@tree':
+                conditions:
+                    '@not_empty': [$.frontendRepresentativeUser]
+                actions:
+                    - '@call_service_method':
+                        service: 'oro_cookie_consent.helper.cookies_accepted_property_helper'
+                        method: 'setCookiesAccepted'
+                        method_parameters: [$.frontendRepresentativeUser, true]
+                    - '@flush_entity':
+                        conditions:
+                            '@equal': [true, $.flush]
+                        parameters:
+                            - $.frontendRepresentativeUser

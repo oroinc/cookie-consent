@@ -1,0 +1,6 @@
+oro_cookie_consent:
+    resource: "@OroCookieConsentBundle/Controller/CookieConsentController.php"
+    type:     annotation
+    prefix:   /
+    options:
+        frontend: true

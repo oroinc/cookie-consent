@@ -1,0 +1,69 @@
+/* @theme: blank; */
+
+@import "variables/cookie-banner-view-variables";
+
+.cookie-banner-view {
+  position: $cookie-banner-view-position;
+  background-color: $cookie-banner-view-background-color;
+  border-top: $cookie-banner-view-border-top;
+  bottom: $cookie-banner-view-bottom;
+  left: $cookie-banner-view-left;
+  right: $cookie-banner-view-right;
+  padding: $cookie-banner-view-inner-offset;
+  z-index: $cookie-banner-view-z-index;
+
+  &__inner {
+    max-width: $cookie-banner-view__inner-max-width;
+    margin: $cookie-banner-view__inner-offset;
+    display: $cookie-banner-view__inner-display;
+    align-items: $cookie-banner-view__inner-align-items;
+  }
+
+  &__text {
+    margin: $cookie-banner-view__text-offset;
+    text-align: $cookie-banner-view__text-text-align;
+  }
+
+  &__buttons {
+    margin: $cookie-banner-view__buttons-offset;
+    text-align: $cookie-banner-view__buttons-text-align;
+
+    .btn--info {
+        margin-bottom: $cookie-banner-view__buttons-btn-info-margin-bottom;
+    }
+  }
+
+  &__close {
+    position: $cookie-banner-view__close-position;
+    right: $cookie-banner-view__close-right;
+    top: $cookie-banner-view__close-top;
+    background: $cookie-banner-view__close-background;
+    border: $cookie-banner-view__close-border;
+    color: $cookie-banner-view__close-color;
+    opacity: $cookie-banner-view__close-opacity;
+    font-size: $cookie-banner-view__close-font-size;
+    height: $cookie-banner-view__close-height;
+    width: $cookie-banner-view__close-width;
+    text-align: $cookie-banner-view__close-text-align;
+    cursor: $cookie-banner-view__close-cursor;
+
+    &:hover {
+      opacity: $cookie-banner-view__close-hover-opacity;
+    }
+  }
+}
+
+@include breakpoint('mobile') {
+  .cookie-banner-view {
+    &__inner {
+      flex-wrap: $cookie-banner-view-mobile__inner-flex-wrap;
+      justify-content: $cookie-banner-view-mobile__inner-justify-content;
+    }
+
+    &__text {
+      width: $cookie-banner-view-mobile__inner-width;
+      margin-right: $cookie-banner-view-mobile__inner-offset-right;
+      margin-bottom: $cookie-banner-view-mobile__inner-offset-bottom;
+    }
+  }
+}

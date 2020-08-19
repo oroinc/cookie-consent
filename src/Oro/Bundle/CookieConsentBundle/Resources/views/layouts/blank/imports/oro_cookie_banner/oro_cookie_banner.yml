@@ -1,0 +1,26 @@
+layout:
+    actions:
+        - '@setBlockTheme':
+            themes: 'OroCookieConsentBundle:layouts:blank/imports/oro_cookie_banner/oro_cookie_banner.html.twig'
+        - '@add':
+            id: __banner_content
+            parentId: __root
+            blockType: container
+            options:
+                visible: '=data["cookies_banner_provider"].isBannerVisible()'
+        - '@appendOption':
+            id: banner_content
+            optionName: vars.bannerText
+            optionValue: '=data["cookies_banner_provider"].getBannerText()'
+        - '@appendOption':
+            id: banner_content
+            optionName: vars.landingPageHref
+            optionValue: '=data["cookies_banner_provider"].getPageUrl()'
+        - '@appendOption':
+            id: banner_content
+            optionName: vars.landingPageLabel
+            optionValue: '=data["cookies_banner_provider"].getPageTitle()'
+        - '@appendOption':
+            id: banner_content
+            optionName: vars.cookiesAcceptedRoute
+            optionValue: 'oro_cookie_consent_set_cookies_accepted'

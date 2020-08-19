@@ -1,0 +1,72 @@
+system_configuration:
+    groups:
+        cookies_banner_section:
+            title: oro.cookie_consent.system_configuration.groups.cookies_banner_section.title
+    fields:
+        oro_cookie_consent.show_banner:
+            data_type: boolean
+            type: Oro\Bundle\ConfigBundle\Form\Type\ConfigCheckbox
+            priority: 30
+            options:
+                label: oro.cookie_consent.system_configuration.fields.show_banner.label
+                tooltip: oro.cookie_consent.system_configuration.fields.show_banner.tooltip
+                required: false
+        oro_cookie_consent.localized_banner_text:
+            data_type: array
+            priority: 20
+            type: Oro\Bundle\LocaleBundle\Form\Type\LocalizedPropertyType
+            options:
+                label: oro.cookie_consent.system_configuration.fields.localized_banner_text.label
+                required: true
+                entry_type: Oro\Bundle\FormBundle\Form\Type\OroRichTextType
+                constraints:
+                    - NotBlank: ~
+        oro_cookie_consent.localized_landing_page_id:
+            data_type: array
+            priority: 10
+            type: Oro\Bundle\LocaleBundle\Form\Type\LocalizedPropertyType
+            options:
+                label: oro.cookie_consent.system_configuration.fields.localized_landing_page_id.label
+                required: false
+                entry_type: Oro\Bundle\CookieConsentBundle\Form\Type\ConfigLandingPageSelectType
+
+    tree:
+        system_configuration:
+            commerce:
+                children:
+                    customer:
+                        children:
+                            customer_users:
+                                children:
+                                    cookies_banner_section:
+                                        priority: -100
+                                        children:
+                                            - oro_cookie_consent.show_banner
+                                            - oro_cookie_consent.localized_banner_text
+                                            - oro_cookie_consent.localized_landing_page_id
+        organization_configuration:
+            commerce:
+                children:
+                    customer:
+                        children:
+                            customer_users:
+                                children:
+                                    cookies_banner_section:
+                                        priority: -100
+                                        children:
+                                            - oro_cookie_consent.show_banner
+                                            - oro_cookie_consent.localized_banner_text
+                                            - oro_cookie_consent.localized_landing_page_id
+        website_configuration:
+            commerce:
+                children:
+                    customer:
+                        children:
+                            customer_users:
+                                children:
+                                    cookies_banner_section:
+                                        priority: -100
+                                        children:
+                                            - oro_cookie_consent.show_banner
+                                            - oro_cookie_consent.localized_banner_text
+                                            - oro_cookie_consent.localized_landing_page_id
