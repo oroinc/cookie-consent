@@ -5,6 +5,7 @@ define(function(require) {
     const _ = require('underscore');
     const routing = require('routing');
     const $ = require('jquery');
+    const manageFocus = require('oroui/js/tools/manage-focus').default;
 
     const CookieBannerView = BaseView.extend({
 
@@ -23,7 +24,8 @@ define(function(require) {
         /** @property {Object} */
         events: {
             'click [data-action="accept"]': 'onAccept',
-            'click [data-action="close"]': 'onClose'
+            'click [data-role="close"]': 'onClose',
+            'transitionend': 'onTransitionend'
         },
 
         /**
@@ -45,20 +47,25 @@ define(function(require) {
             }
 
             this.render();
+            this.$el.addClass('show');
         },
+
+        onTransitionend: _.once(function() {
+            manageFocus.focusTabbable(this.$el);
+        }),
 
         /**
          * @inheritDoc
          */
         render: function() {
-            this.setElement(this.template({
+            this.$el.html(this.template({
                 bannerText: this.options.bannerText,
-                bannerButtonLabel: _.__('oro_cookie_banner.button_label'),
+                bannerButtonLabel: _.__('oro_cookie_banner.accept_button.label'),
                 landingPageHref: this.options.landingPageHref,
                 landingPageLabel: this.options.landingPageLabel
             }));
 
-            this.$el.appendTo('#container');
+            return this;
         },
 
         /**

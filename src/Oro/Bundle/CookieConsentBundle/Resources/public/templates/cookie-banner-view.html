@@ -1,18 +1,17 @@
-<div class="cookie-banner-view">
-    <div class="cookie-banner-view__inner">
-        <div class="cookie-banner-view__text">
-            <%= bannerText %>
-        </div>
-        <div class="cookie-banner-view__buttons">
-            <button data-role="button" data-action="accept" class="btn btn--info cookie-banner-view__accept"><%- bannerButtonLabel %></button>
-            <% if (!_.isEmpty(landingPageHref) && !_.isEmpty(landingPageLabel)) { %>
-                <a href="<%= landingPageHref %>" class="btn btn--info cookie-banner-view__landing-page">
-                    <%= landingPageLabel %>
-                </a>
-            <% } %>
-        </div>
+<div class="banner-view-inner-container" data-skip-focus-decoration tabindex="0">
+    <div class="cookie-banner-view__text cms-typography">
+        <%= bannerText %>
+        <% if (!_.isEmpty(landingPageHref) && !_.isEmpty(landingPageLabel)) { %>
+            <a href="<%- landingPageHref %>">
+                <%- landingPageLabel %>
+            </a>
+        <% } %>
     </div>
-    <button data-role="button" data-action="close" class="cookie-banner-view__close">
-        <span class="fa fa-close"></span>
-    </button>
+    <div class="cookie-banner-view__buttons">
+        <button data-action="accept" class="btn btn--info" aria-label="<%- _.__('oro_cookie_banner.accept_button.aria_label') %>">
+            <span class="fa fa-check" aria-hidden="true"></span>
+            <%- bannerButtonLabel %>
+        </button>
+    </div>
 </div>
+<button class="close-dialog" data-role="close" title="<%- _.__('Close') %>" aria-label="<%- _.__('oro_cookie_banner.close.aria_label') %>"></button>

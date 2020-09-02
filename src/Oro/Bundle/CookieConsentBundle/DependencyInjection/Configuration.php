@@ -16,9 +16,9 @@ class Configuration implements ConfigurationInterface
     public const PARAM_NAME_LOCALIZED_LANDING_PAGE_ID = 'localized_landing_page_id';
 
     public const DEFAULT_BANNER_TEXT = <<<_TEXT
-This website uses cookies to provide you with the best user experience.
+<h3 style="text-align:center;">This website uses cookies to provide you with the best user experience</h3>
 Cookies are collected to remember your login details,
-provide secure login, collect statistics to optimize website performance and deliver content relevant to you.
+provide secure login, collect statistics to optimize website performance and deliver content relevant to you.<br>
 By continuing to browse the website, you consent to our use of cookies.
 _TEXT;
     public const DEFAULT_PAGE_ID = null;

@@ -1,0 +1,3 @@
+styles:
+    inputs:
+        - 'bundles/orocookieconsent/default/scss/variables/cookie-banner-view-config.scss'

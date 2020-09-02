@@ -5,6 +5,7 @@ layout:
         - '@add':
             id: __banner_content
             parentId: __root
+            prepend: false
             blockType: container
             options:
                 visible: '=data["cookies_banner_provider"].isBannerVisible()'

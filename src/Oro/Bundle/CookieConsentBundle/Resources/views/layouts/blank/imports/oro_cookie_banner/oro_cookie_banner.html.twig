@@ -1,9 +1,16 @@
 {% block __oro_cookie_banner__banner_content_widget %}
-    <div data-page-component-view="{{ {
-        view: 'orocookieconsent/js/views/cookie-banner-view',
-        bannerText: bannerText,
-        landingPageHref: landingPageHref,
-        landingPageLabel: landingPageLabel,
-        cookiesAcceptedRoute: cookiesAcceptedRoute,
-    }|json_encode }}"></div>
+    {% set attr = layout_attr_defaults(attr, {
+        '~class': ' cookie-banner-view',
+        'data-page-component-view': {
+            view: 'orocookieconsent/js/views/cookie-banner-view',
+            bannerText: bannerText,
+            landingPageHref: landingPageHref,
+            landingPageLabel: landingPageLabel,
+            cookiesAcceptedRoute: cookiesAcceptedRoute
+        },
+        'role': 'dialog',
+        'aria-modal': true
+    }) %}
+
+    <div {{ block('block_attributes') }}></div>
 {% endblock %}

@@ -1,0 +1,46 @@
+/* @theme: blank; */
+
+$cookie-banner-view-position: fixed !default;
+$cookie-banner-view-background-color: get-color('additional', 'ultra') !default;
+$cookie-banner-view-bottom: 0 !default;
+$cookie-banner-view-left: 0 !default;
+$cookie-banner-view-right: 0 !default;
+$cookie-banner-view-inner-offset: 14px 32px 12px !default;
+$cookie-banner-view-z-index: z('fixed') !default;
+$cookie-banner-view-transition: all .4s ease-in-out !default;
+$cookie-banner-view-transform: translateY(100%) !default;
+
+$cookie-banner-view-before-background-content: '' !default;
+$cookie-banner-view-before-background-color: get-color('secondary', 'base') !default;
+$cookie-banner-view-before-width: 0% !default;
+$cookie-banner-view-before-height: 2px !default;
+$cookie-banner-view-before-position: absolute !default;
+$cookie-banner-view-before-top: 0 !default;
+$cookie-banner-view-before-left: 50% !default;
+$cookie-banner-view-before-transform: translateX(-50%) !default;
+$cookie-banner-view-before-transition: all 1s ease-in-out !default;
+
+$cookie-banner-view-show-box-shadow: 0 -3px 7px 1px rgba(get-color('additional', 'darker'), .05) !default;
+$cookie-banner-view-show-transform: translateY(0) !default;
+
+$cookie-banner-view-show-before-width: 100% !default;
+
+$cookie-banner-view-text-offset: auto !default;
+$cookie-banner-view-text-text-align: center !default;
+
+$cookie-banner-view-buttons-offset: $offset-y auto 0 !default;
+$cookie-banner-view-buttons-text-align: center !default;
+
+$banner-view-inner-container-max-width: $site-width !default;
+$banner-view-inner-container-offset: auto !default;
+$banner-view-inner-container-inner-offset: 12px 0 !default;
+$banner-view-inner-container-display: block !default;
+$banner-view-inner-container-align-items: center !default;
+
+// Mobile
+$cookie-banner-view-text-mobile-width: 100% !default;
+$cookie-banner-view-text-mobile-offset-right: 0 !default;
+$cookie-banner-view-text-mobile-offset-bottom: 20px !default;
+
+$banner-view-inner-container-mobile-flex-wrap: wrap !default;
+$banner-view-inner-container-mobile-justify-content: flex-end !default;

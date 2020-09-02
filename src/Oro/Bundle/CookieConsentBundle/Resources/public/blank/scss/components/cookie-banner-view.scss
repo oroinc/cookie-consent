@@ -1,0 +1,67 @@
+/* @theme: blank; */
+
+.cookie-banner-view {
+    position: $cookie-banner-view-position;
+    background-color: $cookie-banner-view-background-color;
+    bottom: $cookie-banner-view-bottom;
+    left: $cookie-banner-view-left;
+    right: $cookie-banner-view-right;
+    padding: $cookie-banner-view-inner-offset;
+    z-index: $cookie-banner-view-z-index;
+    transition: $cookie-banner-view-transition;
+    transform: $cookie-banner-view-transform;
+
+    &::before {
+        content: $cookie-banner-view-before-background-content;
+        background-color: $cookie-banner-view-before-background-color;
+        width: $cookie-banner-view-before-width;
+        height: $cookie-banner-view-before-height;
+        position: $cookie-banner-view-before-position;
+        top: $cookie-banner-view-before-top;
+        left: $cookie-banner-view-before-left;
+        transform: $cookie-banner-view-before-transform;
+        transition: $cookie-banner-view-before-transition;
+    }
+
+    &.show {
+        box-shadow: $cookie-banner-view-show-box-shadow;
+        transform: $cookie-banner-view-show-transform;
+
+        &::before {
+            width: $cookie-banner-view-show-before-width;
+        }
+    }
+
+    &__text {
+        margin: $cookie-banner-view-text-offset;
+        text-align: $cookie-banner-view-text-text-align;
+    }
+
+    &__buttons {
+        margin: $cookie-banner-view-buttons-offset;
+        text-align: $cookie-banner-view-buttons-text-align;
+    }
+}
+
+.banner-view-inner-container {
+    max-width: $banner-view-inner-container-max-width;
+    margin: $banner-view-inner-container-offset;
+    padding: $banner-view-inner-container-inner-offset;
+    display: $banner-view-inner-container-display;
+    align-items: $banner-view-inner-container-align-items;
+}
+
+@include breakpoint('mobile') {
+    .cookie-banner-view {
+        &__text {
+            width: $cookie-banner-view-text-mobile-width;
+            margin-right: $cookie-banner-view-text-mobile-offset-right;
+            margin-bottom: $cookie-banner-view-text-mobile-offset-bottom;
+        }
+    }
+
+    .banner-view-inner-container {
+        flex-wrap: $banner-view-inner-container-mobile-flex-wrap;
+        justify-content: $banner-view-inner-container-mobile-justify-content;
+    }
+}

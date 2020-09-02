@@ -30,7 +30,7 @@ class CookiesBannerProviderTest extends WebTestCase
         );
 
         $this->assertStringContainsString(
-            json_encode(Configuration::DEFAULT_BANNER_TEXT),
+            \json_encode(htmlentities(Configuration::DEFAULT_BANNER_TEXT, ENT_NOQUOTES)),
             $crawler->filter('.wrapper')->html()
         );
     }
