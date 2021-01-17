@@ -6,14 +6,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Oro\Bundle\ActionBundle\Action\RunActionGroup;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Controller that process acsept coocies request.
  */
-class CookieConsentController extends Controller
+class CookieConsentController extends AbstractController
 {
     /**
      * @Route("/cookies-accepted", name="oro_cookie_consent_set_cookies_accepted")

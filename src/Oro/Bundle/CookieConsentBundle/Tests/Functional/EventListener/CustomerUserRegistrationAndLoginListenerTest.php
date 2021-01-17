@@ -143,7 +143,6 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
         /** @var Request $request */
         if (false !== \preg_match('@customer/user/login-check@ui', $request->getUri())) {
             $container->get('event_dispatcher')->dispatch(
-                SecurityEvents::INTERACTIVE_LOGIN,
                 new InteractiveLoginEvent(
                     $request,
                     new UsernamePasswordToken(
@@ -152,7 +151,8 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
                         'frontend',
                         []
                     )
-                )
+                ),
+                SecurityEvents::INTERACTIVE_LOGIN
             );
 
             $event->setResponse(new Response(200));

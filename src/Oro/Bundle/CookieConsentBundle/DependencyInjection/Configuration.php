@@ -26,8 +26,8 @@ _TEXT;
     /** {@inheritdoc} */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root(OroCookieConsentExtension::ALIAS);
+        $treeBuilder = new TreeBuilder(OroCookieConsentExtension::ALIAS);
+        $rootNode = $treeBuilder->getRootNode();
 
         SettingsBuilder::append(
             $rootNode,
