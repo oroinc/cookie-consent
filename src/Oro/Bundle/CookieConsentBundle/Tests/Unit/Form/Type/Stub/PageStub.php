@@ -21,8 +21,7 @@ class PageStub extends \Oro\Bundle\CMSBundle\Entity\Page
     }
 
     /**
-     * @param string $defaultTitle
-     *
+     * @param string $title
      * @return $this
      */
     public function setDefaultTitle($title)

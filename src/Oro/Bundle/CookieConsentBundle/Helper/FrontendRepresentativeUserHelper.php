@@ -53,7 +53,7 @@ class FrontendRepresentativeUserHelper
 
     /**
      * @param Request $request
-     * @return array
+     * @return null|CustomerVisitor
      */
     public function getVisitorFromRequest(Request $request): ?CustomerVisitor
     {
