@@ -107,7 +107,7 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
     /**
      * @param bool $expectsGetUser
      * @param bool $cookiesAccepted
-     * @return FilterCustomerUserResponseEvent | \PHPUnit_Framework_MockObject_MockObject
+     * @return FilterCustomerUserResponseEvent|\PHPUnit\Framework\MockObject\MockObject
      */
     private function createFilterResponseEvent(bool $expectsGetUser, bool $cookiesAccepted)
     {
@@ -244,7 +244,7 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
      * @param mixed $user
      * @param mixed $visitorCredentials
      *
-     * @return InteractiveLoginEvent | \PHPUnit_Framework_MockObject_MockObject
+     * @return InteractiveLoginEvent|\PHPUnit\Framework\MockObject\MockObject
      */
     private function createInteractiveLoginEvent($user, $visitorCredentials)
     {

@@ -125,7 +125,7 @@ class FrontendRepresentativeUserHelperTest extends \PHPUnit\Framework\TestCase
     /**
      * @param CustomerVisitorStub|null $visitor
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function getVisitorToken(CustomerVisitorStub $visitor = null)
     {
@@ -145,7 +145,7 @@ class FrontendRepresentativeUserHelperTest extends \PHPUnit\Framework\TestCase
     /**
      * @param object|null $customerUser
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function getUserToken($customerUser = null)
     {

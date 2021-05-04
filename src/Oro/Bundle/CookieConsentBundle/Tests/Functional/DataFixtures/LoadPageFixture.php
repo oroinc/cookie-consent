@@ -26,7 +26,7 @@ class LoadPageFixture extends AbstractFixture implements ContainerAwareInterface
 
     public function load(ObjectManager $manager)
     {
-        /* @var $localizationManager LocalizationManager */
+        /* @var LocalizationManager $localizationManager */
         $localizationManager = $this->container->get('oro_locale.manager.localization');
 
         $title = new LocalizedFallbackValue();
