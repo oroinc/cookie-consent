@@ -4,11 +4,10 @@ namespace Oro\Bundle\CookieConsentBundle\Controller;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Oro\Bundle\ActionBundle\Action\RunActionGroup;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Controller that process acsept coocies request.
@@ -16,8 +15,11 @@ use Symfony\Component\HttpFoundation\Response;
 class CookieConsentController extends AbstractController
 {
     /**
-     * @Route("/cookies-accepted", name="oro_cookie_consent_set_cookies_accepted")
-     * @Method({"POST"})
+     * @Route(
+     *      "/cookies-accepted",
+     *      name="oro_cookie_consent_set_cookies_accepted",
+     *      methods={"POST"}
+     * )
      *
      * @return Response
      */
