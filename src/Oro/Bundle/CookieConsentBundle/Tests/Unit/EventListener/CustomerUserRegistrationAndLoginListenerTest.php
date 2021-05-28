@@ -28,17 +28,13 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
     private const EXIST_SESSION_ID = '05f2ce876de8';
     private const NOT_EXIST_SESSION_ID = '142a23939af1';
 
-    /** @var TokenStorageInterface | \PHPUnit\Framework\MockObject\MockObject */
-    private $tokenStorage;
+    private TokenStorageInterface|\PHPUnit\Framework\MockObject\MockObject $tokenStorage;
 
-    /** @var CustomerVisitorManager | \PHPUnit\Framework\MockObject\MockObject */
-    private $visitorManager;
+    private CustomerVisitorManager|\PHPUnit\Framework\MockObject\MockObject $visitorManager;
 
-    /** @var DoctrineHelper | \PHPUnit\Framework\MockObject\MockObject */
-    private $doctrineHelper;
+    private \PHPUnit\Framework\MockObject\MockObject|DoctrineHelper $doctrineHelper;
 
-    /** @var CustomerUserRegistrationAndLoginListener */
-    private $eventHandler;
+    private CustomerUserRegistrationAndLoginListener $eventHandler;
 
     protected function setUp(): void
     {
@@ -83,20 +79,19 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
         FilterCustomerUserResponseEvent $event,
         bool $expectedCookiesAccepted,
         bool $expectedEntityPersist = false
-    ) {
+    ): void {
         if ($expectedEntityPersist) {
             $entityManager = $this->createMock(EntityManager::class);
-            $entityManager->expects($this->once())->method('persist');
-            $entityManager->expects($this->once())->method('flush');
+            $entityManager->expects(self::once())->method('persist');
+            $entityManager->expects(self::once())->method('flush');
             $this->doctrineHelper
-                ->expects($this->once())
+                ->expects(self::once())
                 ->method('getEntityManagerForClass')
                 ->with(CustomerUser::class)
-                ->willReturn($entityManager)
-            ;
+                ->willReturn($entityManager);
         }
 
-        $this->tokenStorage->expects($this->once())->method('getToken')->willReturnCallback($tokenCallback);
+        $this->tokenStorage->expects(self::once())->method('getToken')->willReturnCallback($tokenCallback);
         $this->eventHandler->onRegistrationCompleted($event);
 
         /** @var CustomerUserStub $customerUser */
@@ -104,24 +99,21 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
         static::assertEquals($expectedCookiesAccepted, $customerUser->getCookiesAccepted());
     }
 
-    /**
-     * @param bool $expectsGetUser
-     * @param bool $cookiesAccepted
-     * @return FilterCustomerUserResponseEvent|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private function createFilterResponseEvent(bool $expectsGetUser, bool $cookiesAccepted)
-    {
+    private function createResponseEvent(
+        bool $expectsGetUser,
+        bool $cookiesAccepted
+    ): \PHPUnit\Framework\MockObject\MockObject|FilterCustomerUserResponseEvent {
         $eventMock = $this->createMock(FilterCustomerUserResponseEvent::class);
 
         if ($expectsGetUser) {
             $eventMock
-                ->expects($this->exactly(2))
+                ->expects(self::exactly(2))
                 ->method('getCustomerUser')
                 ->willReturn(new CustomerUserStub($cookiesAccepted));
         } else {
             // will only be called before assertEquals in testRegistrationCompleted
             $eventMock
-                ->expects($this->once())
+                ->expects(self::once())
                 ->method('getCustomerUser')
                 ->willReturn(new CustomerUserStub($cookiesAccepted));
         }
@@ -137,15 +129,15 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
                 'token' => function () {
                     return null;
                 },
-                'customerUser' => $this->createFilterResponseEvent(false, false),
-                'expectedCookiesAccepted' => false
+                'customerUser' => $this->createResponseEvent(false, false),
+                'expectedCookiesAccepted' => false,
             ],
             'tokenNotInstanceOfAnonymousCustomerUserToken' => [
                 'token' => function () {
                     return $this->createMock(TokenInterface::class);
                 },
-                'customerUser' => $this->createFilterResponseEvent(false, false),
-                'expectedCookiesAccepted' => false
+                'customerUser' => $this->createResponseEvent(false, false),
+                'expectedCookiesAccepted' => false,
             ],
             'tokenCustomerVisitorIsNull' => [
                 'token' => function () {
@@ -154,8 +146,8 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
 
                     return $token;
                 },
-                'customerUser' => $this->createFilterResponseEvent(false, false),
-                'expectedCookiesAccepted' => false
+                'customerUser' => $this->createResponseEvent(false, false),
+                'expectedCookiesAccepted' => false,
             ],
             'customerUserCookiesAcceptedIsTrue' => [
                 'token' => function () {
@@ -165,8 +157,8 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
 
                     return $token;
                 },
-                'customerUser' => $this->createFilterResponseEvent(true, true),
-                'expectedCookiesAccepted' => true
+                'customerUser' => $this->createResponseEvent(true, true),
+                'expectedCookiesAccepted' => true,
             ],
             'customerUserAndCustomerVisitorAcceptedIsFalse' => [
                 'token' => function () {
@@ -176,8 +168,8 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
 
                     return $token;
                 },
-                'customerUser' => $this->createFilterResponseEvent(true, false),
-                'expectedCookiesAccepted' => false
+                'customerUser' => $this->createResponseEvent(true, false),
+                'expectedCookiesAccepted' => false,
             ],
             'customerUserAndCustomerVisitorAcceptedIsTrue' => [
                 'token' => function () {
@@ -187,8 +179,8 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
 
                     return $token;
                 },
-                'customerUser' => $this->createFilterResponseEvent(true, true),
-                'expectedCookiesAccepted' => true
+                'customerUser' => $this->createResponseEvent(true, true),
+                'expectedCookiesAccepted' => true,
             ],
             'customerVisitorCookiesAcceptedIsTrue' => [
                 'token' => function () {
@@ -198,9 +190,9 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
 
                     return $token;
                 },
-                'customerUser' => $this->createFilterResponseEvent(true, false),
+                'customerUser' => $this->createResponseEvent(true, false),
                 'expectedCookiesAccepted' => true,
-                'expectedEntityPersist' => true
+                'expectedEntityPersist' => true,
             ],
         ];
     }
@@ -216,17 +208,16 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
         InteractiveLoginEvent $event,
         bool $expectedCookiesAccepted,
         bool $expectedEntityPersist = false
-    ) {
+    ): void {
         if ($expectedEntityPersist) {
             $entityManager = $this->createMock(EntityManager::class);
-            $entityManager->expects($this->once())->method('persist');
-            $entityManager->expects($this->once())->method('flush');
+            $entityManager->expects(self::once())->method('persist');
+            $entityManager->expects(self::once())->method('flush');
             $this->doctrineHelper
-                ->expects($this->once())
+                ->expects(self::once())
                 ->method('getEntityManagerForClass')
                 ->with(CustomerUser::class)
-                ->willReturn($entityManager)
-            ;
+                ->willReturn($entityManager);
         }
 
         $this->eventHandler->onSecurityInteractiveLogin($event);
@@ -241,17 +232,19 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
     }
 
     /**
-     * @param mixed $user
-     * @param mixed $visitorCredentials
+     * @param UserInterface|string $user
+     * @param array|null $visitorCredentials
      *
      * @return InteractiveLoginEvent|\PHPUnit\Framework\MockObject\MockObject
      */
-    private function createInteractiveLoginEvent($user, $visitorCredentials)
-    {
+    private function createInteractiveLoginEvent(
+        UserInterface|string $user,
+        ?array $visitorCredentials
+    ): InteractiveLoginEvent|\PHPUnit\Framework\MockObject\MockObject {
         $eventMock = $this->createMock(InteractiveLoginEvent::class);
         $tokenMock = $this->createMock(TokenInterface::class);
-        $tokenMock->expects($this->exactly(2))->method('getUser')->willReturn($user);
-        $eventMock->expects($this->exactly(2))->method('getAuthenticationToken')->willReturn($tokenMock);
+        $tokenMock->expects(self::exactly(2))->method('getUser')->willReturn($user);
+        $eventMock->expects(self::exactly(2))->method('getAuthenticationToken')->willReturn($tokenMock);
 
         $cookiesData = [];
         if (null !== $visitorCredentials) {

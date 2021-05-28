@@ -15,7 +15,7 @@ use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
@@ -26,8 +26,7 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
     private const CUSTOMER_USER_EMAIL = 'test@ggmail.com';
     private const CUSTOMER_USER_PASSWORD = 'testTest12345';
 
-    /** @var ConfigManager */
-    protected $configManager;
+    private ConfigManager $configManager;
 
     protected function setUp(): void
     {
@@ -37,12 +36,7 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
         $this->loadFixtures([LoadCustomerVisitors::class]);
     }
 
-    /**
-     * @param Crawler $crawler
-     * @param string $email
-     * @return Crawler
-     */
-    protected function submitRegisterForm(Crawler $crawler, $email)
+    private function submitRegisterForm(Crawler $crawler, string $email): Crawler
     {
         $form = $crawler->selectButton('Create An Account')->form();
         $submittedData = [
@@ -64,11 +58,7 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
         return $this->client->submit($form, $submittedData);
     }
 
-    /**
-     * @param array $criteria
-     * @return CustomerUser
-     */
-    protected function getCustomerUser(array $criteria)
+    private function getCustomerUser(array $criteria): CustomerUser
     {
         return static::getContainer()
             ->get('doctrine')
@@ -78,10 +68,7 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
         ;
     }
 
-    /**
-     * @param CustomerVisitor $customerVisitor
-     */
-    protected function customerVisitorAcceptsCookies(CustomerVisitor $customerVisitor): void
+    private function customerVisitorAcceptsCookies(CustomerVisitor $customerVisitor): void
     {
         $manager = static::getContainer()
             ->get('doctrine')
@@ -93,7 +80,7 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
         $manager->flush();
     }
 
-    public function testAcceptCookiesBeforeRegistration()
+    public function testAcceptCookiesBeforeRegistration(): void
     {
         /** @var CustomerVisitor $visitor */
         $visitor = $this->getReference(LoadCustomerVisitors::CUSTOMER_VISITOR);
@@ -116,27 +103,27 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
         ;
         $crawler = $this->client->request('GET', $this->getUrl('oro_customer_frontend_customer_user_register'));
         $result = $this->client->getResponse();
-        $this->assertHtmlResponseStatusCodeEquals($result, 200);
+        self::assertHtmlResponseStatusCodeEquals($result, 200);
 
         $this->submitRegisterForm($crawler, self::CUSTOMER_USER_EMAIL);
         $crawler = $this->client->followRedirect();
         $result = $this->client->getResponse();
-        $this->assertHtmlResponseStatusCodeEquals($result, 200);
+        self::assertHtmlResponseStatusCodeEquals($result, 200);
 
         $user = $this->getCustomerUser(['email' => self::CUSTOMER_USER_EMAIL]);
-        $this->assertNotEmpty($user);
-        $this->assertTrue($user->isEnabled());
-        $this->assertTrue($user->isConfirmed());
-        $this->assertStringContainsString('Registration successful', $crawler->html());
+        self::assertNotEmpty($user);
+        self::assertTrue($user->isEnabled());
+        self::assertTrue($user->isConfirmed());
+        self::assertStringContainsString('Registration successful', $crawler->html());
 
-        static::assertTrue($user->getCookiesAccepted());
+        self::assertTrue($user->getCookiesAccepted());
     }
 
     /**
      * This method imitates security Firewall listener behavior on CustomerUser login
-     * @param GetResponseEvent $event
+     * @param RequestEvent $event
      */
-    public function handleGetResponseEvent(GetResponseEvent $event): void
+    public function handleRequestEvent(RequestEvent $event): void
     {
         $container = static::getContainer();
         $request = $container->get('request_stack')->getCurrentRequest();
@@ -165,12 +152,12 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
     private function getFixtureLoadedCustomerUser(): CustomerUser
     {
         $user = $this->getCustomerUser(['email' => LoadCustomerUserData::EMAIL]);
-        $this->assertNotEmpty($user);
+        self::assertNotEmpty($user);
 
         return $user;
     }
 
-    public function testAcceptCookiesBeforeLogin()
+    public function testAcceptCookiesBeforeLogin(): void
     {
         /** @var CustomerVisitor $visitor */
         $visitor = $this->getReference(LoadCustomerVisitors::CUSTOMER_VISITOR);
@@ -179,7 +166,7 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
         $this->loadFixtures([LoadCustomerUserData::class]);
 
         $user = $this->getFixtureLoadedCustomerUser();
-        $this->assertFalse($user->getCookiesAccepted());
+        self::assertFalse($user->getCookiesAccepted());
 
         $this->configManager->set(
             OroCookieConsentExtension::getConfigKeyByName(Configuration::PARAM_NAME_SHOW_BANNER),
@@ -197,7 +184,7 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
         ;
         $crawler = $this->client->request('GET', $this->getUrl('oro_customer_customer_user_security_login'));
         $response = $this->client->getResponse();
-        $this->assertHtmlResponseStatusCodeEquals($response, 200);
+        self::assertHtmlResponseStatusCodeEquals($response, 200);
 
         $form = $crawler->filter('form#form-login')->form();
         $formPhpValues = $form->getPhpValues();
@@ -212,7 +199,7 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
 
         self::getContainer()->get('event_dispatcher')->addListener(
             KernelEvents::REQUEST,
-            [$this, 'handleGetResponseEvent']
+            [$this, 'handleRequestEvent']
         );
 
         $this->client->disableReboot();
@@ -220,9 +207,9 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
         $this->client->submit($form, $formData);
 
         $response = $this->client->getResponse();
-        static::assertHtmlResponseStatusCodeEquals($response, 200);
+        self::assertHtmlResponseStatusCodeEquals($response, 200);
 
         $user = $this->getFixtureLoadedCustomerUser();
-        $this->assertTrue($user->getCookiesAccepted());
+        self::assertTrue($user->getCookiesAccepted());
     }
 }
