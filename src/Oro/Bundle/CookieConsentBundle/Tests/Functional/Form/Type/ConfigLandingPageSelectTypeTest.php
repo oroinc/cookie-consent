@@ -5,6 +5,7 @@ namespace Oro\Bundle\CookieConsentBundle\Tests\Functional\Form\Type;
 use Oro\Bundle\CMSBundle\Entity\Page;
 use Oro\Bundle\CMSBundle\Entity\Repository\PageRepository;
 use Oro\Bundle\ConfigBundle\Config\ConfigManager;
+use Oro\Bundle\ConfigBundle\Tests\Functional\Traits\ConfigManagerAwareTestTrait;
 use Oro\Bundle\CookieConsentBundle\DependencyInjection\Configuration;
 use Oro\Bundle\CookieConsentBundle\Migrations\Data\Demo\ORM\EnableCookieBanner;
 use Oro\Bundle\CookieConsentBundle\Migrations\Data\ORM\LoadCookieConsentPage;
@@ -17,6 +18,8 @@ use Oro\Component\PhpUtils\ArrayUtil;
 
 class ConfigLandingPageSelectTypeTest extends WebTestCase
 {
+    use ConfigManagerAwareTestTrait;
+
     private const CHANGED_SHOW_BANNER_VALUE = false;
     private const CHANGED_BANNER_TEXT_VALUE = 'Other text';
 
@@ -43,8 +46,8 @@ class ConfigLandingPageSelectTypeTest extends WebTestCase
         $this->initClient([], self::generateBasicAuthHeader());
         $this->loadFixtures([LandingPageDataFixture::class, EnableCookieBanner::class]);
         $this->client->useHashNavigation(true);
-        $this->configManager = self::getContainer()->get('oro_config.global');
-        $this->websiteConfigManager = self::getContainer()->get('oro_config.website');
+        $this->configManager = self::getConfigManager('global');
+        $this->websiteConfigManager = self::getConfigManager('website');
         $this->localizationManager = self::getContainer()->get('oro_locale.manager.localization');
     }
 

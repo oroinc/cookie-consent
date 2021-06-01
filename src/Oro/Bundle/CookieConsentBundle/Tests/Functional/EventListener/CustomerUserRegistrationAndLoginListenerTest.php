@@ -3,6 +3,7 @@
 namespace Oro\Bundle\CookieConsentBundle\Tests\Functional\EventListener;
 
 use Oro\Bundle\ConfigBundle\Config\ConfigManager;
+use Oro\Bundle\ConfigBundle\Tests\Functional\Traits\ConfigManagerAwareTestTrait;
 use Oro\Bundle\CookieConsentBundle\DependencyInjection\Configuration;
 use Oro\Bundle\CookieConsentBundle\DependencyInjection\OroCookieConsentExtension;
 use Oro\Bundle\CustomerBundle\Entity\CustomerUser;
@@ -23,6 +24,8 @@ use Symfony\Component\Security\Http\SecurityEvents;
 
 class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
 {
+    use ConfigManagerAwareTestTrait;
+
     private const CUSTOMER_USER_EMAIL = 'test@ggmail.com';
     private const CUSTOMER_USER_PASSWORD = 'testTest12345';
 
@@ -33,7 +36,7 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
     {
         $this->initClient();
         $this->client->useHashNavigation(true);
-        $this->configManager = self::getContainer()->get('oro_config.global');
+        $this->configManager = self::getConfigManager('global');
         $this->loadFixtures([LoadCustomerVisitors::class]);
     }
 
