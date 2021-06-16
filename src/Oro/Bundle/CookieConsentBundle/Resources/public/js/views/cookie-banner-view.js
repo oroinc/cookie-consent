@@ -77,7 +77,7 @@ define(function(require) {
                 async: true,
                 type: 'POST',
                 url: routing.generate(this.onCookiesAcceptedRoute),
-                success: _.bind(function(result) {
+                success: result => {
                     /**
                      * In case when something went wrong on backend side
                      * we put result to the local storage
@@ -85,7 +85,7 @@ define(function(require) {
                     if (!result.success) {
                         localStorage.setItem(this.storageKey, true);
                     }
-                }, this)
+                }
             });
         },
 
