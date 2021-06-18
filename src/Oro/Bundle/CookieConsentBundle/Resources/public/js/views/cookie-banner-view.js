@@ -29,7 +29,7 @@ define(function(require) {
         },
 
         /**
-         * @inheritDoc
+         * @inheritdoc
          */
         constructor: function CookieBannerView(options) {
             CookieBannerView.__super__.constructor.call(this, options);
@@ -55,7 +55,7 @@ define(function(require) {
         }),
 
         /**
-         * @inheritDoc
+         * @inheritdoc
          */
         render: function() {
             this.$el.html(this.template({
