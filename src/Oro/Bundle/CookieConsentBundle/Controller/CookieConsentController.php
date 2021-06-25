@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * Controller that process acsept coocies request.
+ * Controller that process accept coockies request.
  */
 class CookieConsentController extends AbstractController
 {
@@ -27,7 +27,7 @@ class CookieConsentController extends AbstractController
     {
         $errors = new ArrayCollection();
 
-        $action = $this->get('oro_action.action.run_action_group');
+        $action = $this->get(RunActionGroup::class);
         $action->initialize(
             [
                 'action_group' => 'oro_cookie_consent_set_accepted_cookies',
@@ -44,5 +44,18 @@ class CookieConsentController extends AbstractController
         ];
 
         return new JsonResponse($response);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedServices()
+    {
+        return array_merge(
+            parent::getSubscribedServices(),
+            [
+                RunActionGroup::class,
+            ]
+        );
     }
 }
