@@ -1,6 +1,6 @@
 <?php
 
-namespace Oro\Bundle\CookieConsentBundle\Test\Functional\ActionGroup;
+namespace Oro\Bundle\CookieConsentBundle\Tests\Functional\ActionGroup;
 
 use Oro\Bundle\CookieConsentBundle\Tests\Functional\DataFixtures\LoadVisitorsData;
 use Oro\Bundle\CustomerBundle\Entity\CustomerUser;
@@ -31,15 +31,15 @@ class OroCookieConsentSetAcceptedCookiesTest extends WebTestCase
 
     public function testRunActionGroupWithCustomerUserAsUser()
     {
-        $registry = $this->getContainer()->get('doctrine');
+        $registry = self::getContainer()->get('doctrine');
         $user = $registry
             ->getRepository(CustomerUser::class)
             ->findOneBy(['username' => LoadCustomerUserData::AUTH_USER]);
         $organization = $registry->getRepository(Organization::class)->getFirst();
 
-        $this->assertFalse($user->getCookiesAccepted());
+        self::assertFalse($user->getCookiesAccepted());
 
-        $token = new UsernamePasswordOrganizationToken($user, false, 'key', $organization, $user->getRoles());
+        $token = new UsernamePasswordOrganizationToken($user, false, 'key', $organization, $user->getUserRoles());
         $this->client->getContainer()->get('security.token_storage')->setToken($token);
 
         $action = $this->client->getContainer()->get('oro_action.action.run_action_group');
@@ -48,14 +48,14 @@ class OroCookieConsentSetAcceptedCookiesTest extends WebTestCase
         ]);
         $action->execute([]);
 
-        $this->assertTrue($user->getCookiesAccepted());
+        self::assertTrue($user->getCookiesAccepted());
     }
 
     public function testRunActionGroupAndAnonymousToken()
     {
         $customerVisitor = $this->getReference(LoadVisitorsData::CUSTOMER_VISITOR);
 
-        $registry = $this->getContainer()->get('doctrine');
+        $registry = self::getContainer()->get('doctrine');
         $organization = $registry->getRepository(Organization::class)->getFirst();
 
         $token = new AnonymousCustomerUserToken('', [], $customerVisitor, $organization);
@@ -67,6 +67,6 @@ class OroCookieConsentSetAcceptedCookiesTest extends WebTestCase
         ]);
         $action->execute([]);
 
-        $this->assertTrue($customerVisitor->getCookiesAccepted());
+        self::assertTrue($customerVisitor->getCookiesAccepted());
     }
 }
