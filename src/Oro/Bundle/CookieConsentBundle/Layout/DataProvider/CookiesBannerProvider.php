@@ -47,15 +47,6 @@ class CookiesBannerProvider
     /** @var HtmlTagHelper */
     private $htmlTagHelper;
 
-    /**
-     * @param FrontendRepresentativeUserHelper $frontendRepresentativeUserHelper
-     * @param CookiesAcceptedPropertyHelper $cookiesAcceptedPropertyHelper
-     * @param PageIdToDTOTransformer        $pageIdToDTOTransformer
-     * @param LocalizedValueExtractor       $localizedValueExtractor
-     * @param ConfigManager                 $configManager
-     * @param LocalizationHelper            $localizationHelper
-     * @param HtmlTagHelper                 $htmlTagHelper
-     */
     public function __construct(
         FrontendRepresentativeUserHelper $frontendRepresentativeUserHelper,
         CookiesAcceptedPropertyHelper $cookiesAcceptedPropertyHelper,
@@ -74,9 +65,6 @@ class CookiesBannerProvider
         $this->htmlTagHelper = $htmlTagHelper;
     }
 
-    /**
-     * @return bool
-     */
     public function isBannerVisible() : bool
     {
         $showBanner = $this->configManager->get(
@@ -93,9 +81,6 @@ class CookiesBannerProvider
         return false === $this->cookiesAcceptedPropertyHelper->isCookiesAccepted($representativeUser);
     }
 
-    /**
-     * @return string
-     */
     public function getBannerText() : string
     {
         $bannerTexts = $this->configManager->get(
@@ -111,9 +96,6 @@ class CookiesBannerProvider
         );
     }
 
-    /**
-     * @return bool
-     */
     public function isPageExist() : bool
     {
         if ($this->cmsPageLoaded) {
@@ -139,9 +121,6 @@ class CookiesBannerProvider
         return null !== $this->cmsPage;
     }
 
-    /**
-     * @return string
-     */
     public function getPageTitle() : string
     {
         if (!$this->isPageExist()) {
@@ -151,9 +130,6 @@ class CookiesBannerProvider
         return $this->htmlTagHelper->purify($this->cmsPage->getTitle());
     }
 
-    /**
-     * @return string
-     */
     public function getPageUrl() : string
     {
         if (!$this->isPageExist()) {

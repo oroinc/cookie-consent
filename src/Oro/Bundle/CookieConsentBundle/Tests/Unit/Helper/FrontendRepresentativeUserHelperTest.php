@@ -160,9 +160,6 @@ class FrontendRepresentativeUserHelperTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider getRepresentativeUserRequestProvider
-     *
-     * @param Request $request
-     * @param bool $expectFound
      */
     public function testGetVisitorFromRequest(Request $request, bool $expectFound)
     {
@@ -171,11 +168,6 @@ class FrontendRepresentativeUserHelperTest extends \PHPUnit\Framework\TestCase
         static::assertEquals($expectFound, null !== $user);
     }
 
-    /**
-     * @param array|null $visitorCredentials
-     *
-     * @return Request
-     */
     private function createRequestWithCookies(?array $visitorCredentials): Request
     {
         $cookiesData = [];
@@ -187,9 +179,6 @@ class FrontendRepresentativeUserHelperTest extends \PHPUnit\Framework\TestCase
         return new Request([], [], [], $cookiesData);
     }
 
-    /**
-     * @return array
-     */
     public function getRepresentativeUserRequestProvider(): array
     {
         return [

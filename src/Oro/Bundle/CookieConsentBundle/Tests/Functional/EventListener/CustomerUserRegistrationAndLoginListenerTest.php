@@ -124,7 +124,6 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
 
     /**
      * This method imitates security Firewall listener behavior on CustomerUser login
-     * @param RequestEvent $event
      */
     public function handleRequestEvent(RequestEvent $event): void
     {
@@ -149,9 +148,6 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
         }
     }
 
-    /**
-     * @return CustomerUser
-     */
     private function getFixtureLoadedCustomerUser(): CustomerUser
     {
         $user = $this->getCustomerUser(['email' => LoadCustomerUserData::EMAIL]);

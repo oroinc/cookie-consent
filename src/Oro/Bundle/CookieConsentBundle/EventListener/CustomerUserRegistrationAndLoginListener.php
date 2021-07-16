@@ -28,11 +28,6 @@ class CustomerUserRegistrationAndLoginListener implements EventSubscriberInterfa
     /** @var DoctrineHelper */
     private $doctrineHelper;
 
-    /**
-     * @param FrontendRepresentativeUserHelper $frontendUserHelper
-     * @param CookiesAcceptedPropertyHelper $cookiesAcceptedHelper
-     * @param DoctrineHelper $doctrineHelper
-     */
     public function __construct(
         FrontendRepresentativeUserHelper $frontendUserHelper,
         CookiesAcceptedPropertyHelper $cookiesAcceptedHelper,
@@ -55,8 +50,6 @@ class CustomerUserRegistrationAndLoginListener implements EventSubscriberInterfa
     }
 
     /**
-     * @param CustomerVisitor $customerVisitor
-     * @param CustomerUser $customerUser
      * @throws \Doctrine\ORM\ORMException
      */
     private function transferCookieAccepted(CustomerVisitor $customerVisitor, CustomerUser $customerUser): void
@@ -75,9 +68,6 @@ class CustomerUserRegistrationAndLoginListener implements EventSubscriberInterfa
         $entityManager->flush();
     }
 
-    /**
-     * @param FilterCustomerUserResponseEvent $event
-     */
     public function onRegistrationCompleted(FilterCustomerUserResponseEvent $event): void
     {
         $frontendUser = $this->frontendUserHelper->getRepresentativeUser();
@@ -86,9 +76,6 @@ class CustomerUserRegistrationAndLoginListener implements EventSubscriberInterfa
         }
     }
 
-    /**
-     * @param InteractiveLoginEvent $event
-     */
     public function onSecurityInteractiveLogin(InteractiveLoginEvent $event): void
     {
         $user = $event->getAuthenticationToken()->getUser();

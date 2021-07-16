@@ -154,9 +154,6 @@ class CookiesBannerProviderTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider isPageExistAndLandingPageIsSetProvider
-     *
-     * @param bool      $expectedResult
-     * @param Page|null $page
      */
     public function testIsPageExistAndLandingPageIsSet(bool $expectedResult, Page $page = null)
     {
@@ -230,9 +227,6 @@ class CookiesBannerProviderTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider getPageTitleAndLandingPageIsSetProvider
-     *
-     * @param string $expectedTitle
-     * @param Page|null $page
      */
     public function testGetPageTitleAndLandingPageIsSet(string $expectedTitle, Page $page = null)
     {
@@ -287,9 +281,6 @@ class CookiesBannerProviderTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider getGetPageUrlAndLandingPageIsSetProvider
-     *
-     * @param string    $expectedUrl
-     * @param Page|null $page
      */
     public function testGetPageUrlAndLandingPageIsSet(string $expectedUrl, Page $page = null)
     {
