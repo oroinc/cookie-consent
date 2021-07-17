@@ -23,8 +23,6 @@ class FrontendRepresentativeUserHelper
 
     /**
      * FrontendRepresentativeUserHelper constructor.
-     * @param TokenStorageInterface $tokenStorage
-     * @param CustomerVisitorManager $visitorManager
      */
     public function __construct(TokenStorageInterface $tokenStorage, CustomerVisitorManager $visitorManager)
     {
@@ -42,7 +40,6 @@ class FrontendRepresentativeUserHelper
             return null;
         }
 
-
         if ($token instanceof AnonymousCustomerUserToken) {
             return $token->getVisitor();
         }
@@ -51,10 +48,6 @@ class FrontendRepresentativeUserHelper
         return $user instanceof CustomerUser ? $user : null;
     }
 
-    /**
-     * @param Request $request
-     * @return null|CustomerVisitor
-     */
     public function getVisitorFromRequest(Request $request): ?CustomerVisitor
     {
         $value = $request->cookies->get(AnonymousCustomerUserAuthenticationListener::COOKIE_NAME);
