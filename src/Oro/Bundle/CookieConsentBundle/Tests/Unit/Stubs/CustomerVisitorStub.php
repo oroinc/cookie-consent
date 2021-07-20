@@ -17,17 +17,11 @@ class CustomerVisitorStub extends CustomerVisitor
         $this->cookiesAccepted = $cookiesAccepted;
     }
 
-    /**
-     * @return bool
-     */
     public function getCookiesAccepted(): bool
     {
         return $this->cookiesAccepted;
     }
 
-    /**
-     * @param bool $cookiesAccepted
-     */
     public function setCookiesAccepted(bool $cookiesAccepted)
     {
         $this->cookiesAccepted = $cookiesAccepted;

@@ -18,8 +18,6 @@ class CookieConsentController extends AbstractController
     /**
      * @Route("/cookies-accepted", name="oro_cookie_consent_set_cookies_accepted")
      * @Method({"POST"})
-     *
-     * @return Response
      */
     public function setCookiesAcceptedAction(): Response
     {

@@ -30,9 +30,6 @@ class OroCookieConsentBundleInstaller implements Installation
         $this->addCookiesAcceptedToCustomerVisitorTable($schema);
     }
 
-    /**
-     * @param Schema $schema
-     */
     private function addCookiesAcceptedToCustomerUserTable(Schema $schema)
     {
         $customerUserTable = $schema->getTable('oro_customer_user');
@@ -55,9 +52,6 @@ class OroCookieConsentBundleInstaller implements Installation
         );
     }
 
-    /**
-     * @param Schema $schema
-     */
     private function addCookiesAcceptedToCustomerVisitorTable(Schema $schema)
     {
         $customerVisitorTable = $schema->getTable('oro_customer_visitor');

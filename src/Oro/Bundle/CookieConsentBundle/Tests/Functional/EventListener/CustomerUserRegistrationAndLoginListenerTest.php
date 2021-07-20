@@ -81,9 +81,6 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
         ;
     }
 
-    /**
-     * @param CustomerVisitor $customerVisitor
-     */
     protected function customerVisitorAcceptsCookies(CustomerVisitor $customerVisitor): void
     {
         $manager = static::getContainer()
@@ -137,7 +134,6 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
 
     /**
      * This method imitates security Firewall listener behavior on CustomerUser login
-     * @param GetResponseEvent $event
      */
     public function handleGetResponseEvent(GetResponseEvent $event): void
     {
@@ -162,9 +158,6 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
         }
     }
 
-    /**
-     * @return CustomerUser
-     */
     private function getFixtureLoadedCustomerUser(): CustomerUser
     {
         $user = $this->getCustomerUser(['email' => LoadCustomerUserData::EMAIL]);

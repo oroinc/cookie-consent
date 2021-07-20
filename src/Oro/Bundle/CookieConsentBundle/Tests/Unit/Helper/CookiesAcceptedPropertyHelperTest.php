@@ -69,7 +69,6 @@ class CookiesAcceptedPropertyHelperTest extends \PHPUnit\Framework\TestCase
         $this->cookiesAcceptedPropertyHelper->isCookiesAccepted(new User());
     }
 
-
     /**
      * @dataProvider setCookiesAcceptedProvider
      *

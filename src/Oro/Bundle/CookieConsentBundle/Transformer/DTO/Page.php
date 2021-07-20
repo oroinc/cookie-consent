@@ -23,17 +23,11 @@ class Page extends AbstractStorage
         ]);
     }
 
-    /**
-     * @return string
-     */
     public function getTitle(): string
     {
         return $this->get('pageTitle');
     }
 
-    /**
-     * @return string
-     */
     public function getUrl(): string
     {
         return $this->get('pageUrl');
