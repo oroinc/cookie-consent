@@ -68,11 +68,6 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
 
     /**
      * @dataProvider registrationCompletedDataProvider
-     *
-     * @param callable $tokenCallback
-     * @param FilterCustomerUserResponseEvent $event
-     * @param bool $expectedCookiesAccepted
-     * @param bool $expectedEntityPersist
      */
     public function testRegistrationCompleted(
         callable $tokenCallback,
@@ -199,10 +194,6 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
 
     /**
      * @dataProvider interactiveLoginDataProvider
-     *
-     * @param InteractiveLoginEvent $event
-     * @param bool $expectedCookiesAccepted
-     * @param bool $expectedEntityPersist
      */
     public function testInteractiveLogin(
         InteractiveLoginEvent $event,

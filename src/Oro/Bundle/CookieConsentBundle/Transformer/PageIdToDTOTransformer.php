@@ -19,10 +19,6 @@ class PageIdToDTOTransformer
     /** @var LocalizationHelper */
     private $localizationHelper;
 
-    /**
-     * @param DoctrineHelper $doctrineHelper
-     * @param LocalizationHelper $localizationHelper
-     */
     public function __construct(
         DoctrineHelper $doctrineHelper,
         LocalizationHelper $localizationHelper
@@ -31,11 +27,6 @@ class PageIdToDTOTransformer
         $this->localizationHelper = $localizationHelper;
     }
 
-    /**
-     * @param int $pageId
-     *
-     * @return PageDTO|null
-     */
     public function transform(int $pageId) : ?PageDTO
     {
         $pageRepository = $this->doctrineHelper->getEntityRepositoryForClass(Page::class);
