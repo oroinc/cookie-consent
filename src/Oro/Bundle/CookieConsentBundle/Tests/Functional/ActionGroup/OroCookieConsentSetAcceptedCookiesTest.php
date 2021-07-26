@@ -1,6 +1,6 @@
 <?php
 
-namespace Oro\Bundle\CookieConsentBundle\Test\Functional\ActionGroup;
+namespace Oro\Bundle\CookieConsentBundle\Tests\Functional\ActionGroup;
 
 use Oro\Bundle\CookieConsentBundle\Tests\Functional\DataFixtures\LoadVisitorsData;
 use Oro\Bundle\CustomerBundle\Entity\CustomerUser;
