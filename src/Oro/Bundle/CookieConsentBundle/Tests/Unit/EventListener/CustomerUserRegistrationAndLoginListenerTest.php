@@ -1,6 +1,6 @@
 <?php
 
-namespace Oro\Bundle\CookieConsentBundle\Tests\Unit\DependencyInjection;
+namespace Oro\Bundle\CookieConsentBundle\Tests\Unit\EventListener;
 
 use Doctrine\ORM\EntityManager;
 use Oro\Bundle\CookieConsentBundle\EventListener\CustomerUserRegistrationAndLoginListener;
