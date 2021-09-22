@@ -30,17 +30,15 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
 
     private TokenStorageInterface|\PHPUnit\Framework\MockObject\MockObject $tokenStorage;
 
-    private CustomerVisitorManager|\PHPUnit\Framework\MockObject\MockObject $visitorManager;
-
-    private \PHPUnit\Framework\MockObject\MockObject|DoctrineHelper $doctrineHelper;
+    private DoctrineHelper|\PHPUnit\Framework\MockObject\MockObject $doctrineHelper;
 
     private CustomerUserRegistrationAndLoginListener $eventHandler;
 
     protected function setUp(): void
     {
         $this->tokenStorage = $this->createMock(TokenStorageInterface::class);
-        $this->visitorManager = $this->createMock(CustomerVisitorManager::class);
-        $this->visitorManager
+        $visitorManager = $this->createMock(CustomerVisitorManager::class);
+        $visitorManager
             ->method('find')
             ->willReturnCallback(function ($visitorId, $sessionId) {
                 if (self::EXIST_VISITOR_WITH_COOKIES_ACCEPTED_ID === $visitorId
@@ -60,7 +58,7 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
         ;
         $this->doctrineHelper = $this->doctrineHelper = $this->createMock(DoctrineHelper::class);
         $this->eventHandler = new CustomerUserRegistrationAndLoginListener(
-            new FrontendRepresentativeUserHelper($this->tokenStorage, $this->visitorManager),
+            new FrontendRepresentativeUserHelper($this->tokenStorage, $visitorManager),
             new CookiesAcceptedPropertyHelper(),
             $this->doctrineHelper
         );
@@ -232,10 +230,8 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
         UserInterface|string $user,
         ?array $visitorCredentials
     ): InteractiveLoginEvent|\PHPUnit\Framework\MockObject\MockObject {
-        $eventMock = $this->createMock(InteractiveLoginEvent::class);
         $tokenMock = $this->createMock(TokenInterface::class);
         $tokenMock->expects(self::exactly(2))->method('getUser')->willReturn($user);
-        $eventMock->expects(self::exactly(2))->method('getAuthenticationToken')->willReturn($tokenMock);
 
         $cookiesData = [];
         if (null !== $visitorCredentials) {
@@ -244,9 +240,8 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
         }
 
         $request = new Request([], [], [], $cookiesData);
-        $eventMock->method('getRequest')->willReturn($request);
 
-        return $eventMock;
+        return new InteractiveLoginEvent($request, $tokenMock);
     }
 
     /** @return array */
