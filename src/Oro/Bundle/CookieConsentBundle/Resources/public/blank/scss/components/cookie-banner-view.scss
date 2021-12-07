@@ -28,7 +28,7 @@
         transform: $cookie-banner-view-show-transform;
 
         &::before {
-            width: $cookie-banner-view-show-before-width;
+            transform: $cookie-banner-view-show-before-transform;
         }
     }
 
