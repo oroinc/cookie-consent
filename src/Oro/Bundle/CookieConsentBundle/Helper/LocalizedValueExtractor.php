@@ -12,12 +12,16 @@ class LocalizedValueExtractor
 {
     /**
      * @param array $values
-     * @param Localization $localization
-     * @return null|mixed
+     * @param Localization|null $localization
+     * @return mixed|null
      */
     public function getLocalizedFallbackValue(array $values, Localization $localization = null)
     {
-        $value = $this->getValue($values, $localization);
+        if (empty($values)) {
+            return null;
+        }
+
+        $value = $values[$localization?->getId()] ?? null;
         if ($value instanceof FallbackType) {
             switch ($value->getType()) {
                 case FallbackType::PARENT_LOCALIZATION:
@@ -34,20 +38,5 @@ class LocalizedValueExtractor
         }
 
         return $value;
-    }
-
-    /**
-     * @param array $values
-     * @param Localization|null $localization
-     * @return mixed|FallbackType|null
-     */
-    private function getValue(array $values, Localization $localization = null)
-    {
-        $key = null;
-        if ($localization) {
-            $key = $localization->getId();
-        }
-
-        return array_key_exists($key, $values) ? $values[$key] : null;
     }
 }

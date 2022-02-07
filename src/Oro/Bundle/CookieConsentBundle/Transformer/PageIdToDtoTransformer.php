@@ -11,13 +11,10 @@ use Oro\Bundle\LocaleBundle\Helper\LocalizationHelper;
 /**
  * This logic transforms cms page id to cms page dto in case when original page found
  */
-class PageIdToDTOTransformer
+class PageIdToDtoTransformer
 {
-    /** @var DoctrineHelper */
-    private $doctrineHelper;
-
-    /** @var LocalizationHelper */
-    private $localizationHelper;
+    private DoctrineHelper $doctrineHelper;
+    private LocalizationHelper $localizationHelper;
 
     public function __construct(
         DoctrineHelper $doctrineHelper,

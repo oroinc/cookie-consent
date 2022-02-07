@@ -8,8 +8,8 @@ use Oro\Bundle\CookieConsentBundle\DependencyInjection\OroCookieConsentExtension
 use Oro\Bundle\CookieConsentBundle\Helper\CookiesAcceptedPropertyHelper;
 use Oro\Bundle\CookieConsentBundle\Helper\FrontendRepresentativeUserHelper;
 use Oro\Bundle\CookieConsentBundle\Helper\LocalizedValueExtractor;
+use Oro\Bundle\CookieConsentBundle\Provider\CookieConsentLandingPageProviderInterface;
 use Oro\Bundle\CookieConsentBundle\Transformer\DTO\Page;
-use Oro\Bundle\CookieConsentBundle\Transformer\PageIdToDTOTransformer;
 use Oro\Bundle\LocaleBundle\Helper\LocalizationHelper;
 use Oro\Bundle\UIBundle\Tools\HtmlTagHelper;
 
@@ -20,37 +20,20 @@ use Oro\Bundle\UIBundle\Tools\HtmlTagHelper;
  */
 class CookiesBannerProvider
 {
-    /** @var Page|null */
-    private $cmsPage = null;
-
-    /** @var bool */
-    private $cmsPageLoaded = false;
-
-    /** @var PageIdToDTOTransformer */
-    private $pageIdToDTOTransformer;
-
-    /** @var LocalizedValueExtractor */
-    private $localizedValueExtractor;
-
-    /** @var ConfigManager */
-    private $configManager;
-
-    /** @var LocalizationHelper */
-    private $localizationHelper;
-
-    /** @var FrontendRepresentativeUserHelper */
-    private $frontendRepresentativeUserHelper;
-
-    /** @var CookiesAcceptedPropertyHelper */
-    private $cookiesAcceptedPropertyHelper;
-
-    /** @var HtmlTagHelper */
-    private $htmlTagHelper;
+    private ?Page $cmsPage = null;
+    private bool $cmsPageLoaded = false;
+    private FrontendRepresentativeUserHelper $frontendRepresentativeUserHelper;
+    private CookiesAcceptedPropertyHelper $cookiesAcceptedPropertyHelper;
+    private CookieConsentLandingPageProviderInterface $landingPageProvider;
+    private LocalizedValueExtractor $localizedValueExtractor;
+    private ConfigManager $configManager;
+    private LocalizationHelper $localizationHelper;
+    private HtmlTagHelper $htmlTagHelper;
 
     public function __construct(
         FrontendRepresentativeUserHelper $frontendRepresentativeUserHelper,
         CookiesAcceptedPropertyHelper $cookiesAcceptedPropertyHelper,
-        PageIdToDTOTransformer $pageIdToDTOTransformer,
+        CookieConsentLandingPageProviderInterface $landingPageProvider,
         LocalizedValueExtractor $localizedValueExtractor,
         ConfigManager $configManager,
         LocalizationHelper $localizationHelper,
@@ -58,14 +41,14 @@ class CookiesBannerProvider
     ) {
         $this->frontendRepresentativeUserHelper = $frontendRepresentativeUserHelper;
         $this->cookiesAcceptedPropertyHelper = $cookiesAcceptedPropertyHelper;
-        $this->pageIdToDTOTransformer = $pageIdToDTOTransformer;
+        $this->landingPageProvider = $landingPageProvider;
         $this->localizedValueExtractor = $localizedValueExtractor;
         $this->configManager = $configManager;
         $this->localizationHelper = $localizationHelper;
         $this->htmlTagHelper = $htmlTagHelper;
     }
 
-    public function isBannerVisible() : bool
+    public function isBannerVisible(): bool
     {
         $showBanner = $this->configManager->get(
             OroCookieConsentExtension::getConfigKeyByName(
@@ -81,7 +64,7 @@ class CookiesBannerProvider
         return false === $this->cookiesAcceptedPropertyHelper->isCookiesAccepted($representativeUser);
     }
 
-    public function getBannerText() : string
+    public function getBannerText(): string
     {
         $bannerTexts = $this->configManager->get(
             OroCookieConsentExtension::getConfigKeyByName(
@@ -96,32 +79,20 @@ class CookiesBannerProvider
         );
     }
 
-    public function isPageExist() : bool
+    public function isPageExist(): bool
     {
         if ($this->cmsPageLoaded) {
             return null !== $this->cmsPage;
         }
 
-        $landingPageIds = $this->configManager->get(
-            OroCookieConsentExtension::getConfigKeyByName(
-                Configuration::PARAM_NAME_LOCALIZED_LANDING_PAGE_ID
-            )
-        );
-
         $localization = $this->localizationHelper->getCurrentLocalization();
-
-        $landingPageId = $this->localizedValueExtractor->getLocalizedFallbackValue($landingPageIds, $localization);
-        if (!$landingPageId) {
-            return false;
-        }
-
-        $this->cmsPage = $this->pageIdToDTOTransformer->transform($landingPageId);
+        $this->cmsPage = $this->landingPageProvider->getPageDtoByLocalization($localization);
         $this->cmsPageLoaded = true;
 
         return null !== $this->cmsPage;
     }
 
-    public function getPageTitle() : string
+    public function getPageTitle(): string
     {
         if (!$this->isPageExist()) {
             return '';
@@ -130,7 +101,7 @@ class CookiesBannerProvider
         return $this->htmlTagHelper->purify($this->cmsPage->getTitle());
     }
 
-    public function getPageUrl() : string
+    public function getPageUrl(): string
     {
         if (!$this->isPageExist()) {
             return '';

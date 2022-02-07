@@ -7,12 +7,14 @@ use Oro\Bundle\CookieConsentBundle\Helper\CookiesAcceptedPropertyHelper;
 use Oro\Bundle\CookieConsentBundle\Helper\FrontendRepresentativeUserHelper;
 use Oro\Bundle\CookieConsentBundle\Helper\LocalizedValueExtractor;
 use Oro\Bundle\CookieConsentBundle\Layout\DataProvider\CookiesBannerProvider;
+use Oro\Bundle\CookieConsentBundle\Provider\CookieConsentLandingPageProviderInterface;
 use Oro\Bundle\CookieConsentBundle\Tests\Unit\Stubs\CustomerUserStub;
 use Oro\Bundle\CookieConsentBundle\Tests\Unit\Stubs\CustomerVisitorStub;
 use Oro\Bundle\CookieConsentBundle\Transformer\DTO\Page;
-use Oro\Bundle\CookieConsentBundle\Transformer\PageIdToDTOTransformer;
+use Oro\Bundle\LocaleBundle\Entity\Localization;
 use Oro\Bundle\LocaleBundle\Helper\LocalizationHelper;
 use Oro\Bundle\UIBundle\Tools\HtmlTagHelper;
+use Oro\Component\Testing\Unit\EntityTrait;
 
 /**
  * @SuppressWarnings(PHPMD.TooManyMethods)
@@ -20,26 +22,23 @@ use Oro\Bundle\UIBundle\Tools\HtmlTagHelper;
  */
 class CookiesBannerProviderTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var FrontendRepresentativeUserHelper | \PHPUnit\Framework\MockObject\MockObject */
+    use EntityTrait;
+
+    /** @var FrontendRepresentativeUserHelper|\PHPUnit\Framework\MockObject\MockObject */
     private $frontendRepresentativeUserHelper;
 
-    /** @var CookiesAcceptedPropertyHelper */
-    private $cookiesAcceptedPropertyHelper;
-
-    /** @var PageIdToDTOTransformer | \PHPUnit\Framework\MockObject\MockObject */
-    private $pageIdToDTOTransformer;
-
-    /** @var LocalizedValueExtractor */
-    private $localizedValueExtractor;
-
-    /** @var ConfigManager | \PHPUnit\Framework\MockObject\MockObject */
+    /** @var ConfigManager|\PHPUnit\Framework\MockObject\MockObject */
     private $configManager;
 
-    /** @var LocalizationHelper */
+    /** @var CookieConsentLandingPageProviderInterface|\PHPUnit\Framework\MockObject\MockObject  */
+    private $landingPageProvider;
+
+    /** @var LocalizationHelper|\PHPUnit\Framework\MockObject\MockObject */
     private $localizationHelper;
 
-    /** @var CookiesBannerProvider */
-    private $provider;
+    private LocalizedValueExtractor $localizedValueExtractor;
+    private CookiesAcceptedPropertyHelper $cookiesAcceptedPropertyHelper;
+    private CookiesBannerProvider $provider;
 
     /**
      * {@inheritdoc}
@@ -48,10 +47,10 @@ class CookiesBannerProviderTest extends \PHPUnit\Framework\TestCase
     {
         $this->cookiesAcceptedPropertyHelper = new CookiesAcceptedPropertyHelper();
         $this->frontendRepresentativeUserHelper = $this->createMock(FrontendRepresentativeUserHelper::class);
-        $this->pageIdToDTOTransformer = $this->createMock(PageIdToDTOTransformer::class);
         $this->localizedValueExtractor = new LocalizedValueExtractor();
         $this->configManager = $this->createMock(ConfigManager::class);
         $this->localizationHelper = $this->createMock(LocalizationHelper::class);
+        $this->landingPageProvider = $this->createMock(CookieConsentLandingPageProviderInterface::class);
 
         $htmlTagHelper = $this->createMock(HtmlTagHelper::class);
         $htmlTagHelper->expects(self::any())
@@ -63,7 +62,7 @@ class CookiesBannerProviderTest extends \PHPUnit\Framework\TestCase
         $this->provider = new CookiesBannerProvider(
             $this->frontendRepresentativeUserHelper,
             $this->cookiesAcceptedPropertyHelper,
-            $this->pageIdToDTOTransformer,
+            $this->landingPageProvider,
             $this->localizedValueExtractor,
             $this->configManager,
             $this->localizationHelper,
@@ -137,43 +136,6 @@ class CookiesBannerProviderTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function testIsPageExistAndLandingPageNotSet()
-    {
-        $this->configManager
-            ->expects(self::once())
-            ->method('get')
-            ->with('oro_cookie_consent.localized_landing_page_id')
-            ->willReturn([null => null]);
-
-        $this->pageIdToDTOTransformer
-            ->expects(self::never())
-            ->method('transform');
-
-        self::assertFalse($this->provider->isPageExist());
-    }
-
-    /**
-     * @dataProvider isPageExistAndLandingPageIsSetProvider
-     */
-    public function testIsPageExistAndLandingPageIsSet(bool $expectedResult, Page $page = null)
-    {
-        $landingPageId = 111;
-
-        $this->configManager
-            ->expects(self::once())
-            ->method('get')
-            ->with('oro_cookie_consent.localized_landing_page_id')
-            ->willReturn([null => $landingPageId]);
-
-        $this->pageIdToDTOTransformer
-            ->expects(self::once())
-            ->method('transform')
-            ->with($landingPageId)
-            ->willReturn($page);
-
-        self::assertEquals($expectedResult, $this->provider->isPageExist());
-    }
-
     public function testGetBannerText()
     {
         $bannerText = 'Cookie Consent Banner Text';
@@ -187,134 +149,81 @@ class CookiesBannerProviderTest extends \PHPUnit\Framework\TestCase
         self::assertEquals($bannerText . '_purified_', $this->provider->getBannerText());
     }
 
-    /**
-     * @return array
-     */
-    public function isPageExistAndLandingPageIsSetProvider()
+    public function testGetPageTitle()
     {
-        return [
-            'Page exists' => [
-                'expectedResult' => true,
-                'page' => Page::create('title', 'url'),
-            ],
-            'Page not exists' => [
-                'expectedResult' => false,
-                'page' => null,
-            ]
-        ];
+        $page = Page::create('page_title', '/url');
+        $localizationId = 1;
+        $localization = $this->getEntity(Localization::class, ['id' => $localizationId]);
+
+        $this->localizationHelper
+            ->expects($this->once())
+            ->method('getCurrentLocalization')
+            ->willReturn($localization);
+
+        $this->landingPageProvider
+            ->expects($this->once())
+            ->method('getPageDtoByLocalization')
+            ->with($localization)
+            ->willReturn($page);
+
+        self::assertEquals('page_title_purified_', $this->provider->getPageTitle());
     }
 
-    public function testIsPageExistAndLandingPageIsSetAndCalledTwice()
+    public function testGetPageTitleEmpty()
     {
-        $this->testIsPageExistAndLandingPageIsSet(true, Page::create('title', 'slug'));
-        self::assertEquals(true, $this->provider->isPageExist());
-    }
+        $localizationId = 1;
+        $localization = $this->getEntity(Localization::class, ['id' => $localizationId]);
 
-    public function testGetPageTitleAndLandingPageNotSet()
-    {
-        $this->configManager
-            ->expects(self::once())
-            ->method('get')
-            ->with('oro_cookie_consent.localized_landing_page_id')
-            ->willReturn([null => null]);
+        $this->localizationHelper
+            ->expects($this->once())
+            ->method('getCurrentLocalization')
+            ->willReturn($localization);
 
-        $this->pageIdToDTOTransformer
-            ->expects(self::never())
-            ->method('transform');
+        $this->landingPageProvider
+            ->expects($this->once())
+            ->method('getPageDtoByLocalization')
+            ->with($localization)
+            ->willReturn(null);
 
         self::assertEquals('', $this->provider->getPageTitle());
     }
 
-    /**
-     * @dataProvider getPageTitleAndLandingPageIsSetProvider
-     */
-    public function testGetPageTitleAndLandingPageIsSet(string $expectedTitle, Page $page = null)
+    public function testGetPageUrl()
     {
-        $landingPageId = 111;
+        $page = Page::create('page_title', '/url');
+        $localizationId = 1;
+        $localization = $this->getEntity(Localization::class, ['id' => $localizationId]);
 
-        $this->configManager
-            ->expects(self::once())
-            ->method('get')
-            ->with('oro_cookie_consent.localized_landing_page_id')
-            ->willReturn([null => $landingPageId]);
+        $this->localizationHelper
+            ->expects($this->once())
+            ->method('getCurrentLocalization')
+            ->willReturn($localization);
 
-        $this->pageIdToDTOTransformer
-            ->expects(self::once())
-            ->method('transform')
-            ->with($landingPageId)
+        $this->landingPageProvider
+            ->expects($this->once())
+            ->method('getPageDtoByLocalization')
+            ->with($localization)
             ->willReturn($page);
 
-        self::assertEquals($expectedTitle, $this->provider->getPageTitle());
+        self::assertEquals('/url', $this->provider->getPageUrl());
     }
 
-    /**
-     * @return array
-     */
-    public function getPageTitleAndLandingPageIsSetProvider()
+    public function testGetPageUrlEmpty()
     {
-        return [
-            'Page exists' => [
-                'expectedTitle' => 'title_purified_',
-                'page' => Page::create('title', 'url'),
-            ],
-            'Page not exists' => [
-                'expectedTitle' => '',
-                'page' => null,
-            ]
-        ];
-    }
+        $localizationId = 1;
+        $localization = $this->getEntity(Localization::class, ['id' => $localizationId]);
 
-    public function testGetPageUrlAndLandingPageNotSet()
-    {
-        $this->configManager
-            ->expects(self::once())
-            ->method('get')
-            ->with('oro_cookie_consent.localized_landing_page_id')
-            ->willReturn([null => null]);
+        $this->localizationHelper
+            ->expects($this->once())
+            ->method('getCurrentLocalization')
+            ->willReturn($localization);
 
-        $this->pageIdToDTOTransformer
-            ->expects(self::never())
-            ->method('transform');
+        $this->landingPageProvider
+            ->expects($this->once())
+            ->method('getPageDtoByLocalization')
+            ->with($localization)
+            ->willReturn(null);
 
         self::assertEquals('', $this->provider->getPageUrl());
-    }
-
-    /**
-     * @dataProvider getGetPageUrlAndLandingPageIsSetProvider
-     */
-    public function testGetPageUrlAndLandingPageIsSet(string $expectedUrl, Page $page = null)
-    {
-        $landingPageId = 111;
-
-        $this->configManager
-            ->expects(self::once())
-            ->method('get')
-            ->with('oro_cookie_consent.localized_landing_page_id')
-            ->willReturn([null => $landingPageId]);
-
-        $this->pageIdToDTOTransformer
-            ->expects(self::once())
-            ->method('transform')
-            ->with($landingPageId)
-            ->willReturn($page);
-
-        self::assertEquals($expectedUrl, $this->provider->getPageUrl());
-    }
-
-    /**
-     * @return array
-     */
-    public function getGetPageUrlAndLandingPageIsSetProvider()
-    {
-        return [
-            'Page exists' => [
-                'expectedUrl' => 'url',
-                'page' => Page::create('title', 'url'),
-            ],
-            'Page not exists' => [
-                'expectedUrl' => '',
-                'page' => null,
-            ]
-        ];
     }
 }

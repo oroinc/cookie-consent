@@ -26,7 +26,7 @@ services:
             - { name: kernel.event_subscriber }
 
     oro_cookie_consent.transformer.page_id_to_dto_transformer:
-        class: 'Oro\Bundle\CookieConsentBundle\Transformer\PageIdToDTOTransformer'
+        class: 'Oro\Bundle\CookieConsentBundle\Transformer\PageIdToDtoTransformer'
         public: false
         arguments:
             - '@oro_entity.doctrine_helper'
@@ -36,15 +36,31 @@ services:
         class: 'Oro\Bundle\CookieConsentBundle\Helper\LocalizedValueExtractor'
         public: false
 
+    oro_cookie_consent.provider.cookie_consent_landing_page_provider:
+        class: Oro\Bundle\CookieConsentBundle\Provider\CookieConsentLandingPageProvider
+        arguments:
+            - '@oro_config.manager'
+            - '@oro_cookie_consent.helper.localized_value_extractor'
+            - '@oro_cookie_consent.transformer.page_id_to_dto_transformer'
+
     oro_cookie_consent.layout.data_provider.cookies_banner_provider:
         class: 'Oro\Bundle\CookieConsentBundle\Layout\DataProvider\CookiesBannerProvider'
         arguments:
             - '@oro_cookie_consent.helper.frontend_representative_user_helper'
             - '@oro_cookie_consent.helper.cookies_accepted_property_helper'
-            - '@oro_cookie_consent.transformer.page_id_to_dto_transformer'
+            - '@oro_cookie_consent.provider.cookie_consent_landing_page_provider'
             - '@oro_cookie_consent.helper.localized_value_extractor'
             - '@oro_config.manager'
             - '@oro_locale.helper.localization'
-            - "@oro_ui.html_tag_helper"
+            - '@oro_ui.html_tag_helper'
         tags:
             - { name: layout.data_provider, alias: cookies_banner_provider }
+
+    oro_cookie_consent.guest_access.provider.guest_access_urls_provider:
+        class: 'Oro\Bundle\CookieConsentBundle\GuestAccess\Provider\GuestAccessAllowedUrlsProvider'
+        public: false
+        arguments:
+            - '@oro_cookie_consent.provider.cookie_consent_landing_page_provider'
+            - '@oro_locale.helper.localization'
+            - '@router.request_context'
+        tags: [ 'oro_frontend.guest_access_urls_provider' ]

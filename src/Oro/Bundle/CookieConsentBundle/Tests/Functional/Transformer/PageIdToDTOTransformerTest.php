@@ -3,13 +3,12 @@
 namespace Oro\Bundle\CookieConsentBundle\Tests\Functional\Transformer;
 
 use Oro\Bundle\CookieConsentBundle\Tests\Functional\DataFixtures\LoadPageFixture;
-use Oro\Bundle\CookieConsentBundle\Transformer\PageIdToDTOTransformer;
+use Oro\Bundle\CookieConsentBundle\Transformer\PageIdToDtoTransformer;
 use Oro\Bundle\FrontendTestFrameworkBundle\Test\FrontendWebTestCase;
 
 class PageIdToDTOTransformerTest extends FrontendWebTestCase
 {
-    /** @var PageIdToDTOTransformer */
-    private $pageIdToDTOTransformer;
+    private PageIdToDtoTransformer $pageIdToDTOTransformer;
 
     /**
      * {@inheritdoc}
@@ -23,9 +22,9 @@ class PageIdToDTOTransformerTest extends FrontendWebTestCase
             LoadPageFixture::class
         ]);
 
-        $this->pageIdToDTOTransformer = new PageIdToDTOTransformer(
-            $this->getContainer()->get('oro_entity.doctrine_helper'),
-            $this->getContainer()->get('oro_locale.helper.localization')
+        $this->pageIdToDTOTransformer = new PageIdToDtoTransformer(
+            self::getContainer()->get('oro_entity.doctrine_helper'),
+            self::getContainer()->get('oro_locale.helper.localization')
         );
     }
 
