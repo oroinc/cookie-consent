@@ -48,3 +48,11 @@ services:
             - "@oro_ui.html_tag_helper"
         tags:
             - { name: layout.data_provider, alias: cookies_banner_provider }
+
+    oro_cookie_consent.guest_access.provider.guest_access_urls_provider:
+        class: 'Oro\Bundle\CookieConsentBundle\GuestAccess\Provider\GuestAccessAllowedUrlsProvider'
+        public: false
+        arguments:
+            - '@oro_cookie_consent.layout.data_provider.cookies_banner_provider'
+            - '@router.request_context'
+        tags: [ 'oro_frontend.guest_access_urls_provider' ]
