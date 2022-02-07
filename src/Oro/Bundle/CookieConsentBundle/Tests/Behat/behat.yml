@@ -1,0 +1,14 @@
+oro_behat_extension:
+    suites:
+        OroCookieConsentBundle:
+            contexts:
+                - Oro\Bundle\TestFrameworkBundle\Tests\Behat\Context\OroMainContext
+                - Oro\Bundle\ConfigBundle\Tests\Behat\Context\FeatureContext
+            paths:
+                - '@OroCookieConsentBundle/Tests/Behat/Features'
+
+    elements:
+        Cookie Banner:
+            selector:
+                locator: 'div.cookie-banner-view'
+                type: css
