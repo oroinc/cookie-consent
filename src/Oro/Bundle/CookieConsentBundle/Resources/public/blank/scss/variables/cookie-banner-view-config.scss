@@ -20,7 +20,7 @@ $cookie-banner-view-before-left: 50% !default;
 $cookie-banner-view-before-transform: translateX(-50%) scale(0, 1) !default;
 $cookie-banner-view-before-transition: transform 1s ease-in-out !default;
 
-$cookie-banner-view-show-box-shadow: 0 -3px 7px 1px rgba(get-color('additional', 'darker'), .05) !default;
+$cookie-banner-view-show-box-shadow: 0 -3px 7px 1px get-color('additional', 'darker', 5%) !default;
 $cookie-banner-view-show-transform: translateY(0) !default;
 
 $cookie-banner-view-show-before-transform: translateX(-50%) scale(1, 1) !default;
