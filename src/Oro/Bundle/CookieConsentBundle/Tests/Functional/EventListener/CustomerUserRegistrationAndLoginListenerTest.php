@@ -5,7 +5,6 @@ namespace Oro\Bundle\CookieConsentBundle\Tests\Functional\EventListener;
 use Oro\Bundle\ConfigBundle\Config\ConfigManager;
 use Oro\Bundle\ConfigBundle\Tests\Functional\Traits\ConfigManagerAwareTestTrait;
 use Oro\Bundle\CookieConsentBundle\DependencyInjection\Configuration;
-use Oro\Bundle\CookieConsentBundle\DependencyInjection\OroCookieConsentExtension;
 use Oro\Bundle\CustomerBundle\Entity\CustomerUser;
 use Oro\Bundle\CustomerBundle\Entity\CustomerVisitor;
 use Oro\Bundle\CustomerBundle\Security\Firewall\AnonymousCustomerUserAuthenticationListener;
@@ -90,7 +89,7 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
         $this->customerVisitorAcceptsCookies($visitor);
 
         $this->configManager->set(
-            OroCookieConsentExtension::getConfigKeyByName(Configuration::PARAM_NAME_SHOW_BANNER),
+            Configuration::getConfigKeyByName(Configuration::PARAM_NAME_SHOW_BANNER),
             true
         );
         $this->configManager->set('oro_customer.confirmation_required', false);
@@ -168,7 +167,7 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
         self::assertFalse($user->getCookiesAccepted());
 
         $this->configManager->set(
-            OroCookieConsentExtension::getConfigKeyByName(Configuration::PARAM_NAME_SHOW_BANNER),
+            Configuration::getConfigKeyByName(Configuration::PARAM_NAME_SHOW_BANNER),
             true
         );
         $this->configManager->flush();

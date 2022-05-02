@@ -4,7 +4,6 @@ namespace Oro\Bundle\CookieConsentBundle\Layout\DataProvider;
 
 use Oro\Bundle\ConfigBundle\Config\ConfigManager;
 use Oro\Bundle\CookieConsentBundle\DependencyInjection\Configuration;
-use Oro\Bundle\CookieConsentBundle\DependencyInjection\OroCookieConsentExtension;
 use Oro\Bundle\CookieConsentBundle\Helper\CookiesAcceptedPropertyHelper;
 use Oro\Bundle\CookieConsentBundle\Helper\FrontendRepresentativeUserHelper;
 use Oro\Bundle\CookieConsentBundle\Helper\LocalizedValueExtractor;
@@ -51,9 +50,7 @@ class CookiesBannerProvider
     public function isBannerVisible(): bool
     {
         $showBanner = $this->configManager->get(
-            OroCookieConsentExtension::getConfigKeyByName(
-                Configuration::PARAM_NAME_SHOW_BANNER
-            )
+            Configuration::getConfigKeyByName(Configuration::PARAM_NAME_SHOW_BANNER)
         );
         if (!$showBanner) {
             return false;
@@ -67,9 +64,7 @@ class CookiesBannerProvider
     public function getBannerText(): string
     {
         $bannerTexts = $this->configManager->get(
-            OroCookieConsentExtension::getConfigKeyByName(
-                Configuration::PARAM_NAME_LOCALIZED_BANNER_TEXT
-            )
+            Configuration::getConfigKeyByName(Configuration::PARAM_NAME_LOCALIZED_BANNER_TEXT)
         );
 
         $localization = $this->localizationHelper->getCurrentLocalization();

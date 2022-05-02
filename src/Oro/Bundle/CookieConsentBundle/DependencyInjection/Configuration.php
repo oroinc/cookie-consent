@@ -2,15 +2,14 @@
 
 namespace Oro\Bundle\CookieConsentBundle\DependencyInjection;
 
+use Oro\Bundle\ConfigBundle\Config\ConfigManager;
 use Oro\Bundle\ConfigBundle\DependencyInjection\SettingsBuilder;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
-/**
- * Defines bundle-specific config properties structure
- */
 class Configuration implements ConfigurationInterface
 {
+    public const ROOT_NODE = 'oro_cookie_consent';
     public const PARAM_NAME_SHOW_BANNER = 'show_banner';
     public const PARAM_NAME_LOCALIZED_BANNER_TEXT = 'localized_banner_text';
     public const PARAM_NAME_LOCALIZED_LANDING_PAGE_ID = 'localized_landing_page_id';
@@ -23,10 +22,12 @@ By continuing to browse the website, you consent to our use of cookies.
 _TEXT;
     public const DEFAULT_PAGE_ID = null;
 
-    /** {@inheritdoc} */
+    /**
+     * {@inheritdoc}
+     */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder(OroCookieConsentExtension::ALIAS);
+        $treeBuilder = new TreeBuilder(self::ROOT_NODE);
         $rootNode = $treeBuilder->getRootNode();
 
         SettingsBuilder::append(
@@ -48,5 +49,10 @@ _TEXT;
         );
 
         return $treeBuilder;
+    }
+
+    public static function getConfigKeyByName(string $name): string
+    {
+        return self::ROOT_NODE . ConfigManager::SECTION_MODEL_SEPARATOR . $name;
     }
 }

@@ -4,7 +4,6 @@ namespace Oro\Bundle\CookieConsentBundle\Provider;
 
 use Oro\Bundle\ConfigBundle\Config\ConfigManager;
 use Oro\Bundle\CookieConsentBundle\DependencyInjection\Configuration;
-use Oro\Bundle\CookieConsentBundle\DependencyInjection\OroCookieConsentExtension;
 use Oro\Bundle\CookieConsentBundle\Helper\LocalizedValueExtractor;
 use Oro\Bundle\CookieConsentBundle\Transformer\DTO\Page;
 use Oro\Bundle\CookieConsentBundle\Transformer\PageIdToDtoTransformer;
@@ -38,9 +37,7 @@ class CookieConsentLandingPageProvider implements CookieConsentLandingPageProvid
         }
 
         $landingPageIds = $this->configManager->get(
-            OroCookieConsentExtension::getConfigKeyByName(
-                Configuration::PARAM_NAME_LOCALIZED_LANDING_PAGE_ID
-            )
+            Configuration::getConfigKeyByName(Configuration::PARAM_NAME_LOCALIZED_LANDING_PAGE_ID)
         );
 
         $landingPageId = $this->localizedValueExtractor->getLocalizedFallbackValue($landingPageIds, $localization);
