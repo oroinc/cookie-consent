@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Controller that process acsept coocies request.
+ * Controller that process accept cookies request.
  */
 class CookieConsentController extends AbstractController
 {
