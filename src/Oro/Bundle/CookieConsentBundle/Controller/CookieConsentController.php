@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * Controller that process accept coockies request.
+ * Controller that process accept cookies request.
  */
 class CookieConsentController extends AbstractController
 {
