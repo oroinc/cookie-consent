@@ -20,6 +20,7 @@ Feature: Guest Opens Cookie Consent Page
   Scenario: I accept the cookie policy and should not see the banner again
     Given I am on homepage
     Then I should see "This website uses cookies to provide you with the best user experience"
+    And I should see "Yes, Accept"
     And I click "Yes, Accept"
     Then I should not see "This website uses cookies to provide you with the best user experience"
     When I reload the page
