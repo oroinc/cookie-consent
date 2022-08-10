@@ -4,6 +4,7 @@ namespace Oro\Bundle\CookieConsentBundle\Tests\Unit\Form\Type;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Oro\Bundle\CMSBundle\Entity\Page;
 use Oro\Bundle\CookieConsentBundle\Form\Type\ConfigLandingPageSelectType;
 use Oro\Bundle\CookieConsentBundle\Tests\Unit\Form\Type\Stub\PageStub;
@@ -11,6 +12,7 @@ use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\EntityConfigBundle\Config\ConfigInterface;
 use Oro\Bundle\EntityConfigBundle\Config\ConfigManager;
 use Oro\Bundle\EntityConfigBundle\Provider\ConfigProvider;
+use Oro\Bundle\FeatureToggleBundle\Checker\FeatureChecker;
 use Oro\Bundle\FormBundle\Autocomplete\SearchHandlerInterface;
 use Oro\Bundle\FormBundle\Autocomplete\SearchRegistry;
 use Oro\Bundle\FormBundle\Form\Type\OroEntitySelectOrCreateInlineType;
@@ -25,89 +27,89 @@ class ConfigLandingPageSelectTypeTest extends FormIntegrationTestCase
     private const EXIST_PAGE_TITLE = 'SeventySeventhPage';
 
     /**@var ConfigProvider|\PHPUnit\Framework\MockObject\MockObject */
-    protected $configProvider;
-
-    /** @var AuthorizationCheckerInterface|\PHPUnit\Framework\MockObject\MockObject */
-    protected $authorizationChecker;
+    private $configProvider;
 
     /** @var ConfigManager|\PHPUnit\Framework\MockObject\MockObject */
-    protected $configManager;
+    private $configManager;
 
     /** @var EntityManager|\PHPUnit\Framework\MockObject\MockObject */
-    protected $entityManager;
+    private $entityManager;
 
     /** @var SearchRegistry|\PHPUnit\Framework\MockObject\MockObject */
-    protected $searchRegistry;
+    private $searchRegistry;
 
     /** @var DoctrineHelper|\PHPUnit\Framework\MockObject\MockObject */
-    protected $doctrineHelper;
+    private $doctrineHelper;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         $config = $this->createMock(ConfigInterface::class);
-        $config->method('has')->with('grid_name')->willReturn(true);
-        $config->method('get')->with('grid_name')->willReturn('some_grid');
-        $this->configProvider = $this->createMock(ConfigProvider::class);
-        $this->configProvider->method('getConfig')->willReturn($config);
+        $config->expects(self::any())
+            ->method('has')
+            ->with('grid_name')
+            ->willReturn(true);
+        $config->expects(self::any())
+            ->method('get')
+            ->with('grid_name')
+            ->willReturn('some_grid');
 
-        $this->authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
+        $this->configProvider = $this->createMock(ConfigProvider::class);
+        $this->configProvider->expects(self::any())
+            ->method('getConfig')
+            ->willReturn($config);
+
         $this->configManager = $this->createMock(ConfigManager::class);
-        $this->configManager
+        $this->configManager->expects(self::any())
             ->method('getProvider')
             ->with('form')
-            ->willReturn($this->configProvider)
-        ;
+            ->willReturn($this->configProvider);
+
+        $pageMetaData = $this->createMock(ClassMetadata::class);
+        $pageMetaData->expects(self::any())
+            ->method('getSingleIdentifierFieldName')
+            ->willReturn('id');
+
         $this->entityManager = $this->createMock(EntityManager::class);
-        $pageMetaData = $this->createMock(\Doctrine\ORM\Mapping\ClassMetadata::class);
-        $pageMetaData->method('getSingleIdentifierFieldName')->willReturn('id');
-        $this->entityManager
+        $this->entityManager->expects(self::any())
             ->method('getClassMetadata')
-            ->willReturn($pageMetaData)
-        ;
+            ->willReturn($pageMetaData);
+
         $existPage = $this->getPageStub(self::EXIST_PAGE_ID, self::EXIST_PAGE_TITLE);
-        $this->entityManager
+        $this->entityManager->expects(self::any())
             ->method('find')
             ->with(Page::class, self::EXIST_PAGE_ID)
-            ->willReturn($existPage)
-        ;
+            ->willReturn($existPage);
+
         $pageRepository = $this->createMock(EntityRepository::class);
-        $pageRepository->method('find')->with(self::EXIST_PAGE_ID)->willReturn($existPage);
-        $this->entityManager
+        $pageRepository->expects(self::any())
+            ->method('find')
+            ->with(self::EXIST_PAGE_ID)
+            ->willReturn($existPage);
+        $this->entityManager->expects(self::any())
             ->method('getRepository')
             ->with(Page::class)
-            ->willReturn($pageRepository)
-        ;
-        $this->searchRegistry = $this->createMock(SearchRegistry::class);
+            ->willReturn($pageRepository);
 
         $searchHandlerMock = $this->createMock(SearchHandlerInterface::class);
-        $searchHandlerMock
+        $searchHandlerMock->expects(self::any())
             ->method('getProperties')
-            ->willReturn([])
-        ;
-        $this->searchRegistry
+            ->willReturn([]);
+
+        $this->searchRegistry = $this->createMock(SearchRegistry::class);
+        $this->searchRegistry->expects(self::any())
             ->method('getSearchHandler')
-            ->willReturn($searchHandlerMock)
-        ;
+            ->willReturn($searchHandlerMock);
 
         $this->doctrineHelper = $this->createMock(DoctrineHelper::class);
-        $this->doctrineHelper
+        $this->doctrineHelper->expects(self::any())
             ->method('getEntityManagerForClass')
             ->with(Page::class)
-            ->willReturn($this->entityManager)
-        ;
+            ->willReturn($this->entityManager);
 
         parent::setUp();
     }
 
-    /**
-     * @param int $id
-     * @param string $title
-     * @return Page
-     */
-    private function getPageStub($id, $title): Page
+    private function getPageStub(int $id, string $title): Page
     {
         return (new PageStub())->setId($id)->setDefaultTitle($title);
     }
@@ -125,7 +127,8 @@ class ConfigLandingPageSelectTypeTest extends FormIntegrationTestCase
                 $this->configProvider
             ),
             new OroEntitySelectOrCreateInlineType(
-                $this->authorizationChecker,
+                $this->createMock(AuthorizationCheckerInterface::class),
+                $this->createMock(FeatureChecker::class),
                 $this->configManager,
                 $this->entityManager,
                 $this->searchRegistry
@@ -155,7 +158,7 @@ class ConfigLandingPageSelectTypeTest extends FormIntegrationTestCase
         $attr = $viewVars['attr'];
         static::assertArrayHasKey('data-selected-data', $attr);
 
-        $dataSelectData = \json_decode($attr['data-selected-data'], true);
+        $dataSelectData = json_decode($attr['data-selected-data'], true, 512, JSON_THROW_ON_ERROR);
         static::assertIsArray($dataSelectData);
 
         static::assertArrayHasKey('id', $dataSelectData);
