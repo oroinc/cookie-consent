@@ -6,7 +6,7 @@ oro:
             fields:
                 show_banner:
                     label: 'Show Banner'
-                    tooltip: 'Defines if Customer User should see Cookies Banner'
+                    tooltip: 'Enable the option to display a cookie consent banner to a customer user in the storefront.'
                 localized_banner_text:
                     label: 'Cookies Banner Text'
                 localized_landing_page_id:
