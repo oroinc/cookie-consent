@@ -9,24 +9,16 @@ use Oro\Bundle\FrontendTestFrameworkBundle\Migrations\Data\ORM\LoadCustomerUserD
 use Oro\Bundle\OrganizationBundle\Entity\Organization;
 use Oro\Bundle\SecurityBundle\Authentication\Token\UsernamePasswordOrganizationToken;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
-use Oro\Component\Testing\Unit\EntityTrait;
 
 /**
  * @dbIsolationPerTest
  */
 class OroCookieConsentSetAcceptedCookiesTest extends WebTestCase
 {
-    use EntityTrait;
-
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         $this->initClient();
-        $this->loadFixtures([
-            LoadVisitorsData::class
-        ]);
+        $this->loadFixtures([LoadVisitorsData::class]);
     }
 
     public function testRunActionGroupWithCustomerUserAsUser()
