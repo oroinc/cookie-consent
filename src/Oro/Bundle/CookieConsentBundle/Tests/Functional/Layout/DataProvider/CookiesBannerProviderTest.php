@@ -4,6 +4,7 @@ namespace Oro\Bundle\CookieConsentBundle\Tests\Functional\Layout\DataProvider;
 
 use Oro\Bundle\CookieConsentBundle\DependencyInjection\Configuration;
 use Oro\Bundle\CookieConsentBundle\Migrations\Data\Demo\ORM\EnableCookieBanner;
+use Oro\Bundle\ProductBundle\Entity\Product;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 
 class CookiesBannerProviderTest extends WebTestCase
@@ -16,6 +17,7 @@ class CookiesBannerProviderTest extends WebTestCase
         $this->initClient();
         $this->client->useHashNavigation(true);
         $this->loadFixtures([EnableCookieBanner::class]);
+        $this->getContainer()->get('oro_search.search.engine.indexer')->reindex(Product::class);
     }
 
     public function testBreadcrumbs()
