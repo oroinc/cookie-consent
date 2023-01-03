@@ -20,20 +20,17 @@ class CookieConsentLandingPageProviderTest extends \PHPUnit\Framework\TestCase
     /** @var PageIdToDtoTransformer|\PHPUnit\Framework\MockObject\MockObject */
     private $pageIdToDtoTransformer;
 
-    private LocalizedValueExtractor $localizedValueExtractor;
-    private CookieConsentLandingPageProvider $landingPageProvider;
+    /** @var CookieConsentLandingPageProvider */
+    private $landingPageProvider;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         $this->configManager = $this->createMock(ConfigManager::class);
-        $this->localizedValueExtractor = new LocalizedValueExtractor();
         $this->pageIdToDtoTransformer = $this->createMock(PageIdToDtoTransformer::class);
+
         $this->landingPageProvider = new CookieConsentLandingPageProvider(
             $this->configManager,
-            $this->localizedValueExtractor,
+            new LocalizedValueExtractor(),
             $this->pageIdToDtoTransformer
         );
     }
@@ -42,8 +39,7 @@ class CookieConsentLandingPageProviderTest extends \PHPUnit\Framework\TestCase
     {
         $pageId = 5;
         $page = Page::create('page_title', '/url');
-        $this->configManager
-            ->expects(self::once())
+        $this->configManager->expects(self::once())
             ->method('get')
             ->with('oro_cookie_consent.localized_landing_page_id')
             ->willReturn([null => $pageId]);
@@ -51,8 +47,7 @@ class CookieConsentLandingPageProviderTest extends \PHPUnit\Framework\TestCase
         $localizationId = 1;
         $localization = $this->getEntity(Localization::class, ['id' => $localizationId]);
 
-        $this->pageIdToDtoTransformer
-            ->expects(self::once())
+        $this->pageIdToDtoTransformer->expects(self::once())
             ->method('transform')
             ->with($pageId)
             ->willReturn($page);
@@ -62,8 +57,7 @@ class CookieConsentLandingPageProviderTest extends \PHPUnit\Framework\TestCase
 
     public function testGetPageDtoByLocalizationWillReturnEmptyPage()
     {
-        $this->configManager
-            ->expects(self::once())
+        $this->configManager->expects(self::once())
             ->method('get')
             ->with('oro_cookie_consent.localized_landing_page_id')
             ->willReturn([]);
@@ -71,8 +65,7 @@ class CookieConsentLandingPageProviderTest extends \PHPUnit\Framework\TestCase
         $localizationId = 1;
         $localization = $this->getEntity(Localization::class, ['id' => $localizationId]);
 
-        $this->pageIdToDtoTransformer
-            ->expects(self::never())
+        $this->pageIdToDtoTransformer->expects(self::never())
             ->method('transform');
 
         self::assertNull($this->landingPageProvider->getPageDtoByLocalization($localization));

@@ -9,12 +9,8 @@ use Oro\Bundle\UserBundle\Entity\User;
 
 class CookiesAcceptedPropertyHelperTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var CookiesAcceptedPropertyHelper */
-    private $cookiesAcceptedPropertyHelper;
+    private CookiesAcceptedPropertyHelper $cookiesAcceptedPropertyHelper;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         $this->cookiesAcceptedPropertyHelper = new CookiesAcceptedPropertyHelper();
@@ -22,11 +18,8 @@ class CookiesAcceptedPropertyHelperTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider isCookiesAcceptedProvider
-     *
-     * @param object|null $frontendRepresentativeUser
-     * @param bool $expectedResult
      */
-    public function testIsCookiesAccepted($frontendRepresentativeUser, bool $expectedResult)
+    public function testIsCookiesAccepted(?object $frontendRepresentativeUser, bool $expectedResult)
     {
         $this->assertEquals(
             $expectedResult,
@@ -34,10 +27,7 @@ class CookiesAcceptedPropertyHelperTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @return array
-     */
-    public function isCookiesAcceptedProvider()
+    public function isCookiesAcceptedProvider(): array
     {
         return [
             'Frontend representative user is null' => [
@@ -71,11 +61,8 @@ class CookiesAcceptedPropertyHelperTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider setCookiesAcceptedProvider
-     *
-     * @param object|null $frontendRepresentativeUser
-     * @param bool $cookiesAcceptedValue
      */
-    public function testSetCookiesAccepted($frontendRepresentativeUser, bool $cookiesAcceptedValue)
+    public function testSetCookiesAccepted(?object $frontendRepresentativeUser, bool $cookiesAcceptedValue)
     {
         $this->cookiesAcceptedPropertyHelper->setCookiesAccepted(
             $frontendRepresentativeUser,
@@ -88,10 +75,7 @@ class CookiesAcceptedPropertyHelperTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @return array
-     */
-    public function setCookiesAcceptedProvider()
+    public function setCookiesAcceptedProvider(): array
     {
         return [
             'Frontend representative user is CustomerVisitor with cookies accepted false' => [

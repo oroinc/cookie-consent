@@ -18,23 +18,18 @@ class FrontendRepresentativeUserHelperTest extends \PHPUnit\Framework\TestCase
     private const EXIST_VISITOR_ID = 99;
     private const EXIST_SESSION_ID = 'aaabbbbyyyy';
 
-    /** @var TokenStorageInterface | \PHPUnit\Framework\MockObject\MockObject */
+    /** @var TokenStorageInterface|\PHPUnit\Framework\MockObject\MockObject */
     private $tokenStorage;
-
-    /** @var CustomerVisitorManager | \PHPUnit\Framework\MockObject\MockObject */
-    private $visitorManager;
 
     /** @var FrontendRepresentativeUserHelper */
     private $helper;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         $this->tokenStorage = $this->createMock(TokenStorageInterface::class);
-        $this->visitorManager = $this->createMock(CustomerVisitorManager::class);
-        $this->visitorManager
+
+        $visitorManager = $this->createMock(CustomerVisitorManager::class);
+        $visitorManager->expects($this->any())
             ->method('find')
             ->willReturnCallback(function ($visitorId, $sessionId) {
                 if (self::EXIST_VISITOR_ID === $visitorId
@@ -46,29 +41,22 @@ class FrontendRepresentativeUserHelperTest extends \PHPUnit\Framework\TestCase
                 return null;
             })
         ;
-        $this->helper = new FrontendRepresentativeUserHelper($this->tokenStorage, $this->visitorManager);
+        $this->helper = new FrontendRepresentativeUserHelper($this->tokenStorage, $visitorManager);
     }
 
     /**
      * @dataProvider getRepresentativeUserProvider
-     *
-     * @param callable $tokenCallback
-     * @param object|null $expectedResult
      */
-    public function testGetRepresentativeUser(callable $tokenCallback, $expectedResult)
+    public function testGetRepresentativeUser(callable $tokenCallback, ?object $expectedResult)
     {
-        $this->tokenStorage
-            ->expects($this->once())
+        $this->tokenStorage->expects($this->once())
             ->method('getToken')
             ->willReturnCallback($tokenCallback);
 
         $this->assertSame($expectedResult, $this->helper->getRepresentativeUser());
     }
 
-    /**
-     * @return array
-     */
-    public function getRepresentativeUserProvider()
+    public function getRepresentativeUserProvider(): array
     {
         $customerVisitor = new CustomerVisitorStub();
         $customerUser = new CustomerUserStub();
@@ -122,36 +110,22 @@ class FrontendRepresentativeUserHelperTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    /**
-     * @param CustomerVisitorStub|null $visitor
-     *
-     * @return \PHPUnit\Framework\MockObject\MockObject
-     */
-    private function getVisitorToken(CustomerVisitorStub $visitor = null)
+    private function getVisitorToken(?CustomerVisitorStub $visitor): AnonymousCustomerUserToken
     {
         $token = $this->createMock(AnonymousCustomerUserToken::class);
-        $token
-            ->expects($this->once())
+        $token->expects($this->once())
             ->method('getVisitor')
             ->willReturn($visitor);
-
-        $token
-            ->expects($this->never())
+        $token->expects($this->never())
             ->method('getUser');
 
         return $token;
     }
 
-    /**
-     * @param object|null $customerUser
-     *
-     * @return \PHPUnit\Framework\MockObject\MockObject
-     */
-    private function getUserToken($customerUser = null)
+    private function getUserToken(?object $customerUser): AbstractToken
     {
         $token = $this->createMock(AbstractToken::class);
-        $token
-            ->expects($this->once())
+        $token->expects($this->once())
             ->method('getUser')
             ->willReturn($customerUser);
 
@@ -165,14 +139,14 @@ class FrontendRepresentativeUserHelperTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->helper->getVisitorFromRequest($request);
 
-        static::assertEquals($expectFound, null !== $user);
+        self::assertEquals($expectFound, null !== $user);
     }
 
     private function createRequestWithCookies(?array $visitorCredentials): Request
     {
         $cookiesData = [];
         if (null !== $visitorCredentials) {
-            $serializedCredentials = \base64_encode(\json_encode($visitorCredentials));
+            $serializedCredentials = base64_encode(json_encode($visitorCredentials, JSON_THROW_ON_ERROR));
             $cookiesData[AnonymousCustomerUserAuthenticationListener::COOKIE_NAME] = $serializedCredentials;
         }
 

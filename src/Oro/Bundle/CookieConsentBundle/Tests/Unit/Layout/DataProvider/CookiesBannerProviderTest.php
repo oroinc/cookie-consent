@@ -36,18 +36,12 @@ class CookiesBannerProviderTest extends \PHPUnit\Framework\TestCase
     /** @var LocalizationHelper|\PHPUnit\Framework\MockObject\MockObject */
     private $localizationHelper;
 
-    private LocalizedValueExtractor $localizedValueExtractor;
-    private CookiesAcceptedPropertyHelper $cookiesAcceptedPropertyHelper;
-    private CookiesBannerProvider $provider;
+    /** @var CookiesBannerProvider */
+    private $provider;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
-        $this->cookiesAcceptedPropertyHelper = new CookiesAcceptedPropertyHelper();
         $this->frontendRepresentativeUserHelper = $this->createMock(FrontendRepresentativeUserHelper::class);
-        $this->localizedValueExtractor = new LocalizedValueExtractor();
         $this->configManager = $this->createMock(ConfigManager::class);
         $this->localizationHelper = $this->createMock(LocalizationHelper::class);
         $this->landingPageProvider = $this->createMock(CookieConsentLandingPageProviderInterface::class);
@@ -61,9 +55,9 @@ class CookiesBannerProviderTest extends \PHPUnit\Framework\TestCase
 
         $this->provider = new CookiesBannerProvider(
             $this->frontendRepresentativeUserHelper,
-            $this->cookiesAcceptedPropertyHelper,
+            new CookiesAcceptedPropertyHelper(),
             $this->landingPageProvider,
-            $this->localizedValueExtractor,
+            new LocalizedValueExtractor(),
             $this->configManager,
             $this->localizationHelper,
             $htmlTagHelper
@@ -72,14 +66,12 @@ class CookiesBannerProviderTest extends \PHPUnit\Framework\TestCase
 
     public function testIsBannerVisibleWhenItDisabledInConfig()
     {
-        $this->configManager
-            ->expects(self::once())
+        $this->configManager->expects(self::once())
             ->method('get')
             ->with('oro_cookie_consent.show_banner')
             ->willReturn(false);
 
-        $this->frontendRepresentativeUserHelper
-            ->expects(self::never())
+        $this->frontendRepresentativeUserHelper->expects(self::never())
             ->method('getRepresentativeUser');
 
         self::assertFalse($this->provider->isBannerVisible());
@@ -87,30 +79,22 @@ class CookiesBannerProviderTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider isBannerVisibleWhenItEnabledInConfigProvider
-     *
-     * @param object|null $frontendRepresentativeUser
-     * @param bool $expectedResult
      */
-    public function testIsBannerVisibleWhenItEnabledInConfig($frontendRepresentativeUser, bool $expectedResult)
+    public function testIsBannerVisibleWhenItEnabledInConfig(?object $frontendRepresentativeUser, bool $expectedResult)
     {
-        $this->configManager
-            ->expects(self::once())
+        $this->configManager->expects(self::once())
             ->method('get')
             ->with('oro_cookie_consent.show_banner')
             ->willReturn(true);
 
-        $this->frontendRepresentativeUserHelper
-            ->expects(self::once())
+        $this->frontendRepresentativeUserHelper->expects(self::once())
             ->method('getRepresentativeUser')
             ->willReturn($frontendRepresentativeUser);
 
         self::assertEquals($expectedResult, $this->provider->isBannerVisible());
     }
 
-    /**
-     * @return array
-     */
-    public function isBannerVisibleWhenItEnabledInConfigProvider()
+    public function isBannerVisibleWhenItEnabledInConfigProvider(): array
     {
         return [
             'Representative User not found' => [
@@ -140,8 +124,7 @@ class CookiesBannerProviderTest extends \PHPUnit\Framework\TestCase
     {
         $bannerText = 'Cookie Consent Banner Text';
 
-        $this->configManager
-            ->expects(self::once())
+        $this->configManager->expects(self::once())
             ->method('get')
             ->with('oro_cookie_consent.localized_banner_text')
             ->willReturn([null => $bannerText]);
@@ -155,13 +138,11 @@ class CookiesBannerProviderTest extends \PHPUnit\Framework\TestCase
         $localizationId = 1;
         $localization = $this->getEntity(Localization::class, ['id' => $localizationId]);
 
-        $this->localizationHelper
-            ->expects($this->once())
+        $this->localizationHelper->expects($this->once())
             ->method('getCurrentLocalization')
             ->willReturn($localization);
 
-        $this->landingPageProvider
-            ->expects($this->once())
+        $this->landingPageProvider->expects($this->once())
             ->method('getPageDtoByLocalization')
             ->with($localization)
             ->willReturn($page);
@@ -174,13 +155,11 @@ class CookiesBannerProviderTest extends \PHPUnit\Framework\TestCase
         $localizationId = 1;
         $localization = $this->getEntity(Localization::class, ['id' => $localizationId]);
 
-        $this->localizationHelper
-            ->expects($this->once())
+        $this->localizationHelper->expects($this->once())
             ->method('getCurrentLocalization')
             ->willReturn($localization);
 
-        $this->landingPageProvider
-            ->expects($this->once())
+        $this->landingPageProvider->expects($this->once())
             ->method('getPageDtoByLocalization')
             ->with($localization)
             ->willReturn(null);
@@ -194,13 +173,11 @@ class CookiesBannerProviderTest extends \PHPUnit\Framework\TestCase
         $localizationId = 1;
         $localization = $this->getEntity(Localization::class, ['id' => $localizationId]);
 
-        $this->localizationHelper
-            ->expects($this->once())
+        $this->localizationHelper->expects($this->once())
             ->method('getCurrentLocalization')
             ->willReturn($localization);
 
-        $this->landingPageProvider
-            ->expects($this->once())
+        $this->landingPageProvider->expects($this->once())
             ->method('getPageDtoByLocalization')
             ->with($localization)
             ->willReturn($page);
@@ -213,13 +190,11 @@ class CookiesBannerProviderTest extends \PHPUnit\Framework\TestCase
         $localizationId = 1;
         $localization = $this->getEntity(Localization::class, ['id' => $localizationId]);
 
-        $this->localizationHelper
-            ->expects($this->once())
+        $this->localizationHelper->expects($this->once())
             ->method('getCurrentLocalization')
             ->willReturn($localization);
 
-        $this->landingPageProvider
-            ->expects($this->once())
+        $this->landingPageProvider->expects($this->once())
             ->method('getPageDtoByLocalization')
             ->with($localization)
             ->willReturn(null);
