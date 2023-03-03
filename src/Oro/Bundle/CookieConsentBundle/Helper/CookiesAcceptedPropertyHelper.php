@@ -4,7 +4,7 @@ namespace Oro\Bundle\CookieConsentBundle\Helper;
 
 use Oro\Bundle\CustomerBundle\Entity\CustomerUser;
 use Oro\Bundle\CustomerBundle\Entity\CustomerVisitor;
-use Symfony\Component\PropertyAccess\PropertyAccess;
+use Oro\Bundle\EntityExtendBundle\PropertyAccess;
 
 /**
  * Allow to set cookies accepted value to pre-defined property classes
