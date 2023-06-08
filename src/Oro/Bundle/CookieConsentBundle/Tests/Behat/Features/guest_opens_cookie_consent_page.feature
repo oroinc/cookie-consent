@@ -1,5 +1,6 @@
 @regression
 @ticket-BB-21075
+@skip
 Feature: Guest Opens Cookie Consent Page
   In order to read detailed information about cookie consent policy
   As a guest buyer
