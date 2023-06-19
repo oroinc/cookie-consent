@@ -13,6 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 class LoadPageFixture extends AbstractFixture implements ContainerAwareInterface
 {
+    use ContainerAwareTrait;
     public const PAGE_WITH_DEFAULT_LOCALIZATION = 'page-with-default-localization';
     public const PAGE_WITH_BASE_LOCALIZATION = 'page-with-base-localization';
 
@@ -21,8 +22,6 @@ class LoadPageFixture extends AbstractFixture implements ContainerAwareInterface
 
     public const TITLE_WITH_BASE_LOCALIZATION = 'Title with base localization';
     public const URL_WITH_BASE_LOCALIZATION = '/slug-url-with-base-localization';
-
-    use ContainerAwareTrait;
 
     public function load(ObjectManager $manager)
     {

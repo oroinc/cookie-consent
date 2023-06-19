@@ -15,7 +15,7 @@ class Page extends AbstractStorage
      *
      * @return Page
      */
-    public static function create(string $pageTitle, string $pageUrl) : self
+    public static function create(string $pageTitle, string $pageUrl): self
     {
         return new static([
             'pageTitle' => $pageTitle,

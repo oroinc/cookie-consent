@@ -24,7 +24,7 @@ class PageIdToDtoTransformer
         $this->localizationHelper = $localizationHelper;
     }
 
-    public function transform(int $pageId) : ?PageDTO
+    public function transform(int $pageId): ?PageDTO
     {
         $pageRepository = $this->doctrineHelper->getEntityRepositoryForClass(Page::class);
         /** @var Page $cmsPage */
