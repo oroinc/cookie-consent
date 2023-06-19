@@ -32,7 +32,7 @@ class CookiesAcceptedPropertyHelper
      *
      * @return bool
      */
-    public function isCookiesAccepted($object) : bool
+    public function isCookiesAccepted($object): bool
     {
         if (!is_object($object)) {
             return false;
