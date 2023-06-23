@@ -30,7 +30,7 @@ class CookiesBannerProviderTest extends \PHPUnit\Framework\TestCase
     /** @var ConfigManager|\PHPUnit\Framework\MockObject\MockObject */
     private $configManager;
 
-    /** @var CookieConsentLandingPageProviderInterface|\PHPUnit\Framework\MockObject\MockObject  */
+    /** @var CookieConsentLandingPageProviderInterface|\PHPUnit\Framework\MockObject\MockObject */
     private $landingPageProvider;
 
     /** @var LocalizationHelper|\PHPUnit\Framework\MockObject\MockObject */
