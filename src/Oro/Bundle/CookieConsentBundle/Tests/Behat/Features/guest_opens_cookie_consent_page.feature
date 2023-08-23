@@ -14,7 +14,8 @@ Feature: Guest Opens Cookie Consent Page
   Scenario: I go by the Cookie Policy link
     Given I am on homepage
     Then I should see an "Cookie Banner" element
-    When I click "Cookie Policy"
+    And I wait for 3 seconds
+    When I click on "Cookie Policy"
     Then I should be on "/cookie-policy"
 
   Scenario: I accept the cookie policy and should not see the banner again
