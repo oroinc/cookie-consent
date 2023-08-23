@@ -28,7 +28,7 @@ $cookie-banner-view-show-before-transform: translateX(-50%) scale(1, 1) !default
 $cookie-banner-view-text-offset: auto !default;
 $cookie-banner-view-text-text-align: center !default;
 
-$cookie-banner-view-buttons-offset: $offset-y auto 0 !default;
+$cookie-banner-view-buttons-offset: spacing('base') auto 0 !default;
 $cookie-banner-view-buttons-text-align: center !default;
 
 $banner-view-inner-container-max-width: $site-width !default;
