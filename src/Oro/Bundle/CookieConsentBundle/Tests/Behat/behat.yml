@@ -16,3 +16,7 @@ oro_behat_extension:
             selector:
                 locator: 'div.cookie-banner-view span.fa.fa-check'
                 type: css
+        Cookie Policy:
+            selector:
+                locator: '//a[text()[contains(.,"Cookie Policy")]]'
+                type: xpath
