@@ -1,7 +1,7 @@
 /* @theme: default; */
 
 $cookie-banner-view-position: fixed !default;
-$cookie-banner-view-background-color: get-color('additional', 'ultra') !default;
+$cookie-banner-view-background-color: get-color('additional-old', 'ultra') !default;
 $cookie-banner-view-bottom: 0 !default;
 $cookie-banner-view-left: 0 !default;
 $cookie-banner-view-right: 0 !default;
@@ -11,7 +11,7 @@ $cookie-banner-view-transition: transform .4s ease-in-out !default;
 $cookie-banner-view-transform: translateY(100%) !default;
 
 $cookie-banner-view-before-background-content: '' !default;
-$cookie-banner-view-before-background-color: get-color('secondary', 'main') !default;
+$cookie-banner-view-before-background-color: get-color('secondary-old', 'main') !default;
 $cookie-banner-view-before-width: 100% !default;
 $cookie-banner-view-before-height: 2px !default;
 $cookie-banner-view-before-position: absolute !default;
@@ -20,7 +20,7 @@ $cookie-banner-view-before-left: 50% !default;
 $cookie-banner-view-before-transform: translateX(-50%) scale(0, 1) !default;
 $cookie-banner-view-before-transition: transform 1s ease-in-out !default;
 
-$cookie-banner-view-show-box-shadow: 0 -3px 7px 1px get-color('additional', 'darker', 5%) !default;
+$cookie-banner-view-show-box-shadow: 0 -3px 7px 1px get-color('additional-old', 'darker', 5%) !default;
 $cookie-banner-view-show-transform: translateY(0) !default;
 
 $cookie-banner-view-show-before-transform: translateX(-50%) scale(1, 1) !default;
