@@ -18,7 +18,6 @@ class PageIdToDTOTransformerTest extends FrontendWebTestCase
     {
         $this->initClient();
         $this->setCurrentWebsite('default');
-        $this->client->useHashNavigation(true);
         $this->loadFixtures([
             LoadPageFixture::class
         ]);

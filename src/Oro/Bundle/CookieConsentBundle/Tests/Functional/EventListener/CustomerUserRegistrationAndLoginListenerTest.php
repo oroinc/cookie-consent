@@ -35,7 +35,6 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
     protected function setUp(): void
     {
         $this->initClient();
-        $this->client->useHashNavigation(true);
         $this->configManager = self::getConfigManager('global');
         $this->loadFixtures([LoadCustomerVisitors::class]);
     }

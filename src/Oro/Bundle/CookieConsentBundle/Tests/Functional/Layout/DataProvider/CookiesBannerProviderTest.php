@@ -15,7 +15,6 @@ class CookiesBannerProviderTest extends WebTestCase
     protected function setUp(): void
     {
         $this->initClient();
-        $this->client->useHashNavigation(true);
         $this->loadFixtures([EnableCookieBanner::class]);
         $this->getContainer()->get('oro_search.search.engine.indexer')->reindex(Product::class);
     }
