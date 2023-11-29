@@ -45,7 +45,6 @@ class ConfigLandingPageSelectTypeTest extends WebTestCase
         }
         $this->initClient([], self::generateBasicAuthHeader());
         $this->loadFixtures([LandingPageDataFixture::class, EnableCookieBanner::class]);
-        $this->client->useHashNavigation(true);
         $this->configManager = self::getConfigManager('global');
         $this->websiteConfigManager = self::getConfigManager('website');
         $this->localizationManager = self::getContainer()->get('oro_locale.manager.localization');
