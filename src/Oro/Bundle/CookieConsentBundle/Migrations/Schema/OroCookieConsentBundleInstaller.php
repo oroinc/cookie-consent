@@ -8,15 +8,12 @@ use Oro\Bundle\EntityExtendBundle\EntityConfig\ExtendScope;
 use Oro\Bundle\MigrationBundle\Migration\Installation;
 use Oro\Bundle\MigrationBundle\Migration\QueryBag;
 
-/**
- * Handles all migrations logic executed during installation
- */
 class OroCookieConsentBundleInstaller implements Installation
 {
     /**
      * {@inheritDoc}
      */
-    public function getMigrationVersion()
+    public function getMigrationVersion(): string
     {
         return 'v1_0';
     }
@@ -24,13 +21,13 @@ class OroCookieConsentBundleInstaller implements Installation
     /**
      * {@inheritDoc}
      */
-    public function up(Schema $schema, QueryBag $queries)
+    public function up(Schema $schema, QueryBag $queries): void
     {
         $this->addCookiesAcceptedToCustomerUserTable($schema);
         $this->addCookiesAcceptedToCustomerVisitorTable($schema);
     }
 
-    private function addCookiesAcceptedToCustomerUserTable(Schema $schema)
+    private function addCookiesAcceptedToCustomerUserTable(Schema $schema): void
     {
         $customerUserTable = $schema->getTable('oro_customer_user');
         $customerUserTable->addColumn(
@@ -52,7 +49,7 @@ class OroCookieConsentBundleInstaller implements Installation
         );
     }
 
-    private function addCookiesAcceptedToCustomerVisitorTable(Schema $schema)
+    private function addCookiesAcceptedToCustomerVisitorTable(Schema $schema): void
     {
         $customerVisitorTable = $schema->getTable('oro_customer_visitor');
         $customerVisitorTable->addColumn(
