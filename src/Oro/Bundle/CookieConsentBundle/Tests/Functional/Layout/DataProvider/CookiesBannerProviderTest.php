@@ -28,9 +28,10 @@ class CookiesBannerProviderTest extends WebTestCase
             $crawler->filter('.wrapper')->html()
         );
 
-        $this->assertStringContainsString(
-            \json_encode(htmlentities(Configuration::DEFAULT_BANNER_TEXT, ENT_NOQUOTES)),
-            $crawler->filter('.wrapper')->html()
-        );
+        $cookieBannerData = $crawler
+            ->filter('div[class=" cookie-banner-view"]')
+            ->attr('data-page-component-view');
+        $cookieBannerData = json_decode($cookieBannerData);
+        $this->assertStringContainsString($cookieBannerData->bannerText, Configuration::DEFAULT_BANNER_TEXT);
     }
 }

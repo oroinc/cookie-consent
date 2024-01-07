@@ -31,7 +31,7 @@ class OroCookieConsentSetAcceptedCookiesTest extends WebTestCase
 
         self::assertFalse($user->getCookiesAccepted());
 
-        $token = new UsernamePasswordOrganizationToken($user, false, 'key', $organization, $user->getUserRoles());
+        $token = new UsernamePasswordOrganizationToken($user, 'key', $organization, $user->getUserRoles());
         $this->client->getContainer()->get('security.token_storage')->setToken($token);
 
         $action = $this->client->getContainer()->get('oro_action.action.run_action_group');
@@ -50,7 +50,7 @@ class OroCookieConsentSetAcceptedCookiesTest extends WebTestCase
         $registry = self::getContainer()->get('doctrine');
         $organization = $registry->getRepository(Organization::class)->getFirst();
 
-        $token = new AnonymousCustomerUserToken('', [], $customerVisitor, $organization);
+        $token = new AnonymousCustomerUserToken($customerVisitor, [], $organization);
         $this->client->getContainer()->get('security.token_storage')->setToken($token);
 
         $action = $this->client->getContainer()->get('oro_action.action.run_action_group');

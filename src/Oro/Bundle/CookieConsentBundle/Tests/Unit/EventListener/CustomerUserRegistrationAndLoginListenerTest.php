@@ -11,7 +11,7 @@ use Oro\Bundle\CookieConsentBundle\Tests\Unit\Stubs\CustomerVisitorStub;
 use Oro\Bundle\CustomerBundle\Entity\CustomerUser;
 use Oro\Bundle\CustomerBundle\Entity\CustomerVisitorManager;
 use Oro\Bundle\CustomerBundle\Event\FilterCustomerUserResponseEvent;
-use Oro\Bundle\CustomerBundle\Security\Firewall\AnonymousCustomerUserAuthenticationListener;
+use Oro\Bundle\CustomerBundle\Security\AnonymousCustomerUserAuthenticator;
 use Oro\Bundle\CustomerBundle\Security\Token\AnonymousCustomerUserToken;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Symfony\Component\HttpFoundation\Request;
@@ -236,7 +236,7 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
     }
 
     private function createInteractiveLoginEvent(
-        UserInterface|string $user,
+        UserInterface $user,
         ?array $visitorCredentials
     ): InteractiveLoginEvent|\PHPUnit\Framework\MockObject\MockObject {
         $tokenMock = $this->createMock(TokenInterface::class);
@@ -247,7 +247,7 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
         $cookiesData = [];
         if (null !== $visitorCredentials) {
             $serializedCredentials = base64_encode(json_encode($visitorCredentials, JSON_THROW_ON_ERROR));
-            $cookiesData[AnonymousCustomerUserAuthenticationListener::COOKIE_NAME] = $serializedCredentials;
+            $cookiesData[AnonymousCustomerUserAuthenticator::COOKIE_NAME] = $serializedCredentials;
         }
 
         $request = new Request([], [], [], $cookiesData);
@@ -260,7 +260,7 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
         return [
             'tokenUserIsNotAnObject' => [
                 'event' => $this->createInteractiveLoginEvent(
-                    'ANONYMOUS_USER',
+                    $this->createMock(UserInterface::class),
                     []
                 ),
                 'expectedCookiesAccepted' => false
