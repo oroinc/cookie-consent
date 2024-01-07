@@ -9,12 +9,12 @@ use Oro\Bundle\CMSBundle\Migrations\Data\AbstractLoadPageData;
  */
 class LoadCookieConsentPage extends AbstractLoadPageData
 {
-    const TITLE = 'Cookie Policy';
+    public const TITLE = 'Cookie Policy';
 
     /**
      * {@inheritDoc}
      */
-    protected function getFilePaths()
+    protected function getFilePaths(): string
     {
         return $this->getFilePathsFromLocator(
             '@OroCookieConsentBundle/Migrations/Data/ORM/data/cookie_policy_page.yml'
