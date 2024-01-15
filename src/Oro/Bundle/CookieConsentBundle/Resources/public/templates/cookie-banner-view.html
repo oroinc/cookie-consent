@@ -1,4 +1,4 @@
-<% let orofrontend = _.macros('orofrontend') %>
+<% let oroui = _.macros('oroui') %>
 <div class="banner-view-inner-container" data-skip-focus-decoration tabindex="0">
     <div class="cookie-banner-view__text cms-typography">
         <%= bannerText %>
@@ -16,5 +16,5 @@
     </div>
 </div>
 <button class="close-dialog btn btn--plain btn--text" data-role="close" title="<%- _.__('Close') %>" aria-label="<%- _.__('oro_cookie_banner.close.aria_label') %>">
-    <%= orofrontend.renderIcon({name: 'x', extraClass: 'theme-icon--medium'}) %>
+    <%= oroui.renderIcon({name: 'x', extraClass: 'theme-icon--medium'}) %>
 </button>
