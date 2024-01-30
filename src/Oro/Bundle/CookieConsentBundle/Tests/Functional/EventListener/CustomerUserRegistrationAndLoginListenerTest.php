@@ -7,7 +7,7 @@ use Oro\Bundle\ConfigBundle\Tests\Functional\Traits\ConfigManagerAwareTestTrait;
 use Oro\Bundle\CookieConsentBundle\DependencyInjection\Configuration;
 use Oro\Bundle\CustomerBundle\Entity\CustomerUser;
 use Oro\Bundle\CustomerBundle\Entity\CustomerVisitor;
-use Oro\Bundle\CustomerBundle\Security\Firewall\AnonymousCustomerUserAuthenticationListener;
+use Oro\Bundle\CustomerBundle\Security\AnonymousCustomerUserAuthenticator;
 use Oro\Bundle\CustomerBundle\Tests\Functional\DataFixtures\LoadCustomerUserData;
 use Oro\Bundle\CustomerBundle\Tests\Functional\DataFixtures\LoadCustomerVisitors;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
@@ -33,7 +33,6 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
     protected function setUp(): void
     {
         $this->initClient();
-        $this->client->useHashNavigation(true);
         $this->configManager = self::getConfigManager('global');
         $this->loadFixtures([LoadCustomerVisitors::class]);
     }
@@ -100,7 +99,7 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
         $this->client
             ->getCookieJar()
             ->set(
-                new Cookie(AnonymousCustomerUserAuthenticationListener::COOKIE_NAME, $serializedCredentials)
+                new Cookie(AnonymousCustomerUserAuthenticator::COOKIE_NAME, $serializedCredentials)
             )
         ;
         $crawler = $this->client->request('GET', $this->getUrl('oro_customer_frontend_customer_user_register'));
@@ -135,7 +134,6 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
                     $request,
                     new UsernamePasswordToken(
                         $this->getFixtureLoadedCustomerUser(),
-                        [],
                         'frontend',
                         []
                     )
@@ -177,7 +175,7 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
         $this->client
             ->getCookieJar()
             ->set(
-                new Cookie(AnonymousCustomerUserAuthenticationListener::COOKIE_NAME, $serializedCredentials)
+                new Cookie(AnonymousCustomerUserAuthenticator::COOKIE_NAME, $serializedCredentials)
             )
         ;
         $crawler = $this->client->request('GET', $this->getUrl('oro_customer_customer_user_security_login'));

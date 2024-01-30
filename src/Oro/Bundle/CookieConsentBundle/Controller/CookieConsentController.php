@@ -25,7 +25,7 @@ class CookieConsentController extends AbstractController
     {
         $errors = new ArrayCollection();
 
-        $action = $this->get(RunActionGroup::class);
+        $action = $this->container->get(RunActionGroup::class);
         $action->initialize(
             [
                 'action_group' => 'oro_cookie_consent_set_accepted_cookies',
