@@ -6,7 +6,7 @@ use Oro\Bundle\CookieConsentBundle\Helper\FrontendRepresentativeUserHelper;
 use Oro\Bundle\CookieConsentBundle\Tests\Unit\Stubs\CustomerUserStub;
 use Oro\Bundle\CookieConsentBundle\Tests\Unit\Stubs\CustomerVisitorStub;
 use Oro\Bundle\CustomerBundle\Entity\CustomerVisitorManager;
-use Oro\Bundle\CustomerBundle\Security\Firewall\AnonymousCustomerUserAuthenticationListener;
+use Oro\Bundle\CustomerBundle\Security\AnonymousCustomerUserAuthenticator;
 use Oro\Bundle\CustomerBundle\Security\Token\AnonymousCustomerUserToken;
 use Oro\Bundle\UserBundle\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
@@ -147,7 +147,7 @@ class FrontendRepresentativeUserHelperTest extends \PHPUnit\Framework\TestCase
         $cookiesData = [];
         if (null !== $visitorCredentials) {
             $serializedCredentials = base64_encode(json_encode($visitorCredentials, JSON_THROW_ON_ERROR));
-            $cookiesData[AnonymousCustomerUserAuthenticationListener::COOKIE_NAME] = $serializedCredentials;
+            $cookiesData[AnonymousCustomerUserAuthenticator::COOKIE_NAME] = $serializedCredentials;
         }
 
         return new Request([], [], [], $cookiesData);

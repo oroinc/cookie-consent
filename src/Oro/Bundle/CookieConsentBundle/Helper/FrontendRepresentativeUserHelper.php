@@ -5,7 +5,7 @@ namespace Oro\Bundle\CookieConsentBundle\Helper;
 use Oro\Bundle\CustomerBundle\Entity\CustomerUser;
 use Oro\Bundle\CustomerBundle\Entity\CustomerVisitor;
 use Oro\Bundle\CustomerBundle\Entity\CustomerVisitorManager;
-use Oro\Bundle\CustomerBundle\Security\Firewall\AnonymousCustomerUserAuthenticationListener;
+use Oro\Bundle\CustomerBundle\Security\AnonymousCustomerUserAuthenticator;
 use Oro\Bundle\CustomerBundle\Security\Token\AnonymousCustomerUserToken;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -50,7 +50,7 @@ class FrontendRepresentativeUserHelper
 
     public function getVisitorFromRequest(Request $request): ?CustomerVisitor
     {
-        $value = $request->cookies->get(AnonymousCustomerUserAuthenticationListener::COOKIE_NAME);
+        $value = $request->cookies->get(AnonymousCustomerUserAuthenticator::COOKIE_NAME);
         if (!$value) {
             return null;
         }
