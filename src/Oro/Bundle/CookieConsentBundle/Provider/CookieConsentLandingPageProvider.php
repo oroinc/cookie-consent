@@ -4,10 +4,10 @@ namespace Oro\Bundle\CookieConsentBundle\Provider;
 
 use Oro\Bundle\ConfigBundle\Config\ConfigManager;
 use Oro\Bundle\CookieConsentBundle\DependencyInjection\Configuration;
-use Oro\Bundle\CookieConsentBundle\Helper\LocalizedValueExtractor;
 use Oro\Bundle\CookieConsentBundle\Transformer\DTO\Page;
 use Oro\Bundle\CookieConsentBundle\Transformer\PageIdToDtoTransformer;
 use Oro\Bundle\LocaleBundle\Entity\Localization;
+use Oro\Bundle\LocaleBundle\Helper\LocalizedValueExtractor;
 
 /**
  * This service provides information about the Cookie Consent Policy page

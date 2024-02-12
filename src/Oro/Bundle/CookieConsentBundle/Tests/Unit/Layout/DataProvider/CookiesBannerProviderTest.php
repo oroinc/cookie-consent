@@ -5,7 +5,6 @@ namespace Oro\Bundle\CookieConsentBundle\Tests\Unit\Layout\DataProvider;
 use Oro\Bundle\ConfigBundle\Config\ConfigManager;
 use Oro\Bundle\CookieConsentBundle\Helper\CookiesAcceptedPropertyHelper;
 use Oro\Bundle\CookieConsentBundle\Helper\FrontendRepresentativeUserHelper;
-use Oro\Bundle\CookieConsentBundle\Helper\LocalizedValueExtractor;
 use Oro\Bundle\CookieConsentBundle\Layout\DataProvider\CookiesBannerProvider;
 use Oro\Bundle\CookieConsentBundle\Provider\CookieConsentLandingPageProviderInterface;
 use Oro\Bundle\CookieConsentBundle\Tests\Unit\Stubs\CustomerUserStub;
@@ -13,6 +12,7 @@ use Oro\Bundle\CookieConsentBundle\Tests\Unit\Stubs\CustomerVisitorStub;
 use Oro\Bundle\CookieConsentBundle\Transformer\DTO\Page;
 use Oro\Bundle\LocaleBundle\Entity\Localization;
 use Oro\Bundle\LocaleBundle\Helper\LocalizationHelper;
+use Oro\Bundle\LocaleBundle\Helper\LocalizedValueExtractor;
 use Oro\Bundle\UIBundle\Tools\HtmlTagHelper;
 use Oro\Component\Testing\Unit\EntityTrait;
 
