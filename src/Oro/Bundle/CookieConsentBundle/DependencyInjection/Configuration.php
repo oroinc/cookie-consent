@@ -11,13 +11,14 @@ class Configuration implements ConfigurationInterface
 {
     public const ROOT_NODE = 'oro_cookie_consent';
     public const PARAM_NAME_SHOW_BANNER = 'show_banner';
+    public const PARAM_NAME_LOCALIZED_BANNER_TITLE = 'localized_banner_title';
     public const PARAM_NAME_LOCALIZED_BANNER_TEXT = 'localized_banner_text';
     public const PARAM_NAME_LOCALIZED_LANDING_PAGE_ID = 'localized_landing_page_id';
 
+    public const DEFAULT_BANNER_TITLE = 'This website uses cookies to provide you with the best user experience';
     public const DEFAULT_BANNER_TEXT = <<<_TEXT
-<h3 style="text-align:center;">This website uses cookies to provide you with the best user experience</h3>
 Cookies are collected to remember your login details,
-provide secure login, collect statistics to optimize website performance and deliver content relevant to you.<br>
+provide secure login, collect statistics to optimize website performance and deliver content relevant to you.
 By continuing to browse the website, you consent to our use of cookies.
 _TEXT;
     public const DEFAULT_PAGE_ID = null;
@@ -36,6 +37,10 @@ _TEXT;
                 self::PARAM_NAME_SHOW_BANNER  => [
                     'type'  => 'boolean',
                     'value' => false
+                ],
+                self::PARAM_NAME_LOCALIZED_BANNER_TITLE => [
+                    'type'  => 'array',
+                    'value' => [null => self::DEFAULT_BANNER_TITLE]
                 ],
                 self::PARAM_NAME_LOCALIZED_BANNER_TEXT => [
                     'type'  => 'array',

@@ -2,6 +2,7 @@
 
 namespace Oro\Bundle\CookieConsentBundle\Tests\Unit\DependencyInjection;
 
+use Oro\Bundle\CookieConsentBundle\DependencyInjection\Configuration;
 use Oro\Bundle\CookieConsentBundle\DependencyInjection\OroCookieConsentExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -20,19 +21,22 @@ class OroCookieConsentExtensionTest extends \PHPUnit\Framework\TestCase
                 [
                     'settings' => [
                         'resolved' => true,
-                        'show_banner' => ['value' => false, 'scope' => 'app'],
-                        'localized_banner_text' => [
-                            'value' => [
-                                null => '<h3 style="text-align:center;">This website uses cookies to provide you'
-                                    . " with the best user experience</h3>\n"
-                                    . "Cookies are collected to remember your login details,\n"
-                                    . 'provide secure login, collect statistics to optimize website performance'
-                                    . " and deliver content relevant to you.<br>\n"
-                                    . 'By continuing to browse the website, you consent to our use of cookies.'
-                            ],
+                        Configuration::PARAM_NAME_SHOW_BANNER => [
+                            'value' => false,
                             'scope' => 'app'
                         ],
-                        'localized_landing_page_id' => ['value' => [null => null], 'scope' => 'app']
+                        Configuration::PARAM_NAME_LOCALIZED_BANNER_TITLE => [
+                            'value' => [null => Configuration::DEFAULT_BANNER_TITLE],
+                            'scope' => 'app'
+                        ],
+                        Configuration::PARAM_NAME_LOCALIZED_BANNER_TEXT => [
+                            'value' => [null => Configuration::DEFAULT_BANNER_TEXT],
+                            'scope' => 'app'
+                        ],
+                        Configuration::PARAM_NAME_LOCALIZED_LANDING_PAGE_ID => [
+                            'value' => [null => null],
+                            'scope' => 'app'
+                        ]
                     ]
                 ]
             ],

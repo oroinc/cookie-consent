@@ -61,6 +61,19 @@ class CookiesBannerProvider
         return false === $this->cookiesAcceptedPropertyHelper->isCookiesAccepted($representativeUser);
     }
 
+    public function getBannerTitle(): string
+    {
+        $bannerTitles = $this->configManager->get(
+            Configuration::getConfigKeyByName(Configuration::PARAM_NAME_LOCALIZED_BANNER_TITLE)
+        );
+
+        $localization = $this->localizationHelper->getCurrentLocalization();
+
+        return $this->htmlTagHelper->purify(
+            (string)$this->localizedValueExtractor->getLocalizedFallbackValue($bannerTitles, $localization)
+        );
+    }
+
     public function getBannerText(): string
     {
         $bannerTexts = $this->configManager->get(

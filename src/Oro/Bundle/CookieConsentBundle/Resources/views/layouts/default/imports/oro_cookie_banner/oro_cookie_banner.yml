@@ -11,6 +11,10 @@ layout:
                 visible: '=data["cookies_banner_provider"].isBannerVisible()'
         - '@appendOption':
             id: banner_content
+            optionName: vars.bannerTitle
+            optionValue: '=data["cookies_banner_provider"].getBannerTitle()'
+        - '@appendOption':
+            id: banner_content
             optionName: vars.bannerText
             optionValue: '=data["cookies_banner_provider"].getBannerText()'
         - '@appendOption':

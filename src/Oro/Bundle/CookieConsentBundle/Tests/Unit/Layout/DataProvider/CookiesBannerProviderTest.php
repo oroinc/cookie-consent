@@ -3,6 +3,7 @@
 namespace Oro\Bundle\CookieConsentBundle\Tests\Unit\Layout\DataProvider;
 
 use Oro\Bundle\ConfigBundle\Config\ConfigManager;
+use Oro\Bundle\CookieConsentBundle\DependencyInjection\Configuration;
 use Oro\Bundle\CookieConsentBundle\Helper\CookiesAcceptedPropertyHelper;
 use Oro\Bundle\CookieConsentBundle\Helper\FrontendRepresentativeUserHelper;
 use Oro\Bundle\CookieConsentBundle\Helper\LocalizedValueExtractor;
@@ -118,6 +119,18 @@ class CookiesBannerProviderTest extends \PHPUnit\Framework\TestCase
                 'expectedResult' => false
             ],
         ];
+    }
+
+    public function testGetBannerTitle()
+    {
+        $bannerTitle = 'Cookie Consent Banner Title';
+
+        $this->configManager->expects(self::once())
+            ->method('get')
+            ->with(Configuration::ROOT_NODE . '.' . Configuration::PARAM_NAME_LOCALIZED_BANNER_TITLE)
+            ->willReturn([null => $bannerTitle]);
+
+        self::assertEquals($bannerTitle . '_purified_', $this->provider->getBannerTitle());
     }
 
     public function testGetBannerText()

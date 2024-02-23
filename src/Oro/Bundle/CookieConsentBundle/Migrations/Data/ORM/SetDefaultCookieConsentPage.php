@@ -32,7 +32,7 @@ class SetDefaultCookieConsentPage extends AbstractFixture implements ContainerAw
 
         $configManager = $this->container->get('oro_config.global');
         $configManager->set(
-            Configuration::ROOT_NODE . '.localized_landing_page_id',
+            Configuration::ROOT_NODE . '.' . Configuration::PARAM_NAME_LOCALIZED_LANDING_PAGE_ID,
             [null => $cookieConsentPage->getId()]
         );
         $configManager->flush();
