@@ -14,7 +14,7 @@ oro_behat_extension:
                 type: css
         Accept Cookie Banner:
             selector:
-                locator: 'div.cookie-banner-view span.fa.fa-check'
+                locator: 'div.cookie-banner-view [data-action="accept"]'
                 type: css
         Cookie Policy:
             selector:

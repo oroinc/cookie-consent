@@ -11,6 +11,16 @@ system_configuration:
                 label: oro.cookie_consent.system_configuration.fields.show_banner.label
                 tooltip: oro.cookie_consent.system_configuration.fields.show_banner.tooltip
                 required: false
+        oro_cookie_consent.localized_banner_title:
+            data_type: array
+            priority: 20
+            type: Oro\Bundle\LocaleBundle\Form\Type\LocalizedPropertyType
+            options:
+                label: oro.cookie_consent.system_configuration.fields.localized_banner_title.label
+                required: true
+                entry_type: Symfony\Component\Form\Extension\Core\Type\TextType
+                constraints:
+                    - NotBlank: ~
         oro_cookie_consent.localized_banner_text:
             data_type: array
             priority: 20
@@ -42,6 +52,7 @@ system_configuration:
                                         priority: -100
                                         children:
                                             - oro_cookie_consent.show_banner
+                                            - oro_cookie_consent.localized_banner_title
                                             - oro_cookie_consent.localized_banner_text
                                             - oro_cookie_consent.localized_landing_page_id
         organization_configuration:
@@ -55,6 +66,7 @@ system_configuration:
                                         priority: -100
                                         children:
                                             - oro_cookie_consent.show_banner
+                                            - oro_cookie_consent.localized_banner_title
                                             - oro_cookie_consent.localized_banner_text
                                             - oro_cookie_consent.localized_landing_page_id
         website_configuration:
@@ -68,5 +80,6 @@ system_configuration:
                                         priority: -100
                                         children:
                                             - oro_cookie_consent.show_banner
+                                            - oro_cookie_consent.localized_banner_title
                                             - oro_cookie_consent.localized_banner_text
                                             - oro_cookie_consent.localized_landing_page_id

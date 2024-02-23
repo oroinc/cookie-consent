@@ -1,20 +1,25 @@
 <% let oroui = _.macros('oroui') %>
-<div class="banner-view-inner-container" data-skip-focus-decoration tabindex="0">
-    <div class="cookie-banner-view__text cms-typography">
-        <%= bannerText %>
-        <% if (!_.isEmpty(landingPageHref) && !_.isEmpty(landingPageLabel)) { %>
-            <a href="<%- landingPageHref %>">
-                <%- landingPageLabel %>
-            </a>
-        <% } %>
-    </div>
-    <div class="cookie-banner-view__buttons">
-        <button data-action="accept" class="btn btn--outlined" aria-label="<%- _.__('oro_cookie_banner.accept_button.aria_label') %>">
-            <span class="fa fa-check" aria-hidden="true"></span>
-            <%- bannerButtonLabel %>
-        </button>
+<div class="cookie-banner-view__inner-container" data-skip-focus-decoration tabindex="0">
+    <div class="cookie-banner-view__content cms-typography">
+        <h4 class="cookie-banner-view__title"><%= bannerTitle %></h4>
+        <div class="cookie-banner-view__description">
+            <span class="cookie-banner-view__text">
+                <%= bannerText %>
+                <% if (!_.isEmpty(landingPageHref) && !_.isEmpty(landingPageLabel)) { %>
+                    <a class="inverse" href="<%- landingPageHref %>">
+                        <%- landingPageLabel %>
+                    </a>
+                <% } %>
+            </span>
+            <div class="cookie-banner-view__actions">
+                <button data-action="accept" class="btn btn--inverse text-nowrap" aria-label="<%- _.__('oro_cookie_banner.accept_button.aria_label') %>">
+                    <%= oroui.renderIcon({name: 'check', extraClass: 'theme-icon--medium'}) %>
+                    <%- bannerButtonLabel %>
+                </button>
+            </div>
+        </div>
     </div>
 </div>
-<button class="close-dialog btn btn--plain btn--text" data-role="close" title="<%- _.__('Close') %>" aria-label="<%- _.__('oro_cookie_banner.close.aria_label') %>">
-    <%= oroui.renderIcon({name: 'x'}) %>
+<button class="close-dialog absolute btn btn--icon btn--colored-inverse" data-role="close" title="<%- _.__('Close') %>" aria-label="<%- _.__('oro_cookie_banner.close.aria_label') %>">
+    <%= oroui.renderIcon({name: 'x', extraClass: 'theme-icon--medium'}) %>
 </button>

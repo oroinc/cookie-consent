@@ -59,6 +59,7 @@ define(function(require) {
          */
         render: function() {
             this.$el.html(this.template({
+                bannerTitle: this.options.bannerTitle,
                 bannerText: this.options.bannerText,
                 bannerButtonLabel: _.__('oro_cookie_banner.accept_button.label'),
                 landingPageHref: this.options.landingPageHref,
