@@ -32,6 +32,7 @@ class CookiesBannerProviderTest extends WebTestCase
             ->filter('div[class=" cookie-banner-view"]')
             ->attr('data-page-component-view');
         $cookieBannerData = json_decode($cookieBannerData);
+        $this->assertStringContainsString($cookieBannerData->bannerTitle, Configuration::DEFAULT_BANNER_TITLE);
         $this->assertStringContainsString($cookieBannerData->bannerText, Configuration::DEFAULT_BANNER_TEXT);
     }
 }

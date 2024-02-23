@@ -6,10 +6,10 @@ use Oro\Bundle\ConfigBundle\Config\ConfigManager;
 use Oro\Bundle\CookieConsentBundle\DependencyInjection\Configuration;
 use Oro\Bundle\CookieConsentBundle\Helper\CookiesAcceptedPropertyHelper;
 use Oro\Bundle\CookieConsentBundle\Helper\FrontendRepresentativeUserHelper;
-use Oro\Bundle\CookieConsentBundle\Helper\LocalizedValueExtractor;
 use Oro\Bundle\CookieConsentBundle\Provider\CookieConsentLandingPageProviderInterface;
 use Oro\Bundle\CookieConsentBundle\Transformer\DTO\Page;
 use Oro\Bundle\LocaleBundle\Helper\LocalizationHelper;
+use Oro\Bundle\LocaleBundle\Helper\LocalizedValueExtractor;
 use Oro\Bundle\UIBundle\Tools\HtmlTagHelper;
 
 /**
@@ -59,6 +59,19 @@ class CookiesBannerProvider
         $representativeUser = $this->frontendRepresentativeUserHelper->getRepresentativeUser();
 
         return false === $this->cookiesAcceptedPropertyHelper->isCookiesAccepted($representativeUser);
+    }
+
+    public function getBannerTitle(): string
+    {
+        $bannerTitles = $this->configManager->get(
+            Configuration::getConfigKeyByName(Configuration::PARAM_NAME_LOCALIZED_BANNER_TITLE)
+        );
+
+        $localization = $this->localizationHelper->getCurrentLocalization();
+
+        return $this->htmlTagHelper->purify(
+            (string)$this->localizedValueExtractor->getLocalizedFallbackValue($bannerTitles, $localization)
+        );
     }
 
     public function getBannerText(): string

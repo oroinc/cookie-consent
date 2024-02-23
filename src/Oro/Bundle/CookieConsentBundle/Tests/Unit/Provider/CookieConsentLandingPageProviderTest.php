@@ -3,11 +3,11 @@
 namespace Oro\Bundle\CookieConsentBundle\Tests\Unit\Provider;
 
 use Oro\Bundle\ConfigBundle\Config\ConfigManager;
-use Oro\Bundle\CookieConsentBundle\Helper\LocalizedValueExtractor;
 use Oro\Bundle\CookieConsentBundle\Provider\CookieConsentLandingPageProvider;
 use Oro\Bundle\CookieConsentBundle\Transformer\DTO\Page;
 use Oro\Bundle\CookieConsentBundle\Transformer\PageIdToDtoTransformer;
 use Oro\Bundle\LocaleBundle\Entity\Localization;
+use Oro\Bundle\LocaleBundle\Helper\LocalizedValueExtractor;
 use Oro\Component\Testing\Unit\EntityTrait;
 
 class CookieConsentLandingPageProviderTest extends \PHPUnit\Framework\TestCase

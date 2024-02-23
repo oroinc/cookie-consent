@@ -1,46 +1,44 @@
 /* @theme: default; */
 
 $cookie-banner-view-position: fixed !default;
-$cookie-banner-view-background-color: get-var-color('neutral', 'white-100') !default;
+$cookie-banner-view-background-color: get-var-color('neutral', 'dark') !default;
 $cookie-banner-view-bottom: 0 !default;
 $cookie-banner-view-left: 0 !default;
 $cookie-banner-view-right: 0 !default;
-$cookie-banner-view-inner-offset: 14px 32px 12px !default;
+$cookie-banner-view-inner-offset: 16px 28px 24px !default;
 $cookie-banner-view-z-index: z('fixed') !default;
 $cookie-banner-view-transition: transform .4s ease-in-out !default;
 $cookie-banner-view-transform: translateY(100%) !default;
+$cookie-banner-view-border-radius: 4px 4px 0 0 !default;
 
-$cookie-banner-view-before-background-content: '' !default;
-$cookie-banner-view-before-background-color: get-var-color('secondary', 'c2') !default;
-$cookie-banner-view-before-width: 100% !default;
-$cookie-banner-view-before-height: 2px !default;
-$cookie-banner-view-before-position: absolute !default;
-$cookie-banner-view-before-top: 0 !default;
-$cookie-banner-view-before-left: 50% !default;
-$cookie-banner-view-before-transform: translateX(-50%) scale(0, 1) !default;
-$cookie-banner-view-before-transition: transform 1s ease-in-out !default;
-
-$cookie-banner-view-show-box-shadow: 0 -3px 7px 1px get-var-color('neutral', 'grey3') !default;
 $cookie-banner-view-show-transform: translateY(0) !default;
 
-$cookie-banner-view-show-before-transform: translateX(-50%) scale(1, 1) !default;
+$cookie-banner-view-inner-container-max-width: $site-width !default;
+$cookie-banner-view-inner-container-display: flex !default;
+$cookie-banner-view-inner-container-align-items: center !default;
+$cookie-banner-view-inner-container-justify-content: space-between !default;
 
-$cookie-banner-view-text-offset: auto !default;
-$cookie-banner-view-text-text-align: center !default;
+$cookie-banner-view-content-text-align: left !default;
+$cookie-banner-view-content-color: get-var-color('text', 'inverse') !default;
 
-$cookie-banner-view-buttons-offset: spacing('base') auto 0 !default;
-$cookie-banner-view-buttons-text-align: center !default;
+$cookie-banner-view-title-padding: 11px 45px 11px 0 !default;
 
-$banner-view-inner-container-max-width: $site-width !default;
-$banner-view-inner-container-offset: auto !default;
-$banner-view-inner-container-inner-offset: 12px 0 !default;
-$banner-view-inner-container-display: block !default;
-$banner-view-inner-container-align-items: center !default;
+$cookie-banner-view-description-display: flex !default;
+$cookie-banner-view-description-align-items: center !default;
+
+$cookie-banner-view-text-color: get-var-color('text', 'inverse-70') !default;
+
+$cookie-banner-view-actions-offset: 0 0 0 56px !default;
 
 // Mobile
-$cookie-banner-view-text-mobile-width: 100% !default;
-$cookie-banner-view-text-mobile-offset-right: 0 !default;
-$cookie-banner-view-text-mobile-offset-bottom: 20px !default;
+$cookie-banner-view-mobile-padding-x: spacing('base') !default;
+$cookie-banner-view-padding-y: spacing('lg') !default;
+$cookie-banner-view-mobile-padding: $cookie-banner-view-padding-y $cookie-banner-view-mobile-padding-x !default;
 
-$banner-view-inner-container-mobile-flex-wrap: wrap !default;
-$banner-view-inner-container-mobile-justify-content: flex-end !default;
+$cookie-banner-view-close-mobile-offset: $cookie-banner-view-padding-y 2px spacing('base') !default;
+
+$cookie-banner-view-title-mobile-padding-bottom: 8px !default;
+$cookie-banner-view-description-mobile-flex-direction: column !default;
+$cookie-banner-view-actions-mobile-width: 100% !default;
+$cookie-banner-view-actions-mobile-margin: 16px 0 0 !default;
+$cookie-banner-view-button-mobile-width: 100% !default;

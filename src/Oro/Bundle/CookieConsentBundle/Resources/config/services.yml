@@ -33,15 +33,11 @@ services:
             - '@oro_entity.doctrine_helper'
             - '@oro_locale.helper.localization'
 
-    oro_cookie_consent.helper.localized_value_extractor:
-        class: 'Oro\Bundle\CookieConsentBundle\Helper\LocalizedValueExtractor'
-        public: false
-
     oro_cookie_consent.provider.cookie_consent_landing_page_provider:
         class: Oro\Bundle\CookieConsentBundle\Provider\CookieConsentLandingPageProvider
         arguments:
             - '@oro_config.manager'
-            - '@oro_cookie_consent.helper.localized_value_extractor'
+            - '@oro_locale.helper.localized_value_extractor'
             - '@oro_cookie_consent.transformer.page_id_to_dto_transformer'
 
     oro_cookie_consent.layout.data_provider.cookies_banner_provider:
@@ -50,7 +46,7 @@ services:
             - '@oro_cookie_consent.helper.frontend_representative_user_helper'
             - '@oro_cookie_consent.helper.cookies_accepted_property_helper'
             - '@oro_cookie_consent.provider.cookie_consent_landing_page_provider'
-            - '@oro_cookie_consent.helper.localized_value_extractor'
+            - '@oro_locale.helper.localized_value_extractor'
             - '@oro_config.manager'
             - '@oro_locale.helper.localization'
             - '@oro_ui.html_tag_helper'

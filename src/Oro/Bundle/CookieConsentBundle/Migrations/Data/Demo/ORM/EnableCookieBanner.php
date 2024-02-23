@@ -21,7 +21,7 @@ class EnableCookieBanner extends AbstractFixture implements ContainerAwareInterf
     public function load(ObjectManager $manager)
     {
         $configManager = $this->container->get('oro_config.global');
-        $configManager->set(Configuration::ROOT_NODE . '.show_banner', true);
+        $configManager->set(Configuration::ROOT_NODE . '.' .  Configuration::PARAM_NAME_SHOW_BANNER, true);
 
         $configManager->flush();
     }
