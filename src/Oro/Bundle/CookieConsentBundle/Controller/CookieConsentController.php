@@ -14,13 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class CookieConsentController extends AbstractController
 {
-    /**
-     * @Route(
-     *      "/cookies-accepted",
-     *      name="oro_cookie_consent_set_cookies_accepted",
-     *      methods={"POST"}
-     * )
-     */
+    #[Route(path: '/cookies-accepted', name: 'oro_cookie_consent_set_cookies_accepted', methods: ['POST'])]
     public function setCookiesAcceptedAction(): Response
     {
         $errors = new ArrayCollection();
