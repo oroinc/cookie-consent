@@ -44,6 +44,10 @@
     &__actions {
         margin: $cookie-banner-view-actions-offset;
     }
+
+    .close-dialog {
+        --close-dialog-offset: #{spacing('base')};
+    }
 }
 
 @include breakpoint('mobile') {
