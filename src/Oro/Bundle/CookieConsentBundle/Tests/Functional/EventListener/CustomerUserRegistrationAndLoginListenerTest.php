@@ -39,7 +39,7 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
 
     private function submitRegisterForm(Crawler $crawler, string $email): Crawler
     {
-        $form = $crawler->selectButton('Create An Account')->form();
+        $form = $crawler->selectButton('Create Account')->form();
         $submittedData = [
             'oro_customer_frontend_customer_user_register' => [
                 '_token' => $form->get('oro_customer_frontend_customer_user_register[_token]')->getValue(),
