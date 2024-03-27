@@ -1,5 +1,7 @@
 /* @theme: default; */
 
+$cookie-banner-view-max-width: 1920px !default;
+$cookie-banner-view-margin-inline: auto !default;
 $cookie-banner-view-position: fixed !default;
 $cookie-banner-view-background-color: get-var-color('neutral', 'dark') !default;
 $cookie-banner-view-bottom: 0 !default;

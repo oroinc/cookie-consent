@@ -1,6 +1,8 @@
 /* @theme: default; */
 
 .cookie-banner-view {
+    max-width: $cookie-banner-view-max-width;
+    margin-inline: $cookie-banner-view-margin-inline;
     position: $cookie-banner-view-position;
     background-color: $cookie-banner-view-background-color;
     bottom: $cookie-banner-view-bottom;
