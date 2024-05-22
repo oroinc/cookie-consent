@@ -5,12 +5,14 @@ namespace Oro\Bundle\CookieConsentBundle\Tests\Unit\Form\Type;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataFactory;
 use Oro\Bundle\CMSBundle\Entity\Page;
 use Oro\Bundle\CookieConsentBundle\Form\Type\ConfigLandingPageSelectType;
 use Oro\Bundle\CookieConsentBundle\Tests\Unit\Form\Type\Stub\PageStub;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
-use Oro\Bundle\EntityConfigBundle\Config\ConfigInterface;
+use Oro\Bundle\EntityConfigBundle\Config\Config;
 use Oro\Bundle\EntityConfigBundle\Config\ConfigManager;
+use Oro\Bundle\EntityConfigBundle\Config\Id\EntityConfigId;
 use Oro\Bundle\EntityConfigBundle\Provider\ConfigProvider;
 use Oro\Bundle\FeatureToggleBundle\Checker\FeatureChecker;
 use Oro\Bundle\FormBundle\Autocomplete\SearchHandlerInterface;
@@ -26,12 +28,6 @@ class ConfigLandingPageSelectTypeTest extends FormIntegrationTestCase
     private const EXIST_PAGE_ID = 77;
     private const EXIST_PAGE_TITLE = 'SeventySeventhPage';
 
-    /**@var ConfigProvider|\PHPUnit\Framework\MockObject\MockObject */
-    private $configProvider;
-
-    /** @var ConfigManager|\PHPUnit\Framework\MockObject\MockObject */
-    private $configManager;
-
     /** @var EntityManager|\PHPUnit\Framework\MockObject\MockObject */
     private $entityManager;
 
@@ -43,27 +39,6 @@ class ConfigLandingPageSelectTypeTest extends FormIntegrationTestCase
 
     protected function setUp(): void
     {
-        $config = $this->createMock(ConfigInterface::class);
-        $config->expects(self::any())
-            ->method('has')
-            ->with('grid_name')
-            ->willReturn(true);
-        $config->expects(self::any())
-            ->method('get')
-            ->with('grid_name')
-            ->willReturn('some_grid');
-
-        $this->configProvider = $this->createMock(ConfigProvider::class);
-        $this->configProvider->expects(self::any())
-            ->method('getConfig')
-            ->willReturn($config);
-
-        $this->configManager = $this->createMock(ConfigManager::class);
-        $this->configManager->expects(self::any())
-            ->method('getProvider')
-            ->with('form')
-            ->willReturn($this->configProvider);
-
         $pageMetaData = $this->createMock(ClassMetadata::class);
         $pageMetaData->expects(self::any())
             ->method('getSingleIdentifierFieldName')
@@ -73,6 +48,13 @@ class ConfigLandingPageSelectTypeTest extends FormIntegrationTestCase
         $this->entityManager->expects(self::any())
             ->method('getClassMetadata')
             ->willReturn($pageMetaData);
+        $metadataFactory = $this->createMock(ClassMetadataFactory::class);
+        $this->entityManager->expects(self::any())
+            ->method('getMetadataFactory')
+            ->willReturn($metadataFactory);
+        $metadataFactory->expects(self::any())
+            ->method('hasMetadataFor')
+            ->willReturn(true);
 
         $existPage = $this->getPageStub(self::EXIST_PAGE_ID, self::EXIST_PAGE_TITLE);
         $this->entityManager->expects(self::any())
@@ -119,17 +101,28 @@ class ConfigLandingPageSelectTypeTest extends FormIntegrationTestCase
      */
     public function getTypes()
     {
+        $configManager = $this->createMock(ConfigManager::class);
+        $configManager->expects($this->any())
+            ->method('hasConfig')
+            ->willReturn(true);
+        $configManager->expects($this->any())
+            ->method('getEntityConfig')
+            ->with('form')
+            ->willReturnCallback(function ($className) {
+                return new Config(new EntityConfigId('form', $className), ['grid_name' => 'test_grid']);
+            });
+
         return [
             new Select2Type('', ''),
             new OroJquerySelect2HiddenType(
                 $this->entityManager,
                 $this->searchRegistry,
-                $this->configProvider
+                $this->createMock(ConfigProvider::class)
             ),
             new OroEntitySelectOrCreateInlineType(
                 $this->createMock(AuthorizationCheckerInterface::class),
                 $this->createMock(FeatureChecker::class),
-                $this->configManager,
+                $configManager,
                 $this->entityManager,
                 $this->searchRegistry
             ),
