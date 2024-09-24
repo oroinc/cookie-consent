@@ -37,6 +37,7 @@ class ConfigLandingPageSelectTypeTest extends FormIntegrationTestCase
     /** @var DoctrineHelper|\PHPUnit\Framework\MockObject\MockObject */
     private $doctrineHelper;
 
+    #[\Override]
     protected function setUp(): void
     {
         $pageMetaData = $this->createMock(ClassMetadata::class);
@@ -96,9 +97,7 @@ class ConfigLandingPageSelectTypeTest extends FormIntegrationTestCase
         return (new PageStub())->setId($id)->setDefaultTitle($title);
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function getTypes()
     {
         $configManager = $this->createMock(ConfigManager::class);

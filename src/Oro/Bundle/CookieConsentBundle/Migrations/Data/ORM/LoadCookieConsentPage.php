@@ -11,9 +11,7 @@ class LoadCookieConsentPage extends AbstractLoadPageData
 {
     public const TITLE = 'Cookie Policy';
 
-    /**
-     * {@inheritDoc}
-     */
+    #[\Override]
     protected function getFilePaths(): string
     {
         return $this->getFilePathsFromLocator(

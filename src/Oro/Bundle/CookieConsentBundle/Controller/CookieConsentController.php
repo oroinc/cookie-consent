@@ -38,9 +38,7 @@ class CookieConsentController extends AbstractController
         return new JsonResponse($response);
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public static function getSubscribedServices(): array
     {
         return array_merge(

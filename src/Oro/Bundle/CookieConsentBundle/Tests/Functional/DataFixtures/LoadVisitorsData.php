@@ -10,9 +10,7 @@ class LoadVisitorsData extends AbstractFixture
 {
     public const CUSTOMER_VISITOR = 'customer_visitor';
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function load(ObjectManager $manager)
     {
         $customerVisitor = new CustomerVisitor();

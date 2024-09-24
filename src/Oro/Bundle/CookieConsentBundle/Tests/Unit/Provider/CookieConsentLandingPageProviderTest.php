@@ -23,6 +23,7 @@ class CookieConsentLandingPageProviderTest extends \PHPUnit\Framework\TestCase
     /** @var CookieConsentLandingPageProvider */
     private $landingPageProvider;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->configManager = $this->createMock(ConfigManager::class);

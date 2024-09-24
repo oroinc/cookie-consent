@@ -11,6 +11,7 @@ class CookiesAcceptedPropertyHelperTest extends \PHPUnit\Framework\TestCase
 {
     private CookiesAcceptedPropertyHelper $cookiesAcceptedPropertyHelper;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->cookiesAcceptedPropertyHelper = new CookiesAcceptedPropertyHelper();

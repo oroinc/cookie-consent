@@ -35,9 +35,7 @@ class ConfigLandingPageSelectTypeTest extends WebTestCase
     /** @var LocalizationManager */
     protected $localizationManager;
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     protected function setUp(): void
     {
         if (!class_exists('Oro\Bundle\MultiWebsiteOrderBundle\MultiWebsiteOrderBundle')) {

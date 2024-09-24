@@ -23,9 +23,7 @@ By continuing to browse the website, you consent to our use of cookies.
 _TEXT;
     public const DEFAULT_PAGE_ID = null;
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder(self::ROOT_NODE);

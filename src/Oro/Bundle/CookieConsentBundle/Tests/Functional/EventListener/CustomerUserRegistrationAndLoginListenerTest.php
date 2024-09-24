@@ -30,6 +30,7 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
 
     private ConfigManager $configManager;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->initClient();

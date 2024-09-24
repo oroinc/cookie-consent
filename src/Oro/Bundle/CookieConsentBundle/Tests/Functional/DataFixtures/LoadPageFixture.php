@@ -23,6 +23,7 @@ class LoadPageFixture extends AbstractFixture implements ContainerAwareInterface
     public const TITLE_WITH_BASE_LOCALIZATION = 'Title with base localization';
     public const URL_WITH_BASE_LOCALIZATION = '/slug-url-with-base-localization';
 
+    #[\Override]
     public function load(ObjectManager $manager)
     {
         /* @var LocalizationManager $localizationManager */

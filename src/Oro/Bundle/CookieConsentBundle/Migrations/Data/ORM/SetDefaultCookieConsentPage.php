@@ -18,9 +18,7 @@ class SetDefaultCookieConsentPage extends AbstractFixture implements ContainerAw
 {
     use ContainerAwareTrait;
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function load(ObjectManager $manager)
     {
         /** @var PageRepository $pageRepository */
@@ -38,9 +36,7 @@ class SetDefaultCookieConsentPage extends AbstractFixture implements ContainerAw
         $configManager->flush();
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function getDependencies()
     {
         return [

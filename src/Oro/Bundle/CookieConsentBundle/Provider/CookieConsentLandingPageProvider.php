@@ -29,6 +29,7 @@ class CookieConsentLandingPageProvider implements CookieConsentLandingPageProvid
         $this->pageIdToDTOTransformer = $pageIdToDTOTransformer;
     }
 
+    #[\Override]
     public function getPageDtoByLocalization(?Localization $localization): ?Page
     {
         $localizationId = $localization?->getId();

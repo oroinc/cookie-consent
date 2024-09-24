@@ -10,9 +10,7 @@ class PageIdToDTOTransformerTest extends FrontendWebTestCase
 {
     private PageIdToDtoTransformer $pageIdToDTOTransformer;
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     protected function setUp(): void
     {
         $this->initClient();

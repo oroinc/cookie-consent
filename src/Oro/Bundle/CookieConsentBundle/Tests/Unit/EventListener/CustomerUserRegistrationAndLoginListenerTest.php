@@ -37,6 +37,7 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
     /** @var CustomerUserRegistrationAndLoginListener */
     private $eventHandler;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->tokenStorage = $this->createMock(TokenStorageInterface::class);

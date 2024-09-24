@@ -40,6 +40,7 @@ class CookiesBannerProviderTest extends \PHPUnit\Framework\TestCase
     /** @var CookiesBannerProvider */
     private $provider;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->frontendRepresentativeUserHelper = $this->createMock(FrontendRepresentativeUserHelper::class);

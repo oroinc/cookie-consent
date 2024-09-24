@@ -37,6 +37,7 @@ class GuestAccessAllowedUrlsProvider implements GuestAccessAllowedUrlsProviderIn
         $this->allowedUrls[] = $pattern;
     }
 
+    #[\Override]
     public function getAllowedUrlsPatterns(): array
     {
         $localization = $this->localizationHelper->getCurrentLocalization();

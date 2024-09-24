@@ -30,6 +30,7 @@ class LandingPageDataFixture extends AbstractFixture
     /**
      * Load data fixtures with the passed EntityManager
      */
+    #[\Override]
     public function load(ObjectManager $manager)
     {
         foreach (self::PAGES_DATA as $pageData) {
