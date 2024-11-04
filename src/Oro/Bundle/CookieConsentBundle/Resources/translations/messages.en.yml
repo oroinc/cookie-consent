@@ -13,6 +13,8 @@ oro:
                     label: 'Cookies Banner Text'
                 localized_landing_page_id:
                     label: 'Landing Page'
+        banner:
+            aria_label: 'Manage Consent'
     customer:
         customervisitor.cookies_accepted:
             label: 'Cookies Accepted'
