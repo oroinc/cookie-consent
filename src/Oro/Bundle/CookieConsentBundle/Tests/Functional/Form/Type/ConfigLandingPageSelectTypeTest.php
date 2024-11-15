@@ -7,7 +7,6 @@ use Oro\Bundle\CMSBundle\Entity\Repository\PageRepository;
 use Oro\Bundle\ConfigBundle\Config\ConfigManager;
 use Oro\Bundle\ConfigBundle\Tests\Functional\Traits\ConfigManagerAwareTestTrait;
 use Oro\Bundle\CookieConsentBundle\DependencyInjection\Configuration;
-use Oro\Bundle\CookieConsentBundle\Migrations\Data\Demo\ORM\EnableCookieBanner;
 use Oro\Bundle\CookieConsentBundle\Migrations\Data\ORM\LoadCookieConsentPage;
 use Oro\Bundle\CookieConsentBundle\Tests\Functional\DataFixtures\LandingPageDataFixture;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
@@ -26,14 +25,9 @@ class ConfigLandingPageSelectTypeTest extends WebTestCase
     private const WEBSITE_CHANGED_SHOW_BANNER_VALUE = true;
     private const WEBSITE_CHANGED_BANNER_TEXT_VALUE = 'Website text';
 
-    /** @var ConfigManager */
-    protected $configManager;
-
-    /** @var ConfigManager */
-    protected $websiteConfigManager;
-
-    /** @var LocalizationManager */
-    protected $localizationManager;
+    private ?ConfigManager $configManager;
+    private ?ConfigManager $websiteConfigManager;
+    private ?LocalizationManager $localizationManager;
 
     #[\Override]
     protected function setUp(): void
@@ -42,10 +36,24 @@ class ConfigLandingPageSelectTypeTest extends WebTestCase
             self::markTestSkipped('Can be tested only with MultiWebsiteBundle installed.');
         }
         $this->initClient([], self::generateBasicAuthHeader());
-        $this->loadFixtures([LandingPageDataFixture::class, EnableCookieBanner::class]);
-        $this->configManager = self::getConfigManager('global');
+        $this->loadFixtures([LandingPageDataFixture::class]);
+        $this->configManager = self::getConfigManager();
         $this->websiteConfigManager = self::getConfigManager('website');
         $this->localizationManager = self::getContainer()->get('oro_locale.manager.localization');
+        $this->enableCookieBanner(true);
+    }
+
+    #[\Override]
+    protected function tearDown(): void
+    {
+        $this->enableCookieBanner(false);
+        parent::tearDown();
+    }
+
+    private function enableCookieBanner(bool $enabled): void
+    {
+        $this->configManager->set('oro_cookie_consent.show_banner', $enabled);
+        $this->configManager->flush();
     }
 
     /**
