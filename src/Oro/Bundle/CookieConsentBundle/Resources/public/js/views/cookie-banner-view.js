@@ -5,6 +5,7 @@ define(function(require) {
     const _ = require('underscore');
     const routing = require('routing');
     const $ = require('jquery');
+    const mediator = require('oroui/js/mediator');
     const manageFocus = require('oroui/js/tools/manage-focus').default;
 
     const CookieBannerView = BaseView.extend({
@@ -99,6 +100,7 @@ define(function(require) {
 
         _removeBanner: function() {
             this.$el.remove();
+            mediator.trigger('layout:reposition');
             this.dispose();
         }
     });
