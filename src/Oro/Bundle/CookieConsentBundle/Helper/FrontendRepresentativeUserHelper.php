@@ -15,36 +15,23 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class FrontendRepresentativeUserHelper
 {
-    /** @var TokenStorageInterface $tokenStorage */
-    private $tokenStorage;
-
-    /** @var CustomerVisitorManager */
-    private $visitorManager;
-
-    /**
-     * FrontendRepresentativeUserHelper constructor.
-     */
-    public function __construct(TokenStorageInterface $tokenStorage, CustomerVisitorManager $visitorManager)
-    {
-        $this->tokenStorage = $tokenStorage;
-        $this->visitorManager = $visitorManager;
+    public function __construct(
+        private TokenStorageInterface $tokenStorage,
+        private CustomerVisitorManager $visitorManager,
+    ) {
     }
 
-    /**
-     * @return null|CustomerVisitor|CustomerUser
-     */
-    public function getRepresentativeUser()
+    public function getRepresentativeUser(): null|CustomerVisitor|CustomerUser
     {
         $token = $this->tokenStorage->getToken();
         if (null === $token) {
             return null;
         }
-
         if ($token instanceof AnonymousCustomerUserToken) {
             return $token->getVisitor();
         }
-
         $user = $token->getUser();
+
         return $user instanceof CustomerUser ? $user : null;
     }
 
@@ -54,17 +41,14 @@ class FrontendRepresentativeUserHelper
         if (!$value) {
             return null;
         }
-
         $unserialized = \json_decode(\base64_decode($value));
         if (false === \is_array($unserialized) || 2 > \count($unserialized)) {
             return null;
         }
-
         list($visitorId, $sessionId) = $unserialized;
 
         return ($visitorId && $sessionId)
             ? $this->visitorManager->find($visitorId, $sessionId)
-            : null
-        ;
+            : null;
     }
 }
