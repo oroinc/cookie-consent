@@ -15,7 +15,6 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class FrontendRepresentativeUserHelperTest extends \PHPUnit\Framework\TestCase
 {
-    private const EXIST_VISITOR_ID = 99;
     private const EXIST_SESSION_ID = 'aaabbbbyyyy';
 
     /** @var TokenStorageInterface|\PHPUnit\Framework\MockObject\MockObject */
@@ -30,31 +29,62 @@ class FrontendRepresentativeUserHelperTest extends \PHPUnit\Framework\TestCase
         $this->tokenStorage = $this->createMock(TokenStorageInterface::class);
 
         $visitorManager = $this->createMock(CustomerVisitorManager::class);
-        $visitorManager->expects($this->any())
+        $visitorManager->expects(self::any())
             ->method('find')
-            ->willReturnCallback(function ($visitorId, $sessionId) {
-                if (self::EXIST_VISITOR_ID === $visitorId
-                    && self::EXIST_SESSION_ID === $sessionId
-                ) {
+            ->willReturnCallback(function ($sessionId) {
+                if (self::EXIST_SESSION_ID === $sessionId) {
                     return new CustomerVisitorStub(true);
                 }
 
                 return null;
-            })
-        ;
+            });
+
         $this->helper = new FrontendRepresentativeUserHelper($this->tokenStorage, $visitorManager);
+    }
+
+    private function getVisitorToken(?CustomerVisitorStub $visitor): AnonymousCustomerUserToken
+    {
+        $token = $this->createMock(AnonymousCustomerUserToken::class);
+        $token->expects(self::once())
+            ->method('getVisitor')
+            ->willReturn($visitor);
+        $token->expects(self::never())
+            ->method('getUser');
+
+        return $token;
+    }
+
+    private function getUserToken(?object $customerUser): AbstractToken
+    {
+        $token = $this->createMock(AbstractToken::class);
+        $token->expects(self::once())
+            ->method('getUser')
+            ->willReturn($customerUser);
+
+        return $token;
+    }
+
+    private function createRequestWithCookies(string|array|null $visitorSessionId): Request
+    {
+        $cookiesData = [];
+        if (null !== $visitorSessionId) {
+            $serializedCredentials = base64_encode(json_encode($visitorSessionId, JSON_THROW_ON_ERROR));
+            $cookiesData[AnonymousCustomerUserAuthenticator::COOKIE_NAME] = $serializedCredentials;
+        }
+
+        return new Request([], [], [], $cookiesData);
     }
 
     /**
      * @dataProvider getRepresentativeUserProvider
      */
-    public function testGetRepresentativeUser(callable $tokenCallback, ?object $expectedResult)
+    public function testGetRepresentativeUser(callable $tokenCallback, ?object $expectedResult): void
     {
-        $this->tokenStorage->expects($this->once())
+        $this->tokenStorage->expects(self::once())
             ->method('getToken')
             ->willReturnCallback($tokenCallback);
 
-        $this->assertSame($expectedResult, $this->helper->getRepresentativeUser());
+        self::assertSame($expectedResult, $this->helper->getRepresentativeUser());
     }
 
     public function getRepresentativeUserProvider(): array
@@ -111,47 +141,14 @@ class FrontendRepresentativeUserHelperTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    private function getVisitorToken(?CustomerVisitorStub $visitor): AnonymousCustomerUserToken
-    {
-        $token = $this->createMock(AnonymousCustomerUserToken::class);
-        $token->expects($this->once())
-            ->method('getVisitor')
-            ->willReturn($visitor);
-        $token->expects($this->never())
-            ->method('getUser');
-
-        return $token;
-    }
-
-    private function getUserToken(?object $customerUser): AbstractToken
-    {
-        $token = $this->createMock(AbstractToken::class);
-        $token->expects($this->once())
-            ->method('getUser')
-            ->willReturn($customerUser);
-
-        return $token;
-    }
-
     /**
      * @dataProvider getRepresentativeUserRequestProvider
      */
-    public function testGetVisitorFromRequest(Request $request, bool $expectFound)
+    public function testGetVisitorFromRequest(Request $request, bool $expectFound): void
     {
         $user = $this->helper->getVisitorFromRequest($request);
 
         self::assertEquals($expectFound, null !== $user);
-    }
-
-    private function createRequestWithCookies(?array $visitorCredentials): Request
-    {
-        $cookiesData = [];
-        if (null !== $visitorCredentials) {
-            $serializedCredentials = base64_encode(json_encode($visitorCredentials, JSON_THROW_ON_ERROR));
-            $cookiesData[AnonymousCustomerUserAuthenticator::COOKIE_NAME] = $serializedCredentials;
-        }
-
-        return new Request([], [], [], $cookiesData);
     }
 
     public function getRepresentativeUserRequestProvider(): array
@@ -165,7 +162,7 @@ class FrontendRepresentativeUserHelperTest extends \PHPUnit\Framework\TestCase
                 'request' => $this->createRequestWithCookies([]),
                 'expectFound' => false
             ],
-            'Cookie param not cocistent' => [
+            'Cookie param not supported' => [
                 'request' => $this->createRequestWithCookies([123]),
                 'expectFound' => false
             ],
@@ -182,7 +179,11 @@ class FrontendRepresentativeUserHelperTest extends \PHPUnit\Framework\TestCase
                 'expectFound' => false
             ],
             'Cookie param exist visitor credentials' => [
-                'request' => $this->createRequestWithCookies([self::EXIST_VISITOR_ID, self::EXIST_SESSION_ID]),
+                'request' => $this->createRequestWithCookies([123, self::EXIST_SESSION_ID]),
+                'expectFound' => true
+            ],
+            'Cookie param exist visitor session id' => [
+                'request' => $this->createRequestWithCookies(self::EXIST_SESSION_ID),
                 'expectFound' => true
             ]
         ];
