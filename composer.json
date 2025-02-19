@@ -12,7 +12,7 @@
     ],
     "autoload": {
         "psr-4": {"Oro\\Bundle\\CookieConsentBundle\\": "src/Oro/Bundle/CookieConsentBundle"},
-        "exclude-from-classmap": ["/Tests/"]
+        "exclude-from-classmap": ["**/Tests/"]
     },
     "require": {
         "oro/commerce": "5.0.*"
