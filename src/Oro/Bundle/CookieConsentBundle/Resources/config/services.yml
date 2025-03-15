@@ -12,7 +12,8 @@ services:
 
     oro_cookie_consent.form.type.config_landing_page_select:
         class: 'Oro\Bundle\CookieConsentBundle\Form\Type\ConfigLandingPageSelectType'
-        arguments: ['@oro_entity.doctrine_helper']
+        arguments:
+            - '@doctrine'
         tags:
             - { name: form.type }
 

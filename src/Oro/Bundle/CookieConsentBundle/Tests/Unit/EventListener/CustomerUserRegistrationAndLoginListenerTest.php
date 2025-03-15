@@ -2,7 +2,7 @@
 
 namespace Oro\Bundle\CookieConsentBundle\Tests\Unit\EventListener;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Oro\Bundle\CookieConsentBundle\EventListener\CustomerUserRegistrationAndLoginListener;
 use Oro\Bundle\CookieConsentBundle\Helper\CookiesAcceptedPropertyHelper;
 use Oro\Bundle\CookieConsentBundle\Helper\FrontendRepresentativeUserHelper;
@@ -72,7 +72,7 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
         bool $expectedEntityPersist = false
     ): void {
         if ($expectedEntityPersist) {
-            $entityManager = $this->createMock(EntityManager::class);
+            $entityManager = $this->createMock(EntityManagerInterface::class);
             $entityManager->expects(self::once())
                 ->method('persist');
             $entityManager->expects(self::once())
@@ -207,7 +207,7 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
         bool $expectedEntityPersist = false
     ): void {
         if ($expectedEntityPersist) {
-            $entityManager = $this->createMock(EntityManager::class);
+            $entityManager = $this->createMock(EntityManagerInterface::class);
             $entityManager->expects(self::once())
                 ->method('persist');
             $entityManager->expects(self::once())

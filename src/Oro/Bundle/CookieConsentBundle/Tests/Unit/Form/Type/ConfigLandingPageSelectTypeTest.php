@@ -2,14 +2,13 @@
 
 namespace Oro\Bundle\CookieConsentBundle\Tests\Unit\Form\Type;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Mapping\ClassMetadataFactory;
+use Doctrine\Persistence\ManagerRegistry;
 use Oro\Bundle\CMSBundle\Entity\Page;
 use Oro\Bundle\CookieConsentBundle\Form\Type\ConfigLandingPageSelectType;
 use Oro\Bundle\CookieConsentBundle\Tests\Unit\Form\Type\Stub\PageStub;
-use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\EntityConfigBundle\Config\Config;
 use Oro\Bundle\EntityConfigBundle\Config\ConfigManager;
 use Oro\Bundle\EntityConfigBundle\Config\Id\EntityConfigId;
@@ -21,6 +20,7 @@ use Oro\Bundle\FormBundle\Form\Type\OroEntitySelectOrCreateInlineType;
 use Oro\Bundle\FormBundle\Form\Type\OroJquerySelect2HiddenType;
 use Oro\Bundle\FormBundle\Form\Type\Select2Type;
 use Oro\Component\Testing\Unit\FormIntegrationTestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class ConfigLandingPageSelectTypeTest extends FormIntegrationTestCase
@@ -28,14 +28,8 @@ class ConfigLandingPageSelectTypeTest extends FormIntegrationTestCase
     private const EXIST_PAGE_ID = 77;
     private const EXIST_PAGE_TITLE = 'SeventySeventhPage';
 
-    /** @var EntityManager|\PHPUnit\Framework\MockObject\MockObject */
-    private $entityManager;
-
-    /** @var SearchRegistry|\PHPUnit\Framework\MockObject\MockObject */
-    private $searchRegistry;
-
-    /** @var DoctrineHelper|\PHPUnit\Framework\MockObject\MockObject */
-    private $doctrineHelper;
+    private ManagerRegistry&MockObject $doctrine;
+    private SearchRegistry&MockObject $searchRegistry;
 
     #[\Override]
     protected function setUp(): void
@@ -45,20 +39,13 @@ class ConfigLandingPageSelectTypeTest extends FormIntegrationTestCase
             ->method('getSingleIdentifierFieldName')
             ->willReturn('id');
 
-        $this->entityManager = $this->createMock(EntityManager::class);
-        $this->entityManager->expects(self::any())
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->expects(self::any())
             ->method('getClassMetadata')
             ->willReturn($pageMetaData);
-        $metadataFactory = $this->createMock(ClassMetadataFactory::class);
-        $this->entityManager->expects(self::any())
-            ->method('getMetadataFactory')
-            ->willReturn($metadataFactory);
-        $metadataFactory->expects(self::any())
-            ->method('hasMetadataFor')
-            ->willReturn(true);
 
         $existPage = $this->getPageStub(self::EXIST_PAGE_ID, self::EXIST_PAGE_TITLE);
-        $this->entityManager->expects(self::any())
+        $entityManager->expects(self::any())
             ->method('find')
             ->with(Page::class, self::EXIST_PAGE_ID)
             ->willReturn($existPage);
@@ -68,26 +55,25 @@ class ConfigLandingPageSelectTypeTest extends FormIntegrationTestCase
             ->method('find')
             ->with(self::EXIST_PAGE_ID)
             ->willReturn($existPage);
-        $this->entityManager->expects(self::any())
+
+        $this->doctrine = $this->createMock(ManagerRegistry::class);
+        $this->doctrine->expects($this->any())
+            ->method('getManagerForClass')
+            ->willReturn($entityManager);
+        $this->doctrine->expects(self::any())
             ->method('getRepository')
             ->with(Page::class)
             ->willReturn($pageRepository);
 
-        $searchHandlerMock = $this->createMock(SearchHandlerInterface::class);
-        $searchHandlerMock->expects(self::any())
+        $searchHandler = $this->createMock(SearchHandlerInterface::class);
+        $searchHandler->expects(self::any())
             ->method('getProperties')
             ->willReturn([]);
 
         $this->searchRegistry = $this->createMock(SearchRegistry::class);
         $this->searchRegistry->expects(self::any())
             ->method('getSearchHandler')
-            ->willReturn($searchHandlerMock);
-
-        $this->doctrineHelper = $this->createMock(DoctrineHelper::class);
-        $this->doctrineHelper->expects(self::any())
-            ->method('getEntityManagerForClass')
-            ->with(Page::class)
-            ->willReturn($this->entityManager);
+            ->willReturn($searchHandler);
 
         parent::setUp();
     }
@@ -114,7 +100,7 @@ class ConfigLandingPageSelectTypeTest extends FormIntegrationTestCase
         return [
             new Select2Type('', ''),
             new OroJquerySelect2HiddenType(
-                $this->entityManager,
+                $this->doctrine,
                 $this->searchRegistry,
                 $this->createMock(ConfigProvider::class)
             ),
@@ -122,41 +108,41 @@ class ConfigLandingPageSelectTypeTest extends FormIntegrationTestCase
                 $this->createMock(AuthorizationCheckerInterface::class),
                 $this->createMock(FeatureChecker::class),
                 $configManager,
-                $this->entityManager,
+                $this->doctrine,
                 $this->searchRegistry
             ),
-            new ConfigLandingPageSelectType($this->doctrineHelper)
+            new ConfigLandingPageSelectType($this->doctrine)
         ];
     }
 
     public function testFormDefaultProps()
     {
         $form = $this->factory->create(ConfigLandingPageSelectType::class);
-        static::assertEquals(ConfigLandingPageSelectType::NAME, $form->getName());
-        static::assertFalse($form->isRequired());
+        self::assertEquals(ConfigLandingPageSelectType::NAME, $form->getName());
+        self::assertFalse($form->isRequired());
         $viewVars = $form->createView()->vars;
-        static::assertArrayHasKey('value', $viewVars);
-        static::assertEmpty($viewVars['value']);
+        self::assertArrayHasKey('value', $viewVars);
+        self::assertEmpty($viewVars['value']);
     }
 
     public function testExistPageSelected()
     {
         $form = $this->factory->create(ConfigLandingPageSelectType::class, self::EXIST_PAGE_ID);
         $viewVars = $form->createView()->vars;
-        static::assertArrayHasKey('value', $viewVars);
-        static::assertEquals((string)self::EXIST_PAGE_ID, $viewVars['value']);
+        self::assertArrayHasKey('value', $viewVars);
+        self::assertEquals((string)self::EXIST_PAGE_ID, $viewVars['value']);
 
-        static::assertArrayHasKey('attr', $viewVars);
+        self::assertArrayHasKey('attr', $viewVars);
         $attr = $viewVars['attr'];
-        static::assertArrayHasKey('data-selected-data', $attr);
+        self::assertArrayHasKey('data-selected-data', $attr);
 
         $dataSelectData = json_decode($attr['data-selected-data'], true, 512, JSON_THROW_ON_ERROR);
-        static::assertIsArray($dataSelectData);
+        self::assertIsArray($dataSelectData);
 
-        static::assertArrayHasKey('id', $dataSelectData);
-        static::assertArrayHasKey('defaultTitle.string', $dataSelectData);
+        self::assertArrayHasKey('id', $dataSelectData);
+        self::assertArrayHasKey('defaultTitle.string', $dataSelectData);
 
-        static::assertEquals(self::EXIST_PAGE_ID, $dataSelectData['id']);
-        static::assertEquals(self::EXIST_PAGE_TITLE, $dataSelectData['defaultTitle.string']);
+        self::assertEquals(self::EXIST_PAGE_ID, $dataSelectData['id']);
+        self::assertEquals(self::EXIST_PAGE_TITLE, $dataSelectData['defaultTitle.string']);
     }
 }

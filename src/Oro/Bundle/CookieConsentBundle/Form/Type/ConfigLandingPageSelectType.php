@@ -2,9 +2,9 @@
 
 namespace Oro\Bundle\CookieConsentBundle\Form\Type;
 
+use Doctrine\Persistence\ManagerRegistry;
 use Oro\Bundle\CMSBundle\Entity\Page;
 use Oro\Bundle\CMSBundle\Form\Type\PageSelectType;
-use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\EntityExtendBundle\PropertyAccess;
 use Oro\Bundle\FormBundle\Form\DataTransformer\EntityToIdTransformer;
 use Symfony\Component\Form\AbstractType;
@@ -29,25 +29,20 @@ class ConfigLandingPageSelectType extends AbstractType
     public const OPTION_ENTITY_ID_PROP_DEFAULT = 'id';
     public const OPTION_ENTITY_TITLE_PROP_DEFAULT = 'getDefaultTitle';
 
-    /** @var DoctrineHelper */
-    private $doctrineHelper;
-
-    public function __construct(DoctrineHelper $doctrineHelper)
-    {
-        $this->doctrineHelper = $doctrineHelper;
+    public function __construct(
+        private ManagerRegistry $doctrine
+    ) {
     }
 
     #[\Override]
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver
-            ->setDefaults([
-                'entity_class' => Page::class,
-                'create_enabled' => false,
-                self::OPTION_NAME_ENTITY_ID_PROP => self::OPTION_ENTITY_ID_PROP_DEFAULT,
-                self::OPTION_NAME_ENTITY_TITLE_PROP => self::OPTION_ENTITY_TITLE_PROP_DEFAULT
-            ])
-        ;
+        $resolver->setDefaults([
+            'entity_class' => Page::class,
+            'create_enabled' => false,
+            self::OPTION_NAME_ENTITY_ID_PROP => self::OPTION_ENTITY_ID_PROP_DEFAULT,
+            self::OPTION_NAME_ENTITY_TITLE_PROP => self::OPTION_ENTITY_TITLE_PROP_DEFAULT
+        ]);
     }
 
     /**
@@ -63,7 +58,7 @@ class ConfigLandingPageSelectType extends AbstractType
     private function createReverseTransformer(string $entityClass, string $entityIdProp)
     {
         $entityToIdTransformer = new EntityToIdTransformer(
-            $this->doctrineHelper->getEntityManagerForClass($entityClass),
+            $this->doctrine,
             $entityClass,
             $entityIdProp
         );
@@ -132,10 +127,10 @@ class ConfigLandingPageSelectType extends AbstractType
         $id = $propertyAccessor->getValue($entity, $options[self::OPTION_NAME_ENTITY_ID_PROP]);
         $title = $propertyAccessor->getValue($entity, $options[self::OPTION_NAME_ENTITY_TITLE_PROP]);
 
-        return \json_encode([
+        return json_encode([
             'id' => $id,
             'defaultTitle.string' => (string)$title
-        ]);
+        ], JSON_THROW_ON_ERROR);
     }
 
     #[\Override]
@@ -143,10 +138,8 @@ class ConfigLandingPageSelectType extends AbstractType
     {
         $value = $view->vars['value'];
         if ($value) {
-            $page = $this->doctrineHelper
-                ->getEntityManagerForClass($options['entity_class'])
-                ->find($options['entity_class'], $value)
-            ;
+            $entityClass = $options['entity_class'];
+            $page = $this->doctrine->getManagerForClass($entityClass)->find($entityClass, $value);
             if (null !== $page) {
                 $view->vars['attr']['data-selected-data'] = $this->makeSelectViewSerializedData($page, $options);
             }
