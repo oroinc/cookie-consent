@@ -22,10 +22,8 @@ use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
 class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\TestCase
 {
-    private const EXIST_VISITOR_WITH_COOKIES_ACCEPTED_ID = 99;
-    private const EXIST_VISITOR_WITH_COOKIES_NOT_ACCEPTED_ID = 100;
-
-    private const EXIST_SESSION_ID = '05f2ce876de8';
+    private const EXIST_SESSION_ID_WITH_COOKIES_ACCEPTED_ID = '05f2ce876de8';
+    private const EXIST_SESSION_ID_WITH_COOKIES_NOT_ACCEPTED_ID = '05f2ce876de1';
     private const NOT_EXIST_SESSION_ID = '142a23939af1';
 
     /** @var TokenStorageInterface|\PHPUnit\Framework\MockObject\MockObject */
@@ -44,15 +42,11 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
         $visitorManager->expects(self::any())
             ->method('find')
             ->willReturnCallback(function ($visitorId, $sessionId) {
-                if (self::EXIST_VISITOR_WITH_COOKIES_ACCEPTED_ID === $visitorId
-                    && self::EXIST_SESSION_ID === $sessionId
-                ) {
+                if (self::EXIST_SESSION_ID_WITH_COOKIES_ACCEPTED_ID === $sessionId) {
                     return new CustomerVisitorStub(true);
                 }
 
-                if (self::EXIST_VISITOR_WITH_COOKIES_NOT_ACCEPTED_ID === $visitorId
-                    && self::EXIST_SESSION_ID === $sessionId
-                ) {
+                if (self::EXIST_SESSION_ID_WITH_COOKIES_NOT_ACCEPTED_ID === $sessionId) {
                     return new CustomerVisitorStub(false);
                 }
 
@@ -279,45 +273,38 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
                 ),
                 'expectedCookiesAccepted' => false
             ],
-            'visitorCredentialsVisitorIdIsNull' => [
-                'event' => $this->createInteractiveLoginEvent(
-                    new CustomerUserStub(false),
-                    [null, self::EXIST_SESSION_ID]
-                ),
-                'expectedCookiesAccepted' => false
-            ],
             'visitorCredentialsSessionIdIsNull' => [
                 'event' => $this->createInteractiveLoginEvent(
                     new CustomerUserStub(false),
-                    [self::EXIST_VISITOR_WITH_COOKIES_NOT_ACCEPTED_ID, null]
+                    [1, null]
                 ),
                 'expectedCookiesAccepted' => false
             ],
             'customerVisitorIsNullNotFound' => [
                 'event' => $this->createInteractiveLoginEvent(
                     new CustomerUserStub(false),
-                    [self::EXIST_VISITOR_WITH_COOKIES_NOT_ACCEPTED_ID, self::NOT_EXIST_SESSION_ID]
+                    [1, self::NOT_EXIST_SESSION_ID]
                 ),
                 'expectedCookiesAccepted' => false
             ],
             'customerVisitorAcceptedIsFalse' => [
                 'event' => $this->createInteractiveLoginEvent(
                     new CustomerUserStub(false),
-                    [self::EXIST_VISITOR_WITH_COOKIES_NOT_ACCEPTED_ID, self::EXIST_SESSION_ID]
+                    [1, self::EXIST_SESSION_ID_WITH_COOKIES_NOT_ACCEPTED_ID]
                 ),
                 'expectedCookiesAccepted' => false
             ],
             'customerUserAcceptedIsTrue' => [
                 'event' => $this->createInteractiveLoginEvent(
                     new CustomerUserStub(true),
-                    [self::EXIST_VISITOR_WITH_COOKIES_NOT_ACCEPTED_ID, self::EXIST_SESSION_ID]
+                    [1, self::EXIST_SESSION_ID_WITH_COOKIES_NOT_ACCEPTED_ID]
                 ),
                 'expectedCookiesAccepted' => true
             ],
             'customerVisitorAcceptedIsTrue' => [
                 'event' => $this->createInteractiveLoginEvent(
                     new CustomerUserStub(false),
-                    [self::EXIST_VISITOR_WITH_COOKIES_ACCEPTED_ID, self::EXIST_SESSION_ID]
+                    [1, self::EXIST_SESSION_ID_WITH_COOKIES_ACCEPTED_ID]
                 ),
                 'expectedCookiesAccepted' => true,
                 'expectedEntityPersist' => true

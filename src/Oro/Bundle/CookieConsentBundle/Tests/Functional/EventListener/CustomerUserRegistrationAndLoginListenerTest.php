@@ -95,13 +95,10 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
         $this->configManager->flush();
 
         // Imitate fixture Visitor is User, who is performing registration
-        $serializedCredentials = \base64_encode(\json_encode([$visitor->getId(), $visitor->getSessionId()]));
-        $this->client
-            ->getCookieJar()
-            ->set(
-                new Cookie(AnonymousCustomerUserAuthenticationListener::COOKIE_NAME, $serializedCredentials)
-            )
-        ;
+        $this->client->getCookieJar()->set(new Cookie(
+            AnonymousCustomerUserAuthenticationListener::COOKIE_NAME,
+            base64_encode(json_encode($visitor->getSessionId(), JSON_THROW_ON_ERROR))
+        ));
         $crawler = $this->client->request('GET', $this->getUrl('oro_customer_frontend_customer_user_register'));
         $result = $this->client->getResponse();
         self::assertHtmlResponseStatusCodeEquals($result, 200);
@@ -125,19 +122,13 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
      */
     public function handleRequestEvent(RequestEvent $event): void
     {
-        $container = static::getContainer();
-        $request = $container->get('request_stack')->getCurrentRequest();
+        $request = self::getContainer()->get('request_stack')->getCurrentRequest();
         /** @var Request $request */
         if (false !== \preg_match('@customer/user/login-check@ui', $request->getUri())) {
-            $container->get('event_dispatcher')->dispatch(
+            self::getContainer()->get('event_dispatcher')->dispatch(
                 new InteractiveLoginEvent(
                     $request,
-                    new UsernamePasswordToken(
-                        $this->getFixtureLoadedCustomerUser(),
-                        [],
-                        'frontend',
-                        []
-                    )
+                    new UsernamePasswordToken($this->getFixtureLoadedCustomerUser(), 'frontend', [])
                 ),
                 SecurityEvents::INTERACTIVE_LOGIN
             );
@@ -172,13 +163,10 @@ class CustomerUserRegistrationAndLoginListenerTest extends WebTestCase
         $this->configManager->flush();
 
         // Imitate fixture Visitor is User, who is performing registration
-        $serializedCredentials = \base64_encode(\json_encode([$visitor->getId(), $visitor->getSessionId()]));
-        $this->client
-            ->getCookieJar()
-            ->set(
-                new Cookie(AnonymousCustomerUserAuthenticationListener::COOKIE_NAME, $serializedCredentials)
-            )
-        ;
+        $this->client->getCookieJar()->set(new Cookie(
+            AnonymousCustomerUserAuthenticationListener::COOKIE_NAME,
+            base64_encode(json_encode($visitor->getSessionId(), JSON_THROW_ON_ERROR))
+        ));
         $crawler = $this->client->request('GET', $this->getUrl('oro_customer_customer_user_security_login'));
         $response = $this->client->getResponse();
         self::assertHtmlResponseStatusCodeEquals($response, 200);

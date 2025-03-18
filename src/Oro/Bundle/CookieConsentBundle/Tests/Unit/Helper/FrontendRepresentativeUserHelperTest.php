@@ -15,7 +15,6 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class FrontendRepresentativeUserHelperTest extends \PHPUnit\Framework\TestCase
 {
-    private const EXIST_VISITOR_ID = 99;
     private const EXIST_SESSION_ID = 'aaabbbbyyyy';
 
     /** @var TokenStorageInterface|\PHPUnit\Framework\MockObject\MockObject */
@@ -32,9 +31,7 @@ class FrontendRepresentativeUserHelperTest extends \PHPUnit\Framework\TestCase
         $visitorManager->expects($this->any())
             ->method('find')
             ->willReturnCallback(function ($visitorId, $sessionId) {
-                if (self::EXIST_VISITOR_ID === $visitorId
-                    && self::EXIST_SESSION_ID === $sessionId
-                ) {
+                if (self::EXIST_SESSION_ID === $sessionId) {
                     return new CustomerVisitorStub(true);
                 }
 
@@ -42,6 +39,17 @@ class FrontendRepresentativeUserHelperTest extends \PHPUnit\Framework\TestCase
             })
         ;
         $this->helper = new FrontendRepresentativeUserHelper($this->tokenStorage, $visitorManager);
+    }
+
+    private function createRequestWithCookies(string|array|null $visitorSessionId): Request
+    {
+        $cookiesData = [];
+        if (null !== $visitorSessionId) {
+            $serializedCredentials = base64_encode(json_encode($visitorSessionId, JSON_THROW_ON_ERROR));
+            $cookiesData[AnonymousCustomerUserAuthenticationListener::COOKIE_NAME] = $serializedCredentials;
+        }
+
+        return new Request([], [], [], $cookiesData);
     }
 
     /**
@@ -142,17 +150,6 @@ class FrontendRepresentativeUserHelperTest extends \PHPUnit\Framework\TestCase
         self::assertEquals($expectFound, null !== $user);
     }
 
-    private function createRequestWithCookies(?array $visitorCredentials): Request
-    {
-        $cookiesData = [];
-        if (null !== $visitorCredentials) {
-            $serializedCredentials = base64_encode(json_encode($visitorCredentials, JSON_THROW_ON_ERROR));
-            $cookiesData[AnonymousCustomerUserAuthenticationListener::COOKIE_NAME] = $serializedCredentials;
-        }
-
-        return new Request([], [], [], $cookiesData);
-    }
-
     public function getRepresentativeUserRequestProvider(): array
     {
         return [
@@ -181,7 +178,11 @@ class FrontendRepresentativeUserHelperTest extends \PHPUnit\Framework\TestCase
                 'expectFound' => false
             ],
             'Cookie param exist visitor credentials' => [
-                'request' => $this->createRequestWithCookies([self::EXIST_VISITOR_ID, self::EXIST_SESSION_ID]),
+                'request' => $this->createRequestWithCookies([123, self::EXIST_SESSION_ID]),
+                'expectFound' => true
+            ],
+            'Cookie param exist visitor session id' => [
+                'request' => $this->createRequestWithCookies(self::EXIST_SESSION_ID),
                 'expectFound' => true
             ]
         ];
