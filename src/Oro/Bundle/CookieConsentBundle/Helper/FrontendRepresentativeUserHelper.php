@@ -55,16 +55,15 @@ class FrontendRepresentativeUserHelper
             return null;
         }
 
-        $unserialized = \json_decode(\base64_decode($value));
-        if (false === \is_array($unserialized) || 2 > \count($unserialized)) {
+        $sessionId = json_decode(base64_decode($value));
+        if (\is_array($sessionId) && isset($sessionId[1])) {
+            // BC compatibility (can be removed in v7.0): get sessionId from old format of the cookie value
+            $sessionId = $sessionId[1];
+        }
+        if (!\is_string($sessionId) || !$sessionId) {
             return null;
         }
 
-        list($visitorId, $sessionId) = $unserialized;
-
-        return ($visitorId && $sessionId)
-            ? $this->visitorManager->find($visitorId, $sessionId)
-            : null
-        ;
+        return $this->visitorManager->find(null, $sessionId);
     }
 }
