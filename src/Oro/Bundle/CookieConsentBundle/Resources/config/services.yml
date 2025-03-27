@@ -4,7 +4,6 @@ services:
         public: true
         arguments:
             - '@security.token_storage'
-            - '@oro_customer.customer_visitor_manager'
 
     oro_cookie_consent.helper.cookies_accepted_property_helper:
         class: 'Oro\Bundle\CookieConsentBundle\Helper\CookiesAcceptedPropertyHelper'
@@ -22,7 +21,8 @@ services:
         arguments:
             - '@oro_cookie_consent.helper.frontend_representative_user_helper'
             - '@oro_cookie_consent.helper.cookies_accepted_property_helper'
-            - '@oro_entity.doctrine_helper'
+            - '@doctrine'
+            - '@oro_customer.customer_visitor_manager'
         tags:
             - { name: kernel.event_listener, event: security.interactive_login, method: onSecurityInteractiveLogin }
             - { name: kernel.event_listener, event: customer_user.registration.completed, method: onRegistrationCompleted }
