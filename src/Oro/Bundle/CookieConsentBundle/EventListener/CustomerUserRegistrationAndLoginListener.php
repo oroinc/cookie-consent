@@ -2,12 +2,15 @@
 
 namespace Oro\Bundle\CookieConsentBundle\EventListener;
 
+use Doctrine\Persistence\ManagerRegistry;
 use Oro\Bundle\CookieConsentBundle\Helper\CookiesAcceptedPropertyHelper;
 use Oro\Bundle\CookieConsentBundle\Helper\FrontendRepresentativeUserHelper;
 use Oro\Bundle\CustomerBundle\Entity\CustomerUser;
 use Oro\Bundle\CustomerBundle\Entity\CustomerVisitor;
+use Oro\Bundle\CustomerBundle\Entity\CustomerVisitorManager;
 use Oro\Bundle\CustomerBundle\Event\FilterCustomerUserResponseEvent;
-use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
+use Oro\Bundle\CustomerBundle\Security\AnonymousCustomerUserAuthenticator;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
 /**
@@ -16,23 +19,17 @@ use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
  */
 class CustomerUserRegistrationAndLoginListener
 {
-    private FrontendRepresentativeUserHelper $frontendUserHelper;
-    private CookiesAcceptedPropertyHelper $cookiesAcceptedHelper;
-    private DoctrineHelper $doctrineHelper;
-
     public function __construct(
-        FrontendRepresentativeUserHelper $frontendUserHelper,
-        CookiesAcceptedPropertyHelper $cookiesAcceptedHelper,
-        DoctrineHelper $doctrineHelper
+        private FrontendRepresentativeUserHelper $frontendRepresentativeUserHelper,
+        private CookiesAcceptedPropertyHelper $cookiesAcceptedHelper,
+        private ManagerRegistry $doctrine,
+        private CustomerVisitorManager $visitorManager
     ) {
-        $this->frontendUserHelper = $frontendUserHelper;
-        $this->cookiesAcceptedHelper = $cookiesAcceptedHelper;
-        $this->doctrineHelper = $doctrineHelper;
     }
 
     public function onRegistrationCompleted(FilterCustomerUserResponseEvent $event): void
     {
-        $frontendUser = $this->frontendUserHelper->getRepresentativeUser();
+        $frontendUser = $this->frontendRepresentativeUserHelper->getRepresentativeUser();
         if ($frontendUser instanceof CustomerVisitor) {
             $this->transferCookieAccepted($frontendUser, $event->getCustomerUser());
         }
@@ -42,25 +39,44 @@ class CustomerUserRegistrationAndLoginListener
     {
         $user = $event->getAuthenticationToken()->getUser();
         if ($user instanceof CustomerUser) {
-            $customerVisitor = $this->frontendUserHelper->getVisitorFromRequest($event->getRequest());
-            if (null !== $customerVisitor) {
-                $this->transferCookieAccepted($customerVisitor, $user);
+            $visitor = $this->getVisitorFromCookie($event->getRequest());
+            if (null !== $visitor) {
+                $this->transferCookieAccepted($visitor, $user);
             }
         }
     }
 
-    private function transferCookieAccepted(CustomerVisitor $customerVisitor, CustomerUser $customerUser): void
+    private function getVisitorFromCookie(Request $request): ?CustomerVisitor
     {
-        if (false === $this->cookiesAcceptedHelper->isCookiesAccepted($customerVisitor)) {
+        $value = $request->cookies->get(AnonymousCustomerUserAuthenticator::COOKIE_NAME);
+        if (!$value) {
+            return null;
+        }
+
+        $sessionId = json_decode(base64_decode($value), null, 512, JSON_THROW_ON_ERROR);
+        if (\is_array($sessionId) && isset($sessionId[1])) {
+            // BC compatibility (can be removed in v7.0): get sessionId from old format of the cookie value
+            $sessionId = $sessionId[1];
+        }
+        if (!\is_string($sessionId) || !$sessionId) {
+            return null;
+        }
+
+        return $this->visitorManager->find($sessionId);
+    }
+
+    private function transferCookieAccepted(CustomerVisitor $visitor, CustomerUser $customerUser): void
+    {
+        if (!$this->cookiesAcceptedHelper->isCookiesAccepted($visitor)) {
             return;
         }
 
-        if (true === $this->cookiesAcceptedHelper->isCookiesAccepted($customerUser)) {
+        if ($this->cookiesAcceptedHelper->isCookiesAccepted($customerUser)) {
             return;
         }
 
         $this->cookiesAcceptedHelper->setCookiesAccepted($customerUser, true);
-        $entityManager = $this->doctrineHelper->getEntityManagerForClass(CustomerUser::class);
+        $entityManager = $this->doctrine->getManagerForClass(CustomerUser::class);
         $entityManager->persist($customerUser);
         $entityManager->flush();
     }

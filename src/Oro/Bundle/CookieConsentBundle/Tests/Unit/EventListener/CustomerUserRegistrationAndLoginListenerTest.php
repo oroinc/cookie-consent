@@ -3,6 +3,7 @@
 namespace Oro\Bundle\CookieConsentBundle\Tests\Unit\EventListener;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Oro\Bundle\CookieConsentBundle\EventListener\CustomerUserRegistrationAndLoginListener;
 use Oro\Bundle\CookieConsentBundle\Helper\CookiesAcceptedPropertyHelper;
 use Oro\Bundle\CookieConsentBundle\Helper\FrontendRepresentativeUserHelper;
@@ -13,32 +14,30 @@ use Oro\Bundle\CustomerBundle\Entity\CustomerVisitorManager;
 use Oro\Bundle\CustomerBundle\Event\FilterCustomerUserResponseEvent;
 use Oro\Bundle\CustomerBundle\Security\AnonymousCustomerUserAuthenticator;
 use Oro\Bundle\CustomerBundle\Security\Token\AnonymousCustomerUserToken;
-use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
-class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\TestCase
+class CustomerUserRegistrationAndLoginListenerTest extends TestCase
 {
     private const EXIST_SESSION_ID_WITH_COOKIES_ACCEPTED_ID = '05f2ce876de8';
     private const EXIST_SESSION_ID_WITH_COOKIES_NOT_ACCEPTED_ID = '05f2ce876de1';
     private const NOT_EXIST_SESSION_ID = '142a23939af1';
 
-    /** @var TokenStorageInterface|\PHPUnit\Framework\MockObject\MockObject */
-    private $tokenStorage;
-
-    /** @var DoctrineHelper|\PHPUnit\Framework\MockObject\MockObject */
-    private $doctrineHelper;
-
-    /** @var CustomerUserRegistrationAndLoginListener */
-    private $eventHandler;
+    private TokenStorageInterface&MockObject $tokenStorage;
+    private ManagerRegistry&MockObject $doctrine;
+    private CustomerUserRegistrationAndLoginListener $listener;
 
     #[\Override]
     protected function setUp(): void
     {
         $this->tokenStorage = $this->createMock(TokenStorageInterface::class);
+        $this->doctrine = $this->createMock(ManagerRegistry::class);
+
         $visitorManager = $this->createMock(CustomerVisitorManager::class);
         $visitorManager->expects(self::any())
             ->method('find')
@@ -53,13 +52,52 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
 
                 return null;
             });
-        $this->doctrineHelper = $this->createMock(DoctrineHelper::class);
 
-        $this->eventHandler = new CustomerUserRegistrationAndLoginListener(
-            new FrontendRepresentativeUserHelper($this->tokenStorage, $visitorManager),
+        $this->listener = new CustomerUserRegistrationAndLoginListener(
+            new FrontendRepresentativeUserHelper($this->tokenStorage),
             new CookiesAcceptedPropertyHelper(),
-            $this->doctrineHelper
+            $this->doctrine,
+            $visitorManager
         );
+    }
+
+    private function createResponseEvent(
+        bool $expectsGetUser,
+        bool $cookiesAccepted
+    ): FilterCustomerUserResponseEvent {
+        $event = $this->createMock(FilterCustomerUserResponseEvent::class);
+
+        if ($expectsGetUser) {
+            $event->expects(self::exactly(2))
+                ->method('getCustomerUser')
+                ->willReturn(new CustomerUserStub($cookiesAccepted));
+        } else {
+            $event->expects(self::once())
+                ->method('getCustomerUser')
+                ->willReturn(new CustomerUserStub($cookiesAccepted));
+        }
+
+        return $event;
+    }
+
+    private function createInteractiveLoginEvent(
+        UserInterface $user,
+        ?array $visitorCredentials
+    ): InteractiveLoginEvent {
+        $token = $this->createMock(TokenInterface::class);
+        $token->expects(self::exactly(2))
+            ->method('getUser')
+            ->willReturn($user);
+
+        $cookiesData = [];
+        if (null !== $visitorCredentials) {
+            $cookiesData[AnonymousCustomerUserAuthenticator::COOKIE_NAME] = base64_encode(json_encode(
+                $visitorCredentials,
+                JSON_THROW_ON_ERROR
+            ));
+        }
+
+        return new InteractiveLoginEvent(new Request([], [], [], $cookiesData), $token);
     }
 
     /**
@@ -77,8 +115,8 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
                 ->method('persist');
             $entityManager->expects(self::once())
                 ->method('flush');
-            $this->doctrineHelper->expects(self::once())
-                ->method('getEntityManagerForClass')
+            $this->doctrine->expects(self::once())
+                ->method('getManagerForClass')
                 ->with(CustomerUser::class)
                 ->willReturn($entityManager);
         }
@@ -86,31 +124,12 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
         $this->tokenStorage->expects(self::once())
             ->method('getToken')
             ->willReturnCallback($tokenCallback);
-        $this->eventHandler->onRegistrationCompleted($event);
+
+        $this->listener->onRegistrationCompleted($event);
 
         /** @var CustomerUserStub $customerUser */
         $customerUser = $event->getCustomerUser();
         self::assertEquals($expectedCookiesAccepted, $customerUser->getCookiesAccepted());
-    }
-
-    private function createResponseEvent(
-        bool $expectsGetUser,
-        bool $cookiesAccepted
-    ): \PHPUnit\Framework\MockObject\MockObject|FilterCustomerUserResponseEvent {
-        $event = $this->createMock(FilterCustomerUserResponseEvent::class);
-
-        if ($expectsGetUser) {
-            $event->expects(self::exactly(2))
-                ->method('getCustomerUser')
-                ->willReturn(new CustomerUserStub($cookiesAccepted));
-        } else {
-            // will only be called before assertEquals in testRegistrationCompleted
-            $event->expects(self::once())
-                ->method('getCustomerUser')
-                ->willReturn(new CustomerUserStub($cookiesAccepted));
-        }
-
-        return $event;
     }
 
     public function registrationCompletedDataProvider(): array
@@ -212,13 +231,13 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
                 ->method('persist');
             $entityManager->expects(self::once())
                 ->method('flush');
-            $this->doctrineHelper->expects(self::once())
-                ->method('getEntityManagerForClass')
+            $this->doctrine->expects(self::once())
+                ->method('getManagerForClass')
                 ->with(CustomerUser::class)
                 ->willReturn($entityManager);
         }
 
-        $this->eventHandler->onSecurityInteractiveLogin($event);
+        $this->listener->onSecurityInteractiveLogin($event);
 
         $authToken = $event->getAuthenticationToken();
         self::assertInstanceOf(TokenInterface::class, $authToken);
@@ -227,26 +246,6 @@ class CustomerUserRegistrationAndLoginListenerTest extends \PHPUnit\Framework\Te
         if ($user instanceof CustomerUser) {
             self::assertEquals($expectedCookiesAccepted, $user->getCookiesAccepted());
         }
-    }
-
-    private function createInteractiveLoginEvent(
-        UserInterface $user,
-        ?array $visitorCredentials
-    ): InteractiveLoginEvent|\PHPUnit\Framework\MockObject\MockObject {
-        $tokenMock = $this->createMock(TokenInterface::class);
-        $tokenMock->expects(self::exactly(2))
-            ->method('getUser')
-            ->willReturn($user);
-
-        $cookiesData = [];
-        if (null !== $visitorCredentials) {
-            $serializedCredentials = base64_encode(json_encode($visitorCredentials, JSON_THROW_ON_ERROR));
-            $cookiesData[AnonymousCustomerUserAuthenticator::COOKIE_NAME] = $serializedCredentials;
-        }
-
-        $request = new Request([], [], [], $cookiesData);
-
-        return new InteractiveLoginEvent($request, $tokenMock);
     }
 
     public function interactiveLoginDataProvider(): array
