@@ -27,7 +27,7 @@ class PageIdToDTOTransformerTest extends FrontendWebTestCase
 
     public function testGetPageDTOByIdByNotExistedId()
     {
-        $this->assertNull($this->pageIdToDTOTransformer->transform(PHP_INT_MAX));
+        $this->assertNull($this->pageIdToDTOTransformer->transform(self::BIGINT));
     }
 
     public function testGetPageDTOByIdWithDefaultLocalization()
