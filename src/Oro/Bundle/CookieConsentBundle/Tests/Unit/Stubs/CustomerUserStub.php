@@ -6,8 +6,7 @@ use Oro\Bundle\CustomerBundle\Entity\CustomerUser;
 
 class CustomerUserStub extends CustomerUser
 {
-    /** @var bool */
-    private $cookiesAccepted;
+    private bool $cookiesAccepted;
 
     /**
      * @param bool $cookiesAccepted

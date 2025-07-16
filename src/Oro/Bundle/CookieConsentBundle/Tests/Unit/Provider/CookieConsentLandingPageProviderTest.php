@@ -9,19 +9,16 @@ use Oro\Bundle\CookieConsentBundle\Transformer\PageIdToDtoTransformer;
 use Oro\Bundle\LocaleBundle\Entity\Localization;
 use Oro\Bundle\LocaleBundle\Helper\LocalizedValueExtractor;
 use Oro\Component\Testing\Unit\EntityTrait;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
-class CookieConsentLandingPageProviderTest extends \PHPUnit\Framework\TestCase
+class CookieConsentLandingPageProviderTest extends TestCase
 {
     use EntityTrait;
 
-    /** @var ConfigManager|\PHPUnit\Framework\MockObject\MockObject */
-    private $configManager;
-
-    /** @var PageIdToDtoTransformer|\PHPUnit\Framework\MockObject\MockObject */
-    private $pageIdToDtoTransformer;
-
-    /** @var CookieConsentLandingPageProvider */
-    private $landingPageProvider;
+    private ConfigManager&MockObject $configManager;
+    private PageIdToDtoTransformer&MockObject $pageIdToDtoTransformer;
+    private CookieConsentLandingPageProvider $landingPageProvider;
 
     #[\Override]
     protected function setUp(): void
@@ -36,7 +33,7 @@ class CookieConsentLandingPageProviderTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testGetPageDtoByLocalization()
+    public function testGetPageDtoByLocalization(): void
     {
         $pageId = 5;
         $page = Page::create('page_title', '/url');
@@ -56,7 +53,7 @@ class CookieConsentLandingPageProviderTest extends \PHPUnit\Framework\TestCase
         self::assertEquals($page, $this->landingPageProvider->getPageDtoByLocalization($localization));
     }
 
-    public function testGetPageDtoByLocalizationWillReturnEmptyPage()
+    public function testGetPageDtoByLocalizationWillReturnEmptyPage(): void
     {
         $this->configManager->expects(self::once())
             ->method('get')

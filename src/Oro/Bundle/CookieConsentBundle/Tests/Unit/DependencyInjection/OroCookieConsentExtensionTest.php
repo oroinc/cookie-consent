@@ -4,9 +4,10 @@ namespace Oro\Bundle\CookieConsentBundle\Tests\Unit\DependencyInjection;
 
 use Oro\Bundle\CookieConsentBundle\DependencyInjection\Configuration;
 use Oro\Bundle\CookieConsentBundle\DependencyInjection\OroCookieConsentExtension;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class OroCookieConsentExtensionTest extends \PHPUnit\Framework\TestCase
+class OroCookieConsentExtensionTest extends TestCase
 {
     public function testLoad(): void
     {

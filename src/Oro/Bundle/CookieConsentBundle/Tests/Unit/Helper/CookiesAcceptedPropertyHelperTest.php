@@ -6,8 +6,9 @@ use Oro\Bundle\CookieConsentBundle\Helper\CookiesAcceptedPropertyHelper;
 use Oro\Bundle\CookieConsentBundle\Tests\Unit\Stubs\CustomerUserStub;
 use Oro\Bundle\CookieConsentBundle\Tests\Unit\Stubs\CustomerVisitorStub;
 use Oro\Bundle\UserBundle\Entity\User;
+use PHPUnit\Framework\TestCase;
 
-class CookiesAcceptedPropertyHelperTest extends \PHPUnit\Framework\TestCase
+class CookiesAcceptedPropertyHelperTest extends TestCase
 {
     private CookiesAcceptedPropertyHelper $cookiesAcceptedPropertyHelper;
 
@@ -20,7 +21,7 @@ class CookiesAcceptedPropertyHelperTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider isCookiesAcceptedProvider
      */
-    public function testIsCookiesAccepted(?object $frontendRepresentativeUser, bool $expectedResult)
+    public function testIsCookiesAccepted(?object $frontendRepresentativeUser, bool $expectedResult): void
     {
         $this->assertEquals(
             $expectedResult,
@@ -54,7 +55,7 @@ class CookiesAcceptedPropertyHelperTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function testIsCookiesAcceptedWithInvalidObject()
+    public function testIsCookiesAcceptedWithInvalidObject(): void
     {
         $this->expectException(\LogicException::class);
         $this->cookiesAcceptedPropertyHelper->isCookiesAccepted(new User());
@@ -63,7 +64,7 @@ class CookiesAcceptedPropertyHelperTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider setCookiesAcceptedProvider
      */
-    public function testSetCookiesAccepted(?object $frontendRepresentativeUser, bool $cookiesAcceptedValue)
+    public function testSetCookiesAccepted(?object $frontendRepresentativeUser, bool $cookiesAcceptedValue): void
     {
         $this->cookiesAcceptedPropertyHelper->setCookiesAccepted(
             $frontendRepresentativeUser,
@@ -98,7 +99,7 @@ class CookiesAcceptedPropertyHelperTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function testSetCookiesAcceptedOnNullNotCallException()
+    public function testSetCookiesAcceptedOnNullNotCallException(): void
     {
         $this->cookiesAcceptedPropertyHelper->setCookiesAccepted(
             null,
@@ -106,7 +107,7 @@ class CookiesAcceptedPropertyHelperTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testSetCookiesAcceptedWithInvalidObject()
+    public function testSetCookiesAcceptedWithInvalidObject(): void
     {
         $this->expectException(\LogicException::class);
         $this->cookiesAcceptedPropertyHelper->setCookiesAccepted(new User(), true);

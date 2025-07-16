@@ -16,29 +16,22 @@ use Oro\Bundle\LocaleBundle\Helper\LocalizationHelper;
 use Oro\Bundle\LocaleBundle\Helper\LocalizedValueExtractor;
 use Oro\Bundle\UIBundle\Tools\HtmlTagHelper;
 use Oro\Component\Testing\Unit\EntityTrait;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.TooManyMethods)
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
-class CookiesBannerProviderTest extends \PHPUnit\Framework\TestCase
+class CookiesBannerProviderTest extends TestCase
 {
     use EntityTrait;
 
-    /** @var FrontendRepresentativeUserHelper|\PHPUnit\Framework\MockObject\MockObject */
-    private $frontendRepresentativeUserHelper;
-
-    /** @var ConfigManager|\PHPUnit\Framework\MockObject\MockObject */
-    private $configManager;
-
-    /** @var CookieConsentLandingPageProviderInterface|\PHPUnit\Framework\MockObject\MockObject */
-    private $landingPageProvider;
-
-    /** @var LocalizationHelper|\PHPUnit\Framework\MockObject\MockObject */
-    private $localizationHelper;
-
-    /** @var CookiesBannerProvider */
-    private $provider;
+    private FrontendRepresentativeUserHelper&MockObject $frontendRepresentativeUserHelper;
+    private ConfigManager&MockObject $configManager;
+    private CookieConsentLandingPageProviderInterface&MockObject $landingPageProvider;
+    private LocalizationHelper&MockObject $localizationHelper;
+    private CookiesBannerProvider $provider;
 
     #[\Override]
     protected function setUp(): void
@@ -66,7 +59,7 @@ class CookiesBannerProviderTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testIsBannerVisibleWhenItDisabledInConfig()
+    public function testIsBannerVisibleWhenItDisabledInConfig(): void
     {
         $this->configManager->expects(self::once())
             ->method('get')
@@ -82,8 +75,10 @@ class CookiesBannerProviderTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider isBannerVisibleWhenItEnabledInConfigProvider
      */
-    public function testIsBannerVisibleWhenItEnabledInConfig(?object $frontendRepresentativeUser, bool $expectedResult)
-    {
+    public function testIsBannerVisibleWhenItEnabledInConfig(
+        ?object $frontendRepresentativeUser,
+        bool $expectedResult
+    ): void {
         $this->configManager->expects(self::once())
             ->method('get')
             ->with('oro_cookie_consent.show_banner')
@@ -122,7 +117,7 @@ class CookiesBannerProviderTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function testGetBannerTitle()
+    public function testGetBannerTitle(): void
     {
         $bannerTitle = 'Cookie Consent Banner Title';
 
@@ -134,7 +129,7 @@ class CookiesBannerProviderTest extends \PHPUnit\Framework\TestCase
         self::assertEquals($bannerTitle . '_purified_', $this->provider->getBannerTitle());
     }
 
-    public function testGetBannerText()
+    public function testGetBannerText(): void
     {
         $bannerText = 'Cookie Consent Banner Text';
 
@@ -146,7 +141,7 @@ class CookiesBannerProviderTest extends \PHPUnit\Framework\TestCase
         self::assertEquals($bannerText . '_purified_', $this->provider->getBannerText());
     }
 
-    public function testGetPageTitle()
+    public function testGetPageTitle(): void
     {
         $page = Page::create('page_title', '/url');
         $localizationId = 1;
@@ -164,7 +159,7 @@ class CookiesBannerProviderTest extends \PHPUnit\Framework\TestCase
         self::assertEquals('page_title_purified_', $this->provider->getPageTitle());
     }
 
-    public function testGetPageTitleEmpty()
+    public function testGetPageTitleEmpty(): void
     {
         $localizationId = 1;
         $localization = $this->getEntity(Localization::class, ['id' => $localizationId]);
@@ -181,7 +176,7 @@ class CookiesBannerProviderTest extends \PHPUnit\Framework\TestCase
         self::assertEquals('', $this->provider->getPageTitle());
     }
 
-    public function testGetPageUrl()
+    public function testGetPageUrl(): void
     {
         $page = Page::create('page_title', '/url');
         $localizationId = 1;
@@ -199,7 +194,7 @@ class CookiesBannerProviderTest extends \PHPUnit\Framework\TestCase
         self::assertEquals('/url', $this->provider->getPageUrl());
     }
 
-    public function testGetPageUrlEmpty()
+    public function testGetPageUrlEmpty(): void
     {
         $localizationId = 1;
         $localization = $this->getEntity(Localization::class, ['id' => $localizationId]);

@@ -2,11 +2,12 @@
 
 namespace Oro\Bundle\CookieConsentBundle\Tests\Unit\Form\Type\Stub;
 
+use Oro\Bundle\CMSBundle\Entity\Page;
+
 // @codingStandardsIgnoreStart
-class PageStub extends \Oro\Bundle\CMSBundle\Entity\Page
+class PageStub extends Page
 {
-    /** @var string */
-    private $defaultTitle;
+    private string $defaultTitle;
 
     /**
      * @param int $id
