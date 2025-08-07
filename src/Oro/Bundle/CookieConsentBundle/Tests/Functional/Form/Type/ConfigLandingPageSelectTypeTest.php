@@ -4,17 +4,19 @@ namespace Oro\Bundle\CookieConsentBundle\Tests\Functional\Form\Type;
 
 use Oro\Bundle\CMSBundle\Entity\Page;
 use Oro\Bundle\CMSBundle\Entity\Repository\PageRepository;
-use Oro\Bundle\ConfigBundle\Config\ConfigManager;
 use Oro\Bundle\ConfigBundle\Tests\Functional\Traits\ConfigManagerAwareTestTrait;
 use Oro\Bundle\CookieConsentBundle\DependencyInjection\Configuration;
 use Oro\Bundle\CookieConsentBundle\Migrations\Data\ORM\LoadCookieConsentPage;
 use Oro\Bundle\CookieConsentBundle\Tests\Functional\DataFixtures\LandingPageDataFixture;
-use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\LocaleBundle\Manager\LocalizationManager;
 use Oro\Bundle\LocaleBundle\Model\FallbackType;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
+use Oro\Bundle\WebsiteBundle\Entity\Website;
 use Oro\Component\PhpUtils\ArrayUtil;
 
+/**
+ * @dbIsolationPerTest
+ */
 class ConfigLandingPageSelectTypeTest extends WebTestCase
 {
     use ConfigManagerAwareTestTrait;
@@ -25,58 +27,62 @@ class ConfigLandingPageSelectTypeTest extends WebTestCase
     private const WEBSITE_CHANGED_SHOW_BANNER_VALUE = true;
     private const WEBSITE_CHANGED_BANNER_TEXT_VALUE = 'Website text';
 
-    private ?ConfigManager $configManager;
-    private ?ConfigManager $websiteConfigManager;
-    private ?LocalizationManager $localizationManager;
-
     #[\Override]
     protected function setUp(): void
     {
-        if (!class_exists('Oro\Bundle\MultiWebsiteOrderBundle\MultiWebsiteOrderBundle')) {
+        if (!class_exists('Oro\Bundle\MultiWebsiteBundle\OroMultiWebsiteBundle')) {
             self::markTestSkipped('Can be tested only with MultiWebsiteBundle installed.');
         }
+
         $this->initClient([], self::generateBasicAuthHeader());
         $this->loadFixtures([LandingPageDataFixture::class]);
-        $this->configManager = self::getConfigManager();
-        $this->websiteConfigManager = self::getConfigManager('website');
-        $this->localizationManager = self::getContainer()->get('oro_locale.manager.localization');
-        $this->enableCookieBanner(true);
+
+        $configManager = self::getConfigManager();
+        $configManager->set('oro_cookie_consent.show_banner', true);
+        $configManager->flush();
     }
 
     #[\Override]
     protected function tearDown(): void
     {
-        $this->enableCookieBanner(false);
-        parent::tearDown();
-    }
+        /** @var PageRepository $pageRepository */
+        $pageRepository = self::getContainer()->get('doctrine')->getRepository(Page::class);
+        $policyPage = $pageRepository->findOneByTitle(LoadCookieConsentPage::TITLE);
 
-    private function enableCookieBanner(bool $enabled): void
-    {
-        $this->configManager->set('oro_cookie_consent.show_banner', $enabled);
-        $this->configManager->flush();
+        $configManager = self::getConfigManager();
+        $configManager->set('oro_cookie_consent.show_banner', false);
+        $configManager->set('oro_cookie_consent.localized_banner_text', Configuration::DEFAULT_BANNER_TEXT);
+        $configManager->set('oro_cookie_consent.localized_landing_page_id', $policyPage->getId());
+        $configManager->flush();
+
+        $websiteConfigManager = self::getConfigManager('website');
+        $websiteConfigManager->set('oro_cookie_consent.show_banner', null);
+        $websiteConfigManager->set('oro_cookie_consent.localized_banner_text', null);
+        $websiteConfigManager->set('oro_cookie_consent.localized_landing_page_id', null);
+        $websiteConfigManager->flush();
+        $websiteConfigManager->reload();
     }
 
     /**
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
-    public function testChangeCookieConfigInSystemScope()
+    public function testChangeCookieConfigInSystemScope(): void
     {
-        /** @var DoctrineHelper $doctrineHelper */
-        $doctrineHelper = static::getContainer()->get('oro_entity.doctrine_helper');
+        $configManager = self::getConfigManager();
+
         /** @var PageRepository $pageRepository */
-        $pageRepository = $doctrineHelper->getEntityRepository(Page::class);
-
+        $pageRepository = self::getContainer()->get('doctrine')->getRepository(Page::class);
         $policyPage = $pageRepository->findOneByTitle(LoadCookieConsentPage::TITLE);
-        $this->assertNotNull($policyPage);
+        self::assertNotNull($policyPage);
 
-        $this->assertTrue($this->configManager->get('oro_cookie_consent.show_banner'));
-        $this->assertEquals(
+        self::assertTrue($configManager->get('oro_cookie_consent.show_banner'));
+        self::assertEquals(
             [null => Configuration::DEFAULT_BANNER_TEXT],
-            $this->configManager->get('oro_cookie_consent.localized_banner_text')
+            $configManager->get('oro_cookie_consent.localized_banner_text')
         );
-        $this->assertEquals(
+        self::assertEquals(
             [null => $policyPage->getId()],
-            $this->configManager->get('oro_cookie_consent.localized_landing_page_id')
+            $configManager->get('oro_cookie_consent.localized_landing_page_id')
         );
 
         /** @var Page[] $fixturePages */
@@ -95,9 +101,11 @@ class ConfigLandingPageSelectTypeTest extends WebTestCase
             )
         );
         $result = $this->client->getResponse();
-        $this->assertHtmlResponseStatusCodeEquals($result, 200);
+        self::assertHtmlResponseStatusCodeEquals($result, 200);
 
-        $localizationId = $this->localizationManager->getDefaultLocalization()->getId();
+        /** @var LocalizationManager $localizationManager */
+        $localizationManager = self::getContainer()->get('oro_locale.manager.localization');
+        $localizationId = $localizationManager->getDefaultLocalization()->getId();
 
         $token = $this->getCsrfToken('customer_users')->getValue();
         $form = $crawler->selectButton('Save settings')->form();
@@ -139,55 +147,54 @@ class ConfigLandingPageSelectTypeTest extends WebTestCase
             ]
         ];
 
-        $this->client->followRedirects(true);
+        $this->client->followRedirects();
         $this->client->request($form->getMethod(), $form->getUri(), $formData);
 
         $result = $this->client->getResponse();
-        $this->assertHtmlResponseStatusCodeEquals($result, 200);
+        self::assertHtmlResponseStatusCodeEquals($result, 200);
 
-        $this->configManager->reload();
-        $this->assertEquals(
+        $configManager->reload();
+        self::assertEquals(
             self::CHANGED_SHOW_BANNER_VALUE,
-            (bool)$this->configManager->get('oro_cookie_consent.show_banner')
+            (bool)$configManager->get('oro_cookie_consent.show_banner')
         );
-        $this->assertEquals(
+        self::assertEquals(
             self::CHANGED_BANNER_TEXT_VALUE,
-            $this->configManager->get('oro_cookie_consent.localized_banner_text')[null]
+            $configManager->get('oro_cookie_consent.localized_banner_text')[null]
         );
-        $this->assertEquals(
+        self::assertEquals(
             $randomSelectedPage->getId(),
-            $this->configManager->get('oro_cookie_consent.localized_landing_page_id')[null]
+            $configManager->get('oro_cookie_consent.localized_landing_page_id')[null]
         );
     }
 
     /**
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
-    public function testChangeCookieConfigInWebsiteScope()
+    public function testChangeCookieConfigInWebsiteScope(): void
     {
-        $defaultWebsiteId = static::getContainer()->get('oro_website.manager')->getDefaultWebsite()->getId();
+        /** @var Website $website */
+        $website = self::getContainer()->get('oro_website.manager')->getDefaultWebsite();
         $crawler = $this->client->request(
             'GET',
             $this->getUrl('oro_multiwebsite_config', [
-                'id' => $defaultWebsiteId,
+                'id' => $website->getId(),
                 'activeGroup' => 'commerce',
                 'activeSubGroup' => 'customer_users'
             ])
         );
 
         $result = $this->client->getResponse();
-        $this->assertHtmlResponseStatusCodeEquals($result, 200);
-
-        /** @var DoctrineHelper $doctrineHelper */
-        $doctrineHelper = static::getContainer()->get('oro_entity.doctrine_helper');
-        $pageRepository = $doctrineHelper->getEntityRepository(Page::class);
+        self::assertHtmlResponseStatusCodeEquals($result, 200);
 
         /** @var Page[] $fixturePages */
-        $fixturePages = $pageRepository->findAll();
-        $randPageIndex = \random_int(0, \count($fixturePages) - 1);
+        $fixturePages = self::getContainer()->get('doctrine')->getRepository(Page::class)->findAll();
+        $randPageIndex = random_int(0, \count($fixturePages) - 1);
         $randomSelectedPage = $fixturePages[$randPageIndex];
 
-        $localizationId = $this->localizationManager->getDefaultLocalization()->getId();
+        /** @var LocalizationManager $localizationManager */
+        $localizationManager = self::getContainer()->get('oro_locale.manager.localization');
+        $localizationId = $localizationManager->getDefaultLocalization()->getId();
 
         $token = $this->getCsrfToken('customer_users')->getValue();
         $form = $crawler->selectButton('Save settings')->form();
@@ -229,39 +236,25 @@ class ConfigLandingPageSelectTypeTest extends WebTestCase
             ]
         );
 
-        $this->client->followRedirects(true);
+        $this->client->followRedirects();
         $this->client->request($form->getMethod(), $form->getUri(), $formData);
 
         $result = $this->client->getResponse();
-        $this->assertHtmlResponseStatusCodeEquals($result, 200);
+        self::assertHtmlResponseStatusCodeEquals($result, 200);
 
-        $this->websiteConfigManager->reload($defaultWebsiteId);
-        $this->assertEquals(
+        $websiteConfigManager = self::getConfigManager('website');
+        $websiteConfigManager->reload($website);
+        self::assertEquals(
             self::WEBSITE_CHANGED_SHOW_BANNER_VALUE,
-            (bool)$this->websiteConfigManager->get(
-                'oro_cookie_consent.show_banner',
-                false,
-                false,
-                $defaultWebsiteId
-            )
+            (bool)$websiteConfigManager->get('oro_cookie_consent.show_banner', false, false, $website)
         );
-        $this->assertEquals(
+        self::assertEquals(
             self::WEBSITE_CHANGED_BANNER_TEXT_VALUE,
-            $this->websiteConfigManager->get(
-                'oro_cookie_consent.localized_banner_text',
-                false,
-                false,
-                $defaultWebsiteId
-            )[null]
+            $websiteConfigManager->get('oro_cookie_consent.localized_banner_text', false, false, $website)[null]
         );
-        $this->assertEquals(
+        self::assertEquals(
             $randomSelectedPage->getId(),
-            $this->websiteConfigManager->get(
-                'oro_cookie_consent.localized_landing_page_id',
-                false,
-                false,
-                $defaultWebsiteId
-            )[null]
+            $websiteConfigManager->get('oro_cookie_consent.localized_landing_page_id', false, false, $website)[null]
         );
     }
 }

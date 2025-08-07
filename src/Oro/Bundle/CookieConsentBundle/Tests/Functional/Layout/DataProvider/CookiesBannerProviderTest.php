@@ -14,30 +14,27 @@ class CookiesBannerProviderTest extends WebTestCase
     protected function setUp(): void
     {
         $this->initClient();
-        $this->enableCookieBanner(true);
+
+        $configManager = self::getConfigManager();
+        $configManager->set('oro_cookie_consent.show_banner', true);
+        $configManager->flush();
     }
 
     #[\Override]
     protected function tearDown(): void
     {
-        $this->enableCookieBanner(false);
-        parent::tearDown();
-    }
-
-    private function enableCookieBanner(bool $enabled): void
-    {
         $configManager = self::getConfigManager();
-        $configManager->set('oro_cookie_consent.show_banner', $enabled);
+        $configManager->set('oro_cookie_consent.show_banner', false);
         $configManager->flush();
     }
 
-    public function testBreadcrumbs()
+    public function testBreadcrumbs(): void
     {
         $crawler = $this->client->request('GET', '/');
         $result = $this->client->getResponse();
         self::assertHtmlResponseStatusCodeEquals($result, 200);
 
-        $this->assertStringContainsString(
+        self::assertStringContainsString(
             'cookie-banner-view',
             $crawler->filter('.wrapper')->html()
         );
@@ -45,8 +42,8 @@ class CookiesBannerProviderTest extends WebTestCase
         $cookieBannerData = $crawler
             ->filter('div[class=" cookie-banner-view"]')
             ->attr('data-page-component-view');
-        $cookieBannerData = json_decode($cookieBannerData);
-        $this->assertStringContainsString($cookieBannerData->bannerTitle, Configuration::DEFAULT_BANNER_TITLE);
-        $this->assertStringContainsString($cookieBannerData->bannerText, Configuration::DEFAULT_BANNER_TEXT);
+        $cookieBannerData = json_decode($cookieBannerData, flags: JSON_THROW_ON_ERROR);
+        self::assertStringContainsString(Configuration::DEFAULT_BANNER_TITLE, $cookieBannerData->bannerTitle);
+        self::assertStringContainsString(Configuration::DEFAULT_BANNER_TEXT, $cookieBannerData->bannerText);
     }
 }
