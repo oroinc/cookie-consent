@@ -22,19 +22,19 @@ class OroCookieConsentExtensionTest extends TestCase
                 [
                     'settings' => [
                         'resolved' => true,
-                        Configuration::PARAM_NAME_SHOW_BANNER => [
+                        'show_banner' => [
                             'value' => false,
                             'scope' => 'app'
                         ],
-                        Configuration::PARAM_NAME_LOCALIZED_BANNER_TITLE => [
+                        'localized_banner_title' => [
                             'value' => [null => Configuration::DEFAULT_BANNER_TITLE],
                             'scope' => 'app'
                         ],
-                        Configuration::PARAM_NAME_LOCALIZED_BANNER_TEXT => [
+                        'localized_banner_text' => [
                             'value' => [null => Configuration::DEFAULT_BANNER_TEXT],
                             'scope' => 'app'
                         ],
-                        Configuration::PARAM_NAME_LOCALIZED_LANDING_PAGE_ID => [
+                        'localized_landing_page_id' => [
                             'value' => [null => null],
                             'scope' => 'app'
                         ]

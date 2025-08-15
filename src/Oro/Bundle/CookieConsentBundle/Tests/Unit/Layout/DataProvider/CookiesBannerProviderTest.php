@@ -3,7 +3,6 @@
 namespace Oro\Bundle\CookieConsentBundle\Tests\Unit\Layout\DataProvider;
 
 use Oro\Bundle\ConfigBundle\Config\ConfigManager;
-use Oro\Bundle\CookieConsentBundle\DependencyInjection\Configuration;
 use Oro\Bundle\CookieConsentBundle\Helper\CookiesAcceptedPropertyHelper;
 use Oro\Bundle\CookieConsentBundle\Helper\FrontendRepresentativeUserHelper;
 use Oro\Bundle\CookieConsentBundle\Layout\DataProvider\CookiesBannerProvider;
@@ -123,7 +122,7 @@ class CookiesBannerProviderTest extends TestCase
 
         $this->configManager->expects(self::once())
             ->method('get')
-            ->with(Configuration::ROOT_NODE . '.' . Configuration::PARAM_NAME_LOCALIZED_BANNER_TITLE)
+            ->with('oro_cookie_consent.localized_banner_title')
             ->willReturn([null => $bannerTitle]);
 
         self::assertEquals($bannerTitle . '_purified_', $this->provider->getBannerTitle());

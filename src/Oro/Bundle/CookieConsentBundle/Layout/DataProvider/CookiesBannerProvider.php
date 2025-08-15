@@ -3,7 +3,6 @@
 namespace Oro\Bundle\CookieConsentBundle\Layout\DataProvider;
 
 use Oro\Bundle\ConfigBundle\Config\ConfigManager;
-use Oro\Bundle\CookieConsentBundle\DependencyInjection\Configuration;
 use Oro\Bundle\CookieConsentBundle\Helper\CookiesAcceptedPropertyHelper;
 use Oro\Bundle\CookieConsentBundle\Helper\FrontendRepresentativeUserHelper;
 use Oro\Bundle\CookieConsentBundle\Provider\CookieConsentLandingPageProviderInterface;
@@ -49,9 +48,7 @@ class CookiesBannerProvider
 
     public function isBannerVisible(): bool
     {
-        $showBanner = $this->configManager->get(
-            Configuration::getConfigKeyByName(Configuration::PARAM_NAME_SHOW_BANNER)
-        );
+        $showBanner = $this->configManager->get('oro_cookie_consent.show_banner');
         if (!$showBanner) {
             return false;
         }
@@ -63,27 +60,21 @@ class CookiesBannerProvider
 
     public function getBannerTitle(): string
     {
-        $bannerTitles = $this->configManager->get(
-            Configuration::getConfigKeyByName(Configuration::PARAM_NAME_LOCALIZED_BANNER_TITLE)
-        );
-
-        $localization = $this->localizationHelper->getCurrentLocalization();
-
         return $this->htmlTagHelper->purify(
-            (string)$this->localizedValueExtractor->getLocalizedFallbackValue($bannerTitles, $localization)
+            (string)$this->localizedValueExtractor->getLocalizedFallbackValue(
+                $this->configManager->get('oro_cookie_consent.localized_banner_title'),
+                $this->localizationHelper->getCurrentLocalization()
+            )
         );
     }
 
     public function getBannerText(): string
     {
-        $bannerTexts = $this->configManager->get(
-            Configuration::getConfigKeyByName(Configuration::PARAM_NAME_LOCALIZED_BANNER_TEXT)
-        );
-
-        $localization = $this->localizationHelper->getCurrentLocalization();
-
         return $this->htmlTagHelper->purify(
-            (string)$this->localizedValueExtractor->getLocalizedFallbackValue($bannerTexts, $localization)
+            (string)$this->localizedValueExtractor->getLocalizedFallbackValue(
+                $this->configManager->get('oro_cookie_consent.localized_banner_text'),
+                $this->localizationHelper->getCurrentLocalization()
+            )
         );
     }
 

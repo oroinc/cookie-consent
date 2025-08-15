@@ -51,8 +51,8 @@ class ConfigLandingPageSelectTypeTest extends WebTestCase
 
         $configManager = self::getConfigManager();
         $configManager->set('oro_cookie_consent.show_banner', false);
-        $configManager->set('oro_cookie_consent.localized_banner_text', Configuration::DEFAULT_BANNER_TEXT);
-        $configManager->set('oro_cookie_consent.localized_landing_page_id', $policyPage->getId());
+        $configManager->set('oro_cookie_consent.localized_banner_text', [null => Configuration::DEFAULT_BANNER_TEXT]);
+        $configManager->set('oro_cookie_consent.localized_landing_page_id', [null => $policyPage->getId()]);
         $configManager->flush();
 
         $websiteConfigManager = self::getConfigManager('website');

@@ -7,7 +7,6 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Oro\Bundle\CMSBundle\Entity\Page;
 use Oro\Bundle\CMSBundle\Entity\Repository\PageRepository;
-use Oro\Bundle\CookieConsentBundle\DependencyInjection\Configuration;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
@@ -19,7 +18,7 @@ class SetDefaultCookieConsentPage extends AbstractFixture implements ContainerAw
     use ContainerAwareTrait;
 
     #[\Override]
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         /** @var PageRepository $pageRepository */
         $pageRepository = $this->container->get('oro_entity.doctrine_helper')->getEntityRepository(Page::class);
@@ -29,15 +28,12 @@ class SetDefaultCookieConsentPage extends AbstractFixture implements ContainerAw
         }
 
         $configManager = $this->container->get('oro_config.global');
-        $configManager->set(
-            Configuration::ROOT_NODE . '.' . Configuration::PARAM_NAME_LOCALIZED_LANDING_PAGE_ID,
-            [null => $cookieConsentPage->getId()]
-        );
+        $configManager->set('oro_cookie_consent.localized_landing_page_id', [null => $cookieConsentPage->getId()]);
         $configManager->flush();
     }
 
     #[\Override]
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             LoadCookieConsentPage::class
