@@ -93,7 +93,7 @@ class ConfigLandingPageSelectTypeTest extends WebTestCase
 
         $localizationId = $this->localizationManager->getDefaultLocalization()->getId();
 
-        $token = $this->getCsrfToken('customer_users')->getValue();
+        $token = $this->getCsrfToken('submit')->getValue();
         $form = $crawler->selectButton('Save settings')->form();
         $formPhpValues = $form->getPhpValues();
         $formData = ArrayUtil::arrayMergeRecursiveDistinct(
@@ -183,7 +183,7 @@ class ConfigLandingPageSelectTypeTest extends WebTestCase
 
         $localizationId = $this->localizationManager->getDefaultLocalization()->getId();
 
-        $token = $this->getCsrfToken('customer_users')->getValue();
+        $token = $this->getCsrfToken('submit')->getValue();
         $form = $crawler->selectButton('Save settings')->form();
         $formPhpValues = $form->getPhpValues();
         $formData = ArrayUtil::arrayMergeRecursiveDistinct(
