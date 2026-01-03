@@ -4,7 +4,6 @@ namespace Oro\Bundle\CookieConsentBundle\Tests\Unit\Form\Type\Stub;
 
 use Oro\Bundle\CMSBundle\Entity\Page;
 
-// @codingStandardsIgnoreStart
 class PageStub extends Page
 {
     private string $defaultTitle;
@@ -40,4 +39,3 @@ class PageStub extends Page
         return $this->defaultTitle;
     }
 }
-// @codingStandardsIgnoreEnd
