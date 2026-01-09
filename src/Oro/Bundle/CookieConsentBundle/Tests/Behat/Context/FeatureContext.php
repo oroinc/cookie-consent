@@ -51,8 +51,8 @@ class FeatureContext extends OroFeatureContext implements
     public function checkConsent(string $content): bool
     {
         $xpath = sprintf(
-            '//a[contains(translate(text(),"ABCDEFGHIJKLMNOPQRSTUVWXYZ","abcdefghijklmnopqrstuvwxyz"),"%s")]'.
-            '//ancestor::div[contains(concat(" ", normalize-space(@class), " "), " consent-item ")]'.
+            '//a[contains(translate(text(),"ABCDEFGHIJKLMNOPQRSTUVWXYZ","abcdefghijklmnopqrstuvwxyz"),"%s")]' .
+            '//ancestor::div[contains(concat(" ", normalize-space(@class), " "), " consent-item ")]' .
             '//input[@type="checkbox"]',
             strtolower($content)
         );
