@@ -8,12 +8,13 @@ use Oro\Bundle\CMSBundle\Entity\Page;
 use Oro\Bundle\LocaleBundle\Entity\LocalizedFallbackValue;
 use Oro\Bundle\LocaleBundle\Manager\LocalizationManager;
 use Oro\Bundle\RedirectBundle\Entity\Slug;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Oro\Component\DependencyInjection\ContainerAwareInterface;
+use Oro\Component\DependencyInjection\ContainerAwareTrait;
 
 class LoadPageFixture extends AbstractFixture implements ContainerAwareInterface
 {
     use ContainerAwareTrait;
+
     public const PAGE_WITH_DEFAULT_LOCALIZATION = 'page-with-default-localization';
     public const PAGE_WITH_BASE_LOCALIZATION = 'page-with-base-localization';
 
