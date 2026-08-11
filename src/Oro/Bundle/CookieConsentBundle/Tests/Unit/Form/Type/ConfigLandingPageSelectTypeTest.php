@@ -16,9 +16,11 @@ use Oro\Bundle\EntityConfigBundle\Provider\ConfigProvider;
 use Oro\Bundle\FeatureToggleBundle\Checker\FeatureChecker;
 use Oro\Bundle\FormBundle\Autocomplete\SearchHandlerInterface;
 use Oro\Bundle\FormBundle\Autocomplete\SearchRegistry;
+use Oro\Bundle\FormBundle\Form\DataTransformer\EntitySelectOrCreateDataTransformerFactory;
 use Oro\Bundle\FormBundle\Form\Type\OroEntitySelectOrCreateInlineType;
 use Oro\Bundle\FormBundle\Form\Type\OroJquerySelect2HiddenType;
 use Oro\Bundle\FormBundle\Form\Type\Select2Type;
+use Oro\Bundle\SecurityBundle\ORM\Walker\AclHelper;
 use Oro\Component\Testing\Unit\FormIntegrationTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -109,7 +111,8 @@ class ConfigLandingPageSelectTypeTest extends FormIntegrationTestCase
                 $this->createMock(FeatureChecker::class),
                 $configManager,
                 $this->doctrine,
-                $this->searchRegistry
+                $this->searchRegistry,
+                new EntitySelectOrCreateDataTransformerFactory($this->doctrine, $this->createMock(AclHelper::class))
             ),
             new ConfigLandingPageSelectType($this->doctrine)
         ];
