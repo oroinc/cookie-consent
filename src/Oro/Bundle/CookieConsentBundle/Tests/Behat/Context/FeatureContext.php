@@ -25,6 +25,21 @@ class FeatureContext extends OroFeatureContext implements
     }
 
     /**
+     * The banner hides at once and saves the consent with an async request.
+     * The afterStep hook does not wait for AJAX on the login page, so this step waits for the request.
+     * The button is found by its action, not by its label, so the step works in every language.
+     *
+     * @When /^(?:|I )accept the cookie policy$/
+     */
+    public function acceptCookiePolicy(): void
+    {
+        $button = $this->getSession()->getPage()->find('css', '.cookie-banner-view__actions [data-action="accept"]');
+        self::assertNotNull($button, 'The "accept" button of the cookie banner is not found');
+        $button->click();
+        $this->waitForAjax();
+    }
+
+    /**
      * I confirm Agreements "Terms and Conditions" at registration step
      *
      * @Then /^(?:|I )confirm Agreements "(?P<content>[\w\s]*)" at registration step$/
