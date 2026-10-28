@@ -6,3 +6,7 @@ set custom description and assign Landing Page with Terms and Conditions. Config
 and website levels.
 
 For more information, see online [CookieConsentBundle documentation](https://doc.oroinc.com/bundles/commerce/CookieConsentBundle/#bundle-docs-commerce-cookie-consent-bundle).
+
+## License
+
+[OSL-3.0](LICENSE) Copyright (c) 2026 Oro Inc.
